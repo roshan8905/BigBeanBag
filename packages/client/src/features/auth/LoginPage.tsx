@@ -1,5 +1,5 @@
 import { ArrowRight } from 'lucide-react';
-import { Link, Navigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useAppSelector } from '@/app/hooks';
 import { useGetAuthConfigQuery } from '@/lib/api';
 
@@ -12,8 +12,11 @@ export const LoginPage = () => {
   const status = useAppSelector((state) => state.auth.status);
   const { data: config } = useGetAuthConfigQuery();
   const [params] = useSearchParams();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
   const error = params.get('error');
   const googleEnabled = config?.googleEnabled ?? true;
+  const googleHref = from ? `/auth/google?returnTo=${encodeURIComponent(from)}` : '/auth/google';
 
   if (status === 'authenticated') return <Navigate to="/rooms" replace />;
 
@@ -40,7 +43,7 @@ export const LoginPage = () => {
           ) : null}
 
           {googleEnabled ? (
-            <a href="/auth/google" className="btn-primary mt-6 w-full">
+            <a href={googleHref} className="btn-primary mt-6 w-full">
               Continue with Google
               <ArrowRight size={16} />
             </a>
