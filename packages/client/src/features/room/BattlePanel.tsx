@@ -12,27 +12,17 @@ const remainingLabel = (endsAt: string, now: number) => {
 };
 
 const CreateBattleDialog = ({
-  open,
   onClose,
   items,
 }: {
-  open: boolean;
   onClose: () => void;
   items: QueueItem[];
 }) => {
-  const [itemAId, setItemAId] = useState('');
-  const [itemBId, setItemBId] = useState('');
+  const [itemAId, setItemAId] = useState(items[0]?.id ?? '');
+  const [itemBId, setItemBId] = useState(items[1]?.id ?? '');
   const [durationSec, setDurationSec] = useState(60);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (!open) return;
-    setItemAId(items[0]?.id ?? '');
-    setItemBId(items[1]?.id ?? '');
-    setDurationSec(60);
-    setError('');
-  }, [open, items]);
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -67,7 +57,7 @@ const CreateBattleDialog = ({
 
   return (
     <Modal
-      open={open}
+      open
       onClose={onClose}
       title="Start a song battle"
       description="Pick two queued tracks. The room votes, and the winner earns those votes in the queue."
@@ -277,11 +267,9 @@ export const BattlePanel = ({ canStart }: { canStart: boolean }) => {
         </div>
       )}
 
-      <CreateBattleDialog
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
-        items={queued}
-      />
+      {createOpen ? (
+        <CreateBattleDialog onClose={() => setCreateOpen(false)} items={queued} />
+      ) : null}
     </section>
   );
 };

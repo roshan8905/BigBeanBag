@@ -24,6 +24,30 @@ const EnvSchema = z.object({
   YOUTUBE_API_KEY: optionalString,
   SPOTIFY_CLIENT_ID: optionalString,
   SPOTIFY_CLIENT_SECRET: optionalString,
+}).superRefine((value, ctx) => {
+  if (value.NODE_ENV !== 'production') return;
+
+  if (value.SESSION_SECRET === 'development-only-session-secret') {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['SESSION_SECRET'],
+      message: 'SESSION_SECRET must be set to a unique value in production',
+    });
+  } else if (value.SESSION_SECRET.length < 32) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['SESSION_SECRET'],
+      message: 'SESSION_SECRET must be at least 32 characters in production',
+    });
+  }
+
+  if (!value.GOOGLE_CLIENT_ID || !value.GOOGLE_CLIENT_SECRET) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['GOOGLE_CLIENT_ID'],
+      message: 'Google OAuth credentials are required in production',
+    });
+  }
 });
 
 const parsed = EnvSchema.safeParse(process.env);
