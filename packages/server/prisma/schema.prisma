@@ -1,0 +1,297 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  OWNER
+  HOST
+  MEMBER
+}
+
+enum Visibility {
+  PUBLIC
+  UNLISTED
+  PRIVATE
+}
+
+enum MediaSource {
+  YOUTUBE
+  SPOTIFY_MATCHED
+}
+
+enum MediaType {
+  MUSIC
+  VIDEO
+}
+
+enum QueueStatus {
+  QUEUED
+  PLAYING
+  PLAYED
+}
+
+enum PlaybackStatus {
+  PLAYING
+  PAUSED
+  IDLE
+}
+
+enum PollStatus {
+  OPEN
+  CLOSED
+}
+
+enum BattleStatus {
+  OPEN
+  CLOSED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  googleId     String   @unique
+  email        String   @unique
+  name         String
+  avatarUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  ownedRooms   Room[]   @relation("RoomOwner")
+  memberships  RoomMember[]
+  queueItems   QueueItem[]
+  votes        Vote[]
+  reactions    Reaction[]
+  chatMessages ChatMessage[]
+  polls        Poll[]
+  pollVotes    PollVote[]
+  battleVotes  BattleVote[]
+  bansReceived RoomBan[] @relation("BanTarget")
+  bansIssued   RoomBan[] @relation("BanIssuer")
+  roleChangesMade     RoomRoleChange[] @relation("RoleChanger")
+  roleChangesReceived RoomRoleChange[] @relation("RoleTarget")
+}
+
+model Room {
+  id             String       @id @default(cuid())
+  code           String       @unique
+  name           String
+  visibility     Visibility   @default(UNLISTED)
+  ownerId        String
+  owner          User         @relation("RoomOwner", fields: [ownerId], references: [id])
+  locked         Boolean      @default(false)
+  chatRestricted Boolean      @default(false)
+  addRestricted  Boolean      @default(false)
+  inviteToken    String       @unique
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  members        RoomMember[]
+  queue          QueueItem[]
+  reactions      Reaction[]
+  polls          Poll[]
+  battles        Battle[]
+  chatMessages   ChatMessage[]
+  bans           RoomBan[]
+  roleChanges    RoomRoleChange[]
+  playback       PlaybackState?
+
+  @@index([visibility])
+}
+
+model RoomMember {
+  roomId   String
+  room     Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role     Role     @default(MEMBER)
+  muted    Boolean  @default(false)
+  joinedAt DateTime @default(now())
+
+  @@id([roomId, userId])
+  @@index([userId])
+}
+
+model RoomRoleChange {
+  id           String   @id @default(cuid())
+  roomId       String
+  room         Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  targetUserId String
+  target       User     @relation("RoleTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
+  changedById  String
+  changedBy    User     @relation("RoleChanger", fields: [changedById], references: [id], onDelete: Cascade)
+  oldRole      Role
+  newRole      Role
+  createdAt    DateTime @default(now())
+
+  @@index([roomId])
+}
+
+model RoomBan {
+  id         String   @id @default(cuid())
+  roomId     String
+  room       Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation("BanTarget", fields: [userId], references: [id], onDelete: Cascade)
+  bannedById String
+  bannedBy   User     @relation("BanIssuer", fields: [bannedById], references: [id], onDelete: Cascade)
+  reason     String?
+  createdAt  DateTime @default(now())
+
+  @@unique([roomId, userId])
+  @@index([roomId])
+}
+
+model QueueItem {
+  id          String      @id @default(cuid())
+  roomId      String
+  room        Room        @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  source      MediaSource
+  youtubeId   String
+  spotifyId   String?
+  title       String
+  artist      String?
+  thumbnail   String
+  durationMs  Int
+  mediaType   MediaType
+  addedById   String
+  addedBy     User        @relation(fields: [addedById], references: [id], onDelete: Cascade)
+  status      QueueStatus @default(QUEUED)
+  playedAt    DateTime?
+  createdAt   DateTime    @default(now())
+  votes       Vote[]
+  battlesAsA  Battle[]    @relation("BattleItemA")
+  battlesAsB  Battle[]    @relation("BattleItemB")
+  battleWins  Battle[]    @relation("BattleWinner")
+
+  @@index([roomId, status])
+}
+
+model Vote {
+  id        String    @id @default(cuid())
+  itemId    String
+  item      QueueItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+
+  @@unique([itemId, userId])
+  @@index([itemId])
+}
+
+model Reaction {
+  id        String   @id @default(cuid())
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emoji     String
+  createdAt DateTime @default(now())
+
+  @@index([roomId, createdAt])
+}
+
+model Poll {
+  id          String      @id @default(cuid())
+  roomId      String
+  room        Room        @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  question    String
+  status      PollStatus  @default(OPEN)
+  createdById String
+  createdBy   User        @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  closedAt    DateTime?
+  createdAt   DateTime    @default(now())
+  options     PollOption[]
+  votes       PollVote[]
+
+  @@index([roomId, status])
+}
+
+model PollOption {
+  id       String     @id @default(cuid())
+  pollId   String
+  poll     Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  label    String
+  position Int
+  votes    PollVote[]
+
+  @@index([pollId])
+}
+
+model PollVote {
+  id       String     @id @default(cuid())
+  pollId   String
+  poll     Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  optionId String
+  option   PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+
+  @@unique([pollId, userId])
+  @@index([optionId])
+}
+
+model Battle {
+  id           String       @id @default(cuid())
+  roomId       String
+  room         Room         @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  itemAId      String
+  itemA        QueueItem    @relation("BattleItemA", fields: [itemAId], references: [id], onDelete: Cascade)
+  itemBId      String
+  itemB        QueueItem    @relation("BattleItemB", fields: [itemBId], references: [id], onDelete: Cascade)
+  status       BattleStatus @default(OPEN)
+  endsAt       DateTime
+  winnerItemId String?
+  winner       QueueItem?   @relation("BattleWinner", fields: [winnerItemId], references: [id], onDelete: SetNull)
+  createdAt    DateTime     @default(now())
+  votes        BattleVote[]
+
+  @@index([roomId, status])
+}
+
+model BattleVote {
+  id        String   @id @default(cuid())
+  battleId  String
+  battle    Battle   @relation(fields: [battleId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemId    String
+  createdAt DateTime @default(now())
+
+  @@unique([battleId, userId])
+  @@index([battleId])
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  body      String
+  createdAt DateTime @default(now())
+
+  @@index([roomId, createdAt])
+}
+
+model MediaCache {
+  key       String    @id
+  kind      String
+  payload   Json
+  createdAt DateTime  @default(now())
+  expiresAt DateTime?
+
+  @@index([kind])
+}
+
+model PlaybackState {
+  roomId        String         @id
+  room          Room           @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  currentItemId String?
+  status        PlaybackStatus @default(IDLE)
+  positionMs    Int            @default(0)
+  updatedAt     DateTime       @updatedAt
+}

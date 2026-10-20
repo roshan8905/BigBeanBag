@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply min-h-screen bg-ink-900 font-sans text-cream-100 antialiased;
+    background-image:
+      radial-gradient(80rem 40rem at 15% -10%, rgba(210, 137, 29, 0.16), transparent 60%),
+      radial-gradient(60rem 30rem at 90% 0%, rgba(143, 214, 164, 0.08), transparent 55%);
+  }
+
+  ::selection {
+    @apply bg-bean-400/40 text-cream-50;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-bean-300 ring-offset-2 ring-offset-ink-900;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-white/10 bg-ink-800/80 shadow-panel backdrop-blur;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-bean-400 text-ink-900 hover:bg-bean-300 active:bg-bean-500;
+  }
+
+  .btn-ghost {
+    @apply btn border border-white/10 bg-white/5 text-cream-100 hover:bg-white/10;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-white/10 bg-ink-900/70 px-3.5 py-2.5 text-sm text-cream-100 placeholder:text-cream-500 focus:border-bean-300/60 focus:outline-none focus:ring-1 focus:ring-bean-300/40;
+  }
+
+  .label {
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wider text-cream-400;
+  }
+}
