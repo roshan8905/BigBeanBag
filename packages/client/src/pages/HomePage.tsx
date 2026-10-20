@@ -1,4 +1,7 @@
-import { Disc3, Radio, Users, Vote } from 'lucide-react';
+import { Radio, Users, Vote } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useAppSelector } from '@/app/hooks';
+import { AppHeader } from '@/components/AppHeader';
 import { useHealthQuery } from '@/lib/api';
 
 const features = [
@@ -21,19 +24,15 @@ const features = [
 
 export const HomePage = () => {
   const { data, isLoading } = useHealthQuery();
+  const user = useAppSelector((state) => state.auth.user);
   const online = data?.status === 'ok';
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-5 py-6 sm:px-8">
-      <header className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <span className="grid size-9 place-items-center rounded-xl bg-bean-400 text-ink-900">
-            <Disc3 size={20} strokeWidth={2.4} />
-          </span>
-          <span className="font-display text-lg font-semibold tracking-tight">BigBeanBag</span>
-        </div>
+      <div className="flex items-center justify-between gap-4">
+        <AppHeader />
         <div
-          className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-cream-300"
+          className="flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-cream-300"
           title={data ? `API ${data.status}, database ${data.database}` : 'Checking API'}
         >
           <span
@@ -41,7 +40,7 @@ export const HomePage = () => {
           />
           {isLoading ? 'Checking API' : online ? 'API online' : 'API offline'}
         </div>
-      </header>
+      </div>
 
       <section className="grid flex-1 items-center gap-12 py-16 lg:grid-cols-[1.1fr_0.9fr]">
         <div>
@@ -58,14 +57,22 @@ export const HomePage = () => {
             and let the host keep the whole room on the same beat.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <button type="button" className="btn-primary" disabled>
-              Sign in with Google
-            </button>
-            <button type="button" className="btn-ghost" disabled>
+            {user ? (
+              <Link to="/rooms" className="btn-primary">
+                Open your rooms
+              </Link>
+            ) : (
+              <Link to="/login" className="btn-primary">
+                Sign in with Google
+              </Link>
+            )}
+            <Link to={user ? '/rooms?join=1' : '/login'} className="btn-ghost">
               Join a room
-            </button>
+            </Link>
           </div>
-          <p className="mt-3 text-xs text-cream-500">Sign-in and rooms land in the next build phase.</p>
+          <p className="mt-3 text-xs text-cream-500">
+            {user ? `Signed in as ${user.name}.` : 'Google sign-in keeps your queues tied to you.'}
+          </p>
         </div>
 
         <div className="card p-6">

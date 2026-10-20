@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { AuthState } from '@bigbeanbag/shared';
 
 export type HealthResponse = {
   status: 'ok' | 'degraded';
@@ -15,7 +16,18 @@ export const api = createApi({
     health: builder.query<HealthResponse, void>({
       query: () => '/health',
     }),
+    getMe: builder.query<AuthState, void>({
+      query: () => '/auth/me',
+      providesTags: ['Auth'],
+    }),
+    getAuthConfig: builder.query<{ googleEnabled: boolean }, void>({
+      query: () => '/auth/config',
+    }),
+    logout: builder.mutation<void, void>({
+      query: () => ({ url: '/auth/logout', method: 'POST' }),
+      invalidatesTags: ['Auth'],
+    }),
   }),
 });
 
-export const { useHealthQuery } = api;
+export const { useHealthQuery, useGetMeQuery, useGetAuthConfigQuery, useLogoutMutation } = api;
