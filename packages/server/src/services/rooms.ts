@@ -18,6 +18,9 @@ const findRoomByCode = async (code: string) =>
 
 const membershipRole = (membership: { role: Role } | null): Role | null => membership?.role ?? null;
 
+export const getMembership = async (roomId: string, userId: string) =>
+  prisma.roomMember.findUnique({ where: { roomId_userId: { roomId, userId } } });
+
 const assertCanJoin = async (
   room: { id: string; locked: boolean; visibility: string },
   userId: string,

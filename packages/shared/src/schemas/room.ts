@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import { ChatBodySchema, DisplayNameSchema, IdSchema, RoomCodeSchema } from './common';
+import { PlaybackStateSchema } from './playback';
+import { QueueItemSchema } from './queue';
 import { RoleSchema } from './user';
 
 export const VisibilitySchema = z.enum(['PUBLIC', 'UNLISTED', 'PRIVATE']);
@@ -82,6 +84,8 @@ export const RoomSnapshotSchema = z.object({
     role: RoleSchema,
   }),
   members: z.array(RoomMemberSchema),
+  queue: z.array(QueueItemSchema),
+  playback: PlaybackStateSchema,
   serverNow: z.number(),
 });
 export type RoomSnapshot = z.infer<typeof RoomSnapshotSchema>;
