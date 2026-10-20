@@ -295,3 +295,12 @@ model PlaybackState {
   positionMs    Int            @default(0)
   updatedAt     DateTime       @updatedAt
 }
+
+model Session {
+  sid    String   @id @db.VarChar
+  sess   Json     @db.Json
+  expire DateTime @db.Timestamp(6)
+
+  @@map("session")
+  @@index([expire])
+}

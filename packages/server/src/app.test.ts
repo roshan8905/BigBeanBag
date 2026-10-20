@@ -15,3 +15,17 @@ describe('health endpoint', () => {
     expect(response.body.error.code).toBe('NOT_FOUND');
   });
 });
+
+describe('auth endpoints', () => {
+  it('returns an anonymous session when no user is signed in', async () => {
+    const response = await request(createApp()).get('/api/auth/me');
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ user: null });
+  });
+
+  it('reports whether google sign-in is configured', async () => {
+    const response = await request(createApp()).get('/api/auth/config');
+    expect(response.status).toBe(200);
+    expect(typeof response.body.googleEnabled).toBe('boolean');
+  });
+});
