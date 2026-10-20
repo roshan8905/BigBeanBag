@@ -139,6 +139,20 @@ export const setRoomLocked = async (code: string, userId: string, locked: boolea
   return toRoomDetail(updated, 'OWNER');
 };
 
+export const setRoomRestrictions = async (
+  code: string,
+  userId: string,
+  input: { chatRestricted?: boolean; addRestricted?: boolean; locked?: boolean },
+) => {
+  const room = await requireOwner(code, userId);
+  const updated = await prisma.room.update({
+    where: { id: room.id },
+    data: input,
+    include: roomDetailInclude,
+  });
+  return toRoomDetail(updated, 'OWNER');
+};
+
 export const deleteRoom = async (code: string, userId: string) => {
   const room = await requireOwner(code, userId);
   await prisma.room.delete({ where: { id: room.id } });

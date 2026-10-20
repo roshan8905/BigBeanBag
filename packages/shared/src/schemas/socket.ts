@@ -59,6 +59,7 @@ export interface ServerToClientEvents {
   'room:snapshot': (payload: RoomSnapshot) => void;
   'room:updated': (room: Room) => void;
   'room:members': (members: RoomMember[]) => void;
+  'room:role': (payload: { role: 'OWNER' | 'HOST' | 'MEMBER' }) => void;
   'room:presence': (payload: { userIds: string[] }) => void;
   'room:deleted': (payload: { roomId: string }) => void;
   'queue:updated': (payload: QueueUpdated) => void;

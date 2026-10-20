@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
-import type { PlaybackState, QueueUpdated, RoomMember, RoomSnapshot } from '@bigbeanbag/shared';
+import { useNavigate } from 'react-router-dom';
+import type { PlaybackState, QueueUpdated, Room, RoomMember, RoomSnapshot, Role } from '@bigbeanbag/shared';
 import { useAppDispatch } from '@/app/hooks';
-import {
-  clearPlayback,
-  playbackUpdated,
-} from '@/app/slices/playbackSlice';
+import { clearPlayback, playbackUpdated } from '@/app/slices/playbackSlice';
 import { clearQueue, queueUpdated } from '@/app/slices/queueSlice';
 import {
   connectionChanged,
@@ -12,12 +10,15 @@ import {
   membersReceived,
   presenceReceived,
   resetRoom,
+  roleReceived,
+  roomReceived,
   snapshotReceived,
 } from '@/app/slices/roomSlice';
 import { connectSocket } from '@/lib/socket';
 
 export const useRoomSync = (code: string, enabled: boolean) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!enabled || !code) return;
@@ -35,8 +36,19 @@ export const useRoomSync = (code: string, enabled: boolean) => {
     const onMembers = (members: RoomMember[]) => dispatch(membersReceived(members));
     const onPresence = (payload: { userIds: string[] }) => dispatch(presenceReceived(payload.userIds));
     const onPlayback = (state: PlaybackState) => dispatch(playbackUpdated(state));
+    const onRole = (payload: { role: Role }) => dispatch(roleReceived(payload.role));
+    const onRoom = (room: Room) => dispatch(roomReceived(room));
     const onError = (payload: { message: string }) => dispatch(errorReceived(payload.message));
     const onDisconnect = () => dispatch(connectionChanged('connecting'));
+
+    const onDeleted = () => {
+      dispatch(errorReceived('This room was deleted by its owner.'));
+      navigate('/rooms?notice=deleted', { replace: true });
+    };
+
+    const onSessionEnded = (payload: { reason: 'kicked' | 'banned' | 'room-deleted' }) => {
+      navigate(`/rooms?notice=${payload.reason}`, { replace: true });
+    };
 
     const join = () => {
       socket.emit('room:join', { code }, (result) => {
@@ -51,6 +63,10 @@ export const useRoomSync = (code: string, enabled: boolean) => {
     socket.on('queue:updated', onQueue);
     socket.on('room:members', onMembers);
     socket.on('room:presence', onPresence);
+    socket.on('room:role', onRole);
+    socket.on('room:updated', onRoom);
+    socket.on('room:deleted', onDeleted);
+    socket.on('session:ended', onSessionEnded);
     socket.on('playback:updated', onPlayback);
     socket.on('room:error', onError);
     socket.on('disconnect', onDisconnect);
@@ -62,6 +78,10 @@ export const useRoomSync = (code: string, enabled: boolean) => {
       socket.off('queue:updated', onQueue);
       socket.off('room:members', onMembers);
       socket.off('room:presence', onPresence);
+      socket.off('room:role', onRole);
+      socket.off('room:updated', onRoom);
+      socket.off('room:deleted', onDeleted);
+      socket.off('session:ended', onSessionEnded);
       socket.off('playback:updated', onPlayback);
       socket.off('room:error', onError);
       socket.off('disconnect', onDisconnect);
@@ -72,5 +92,5 @@ export const useRoomSync = (code: string, enabled: boolean) => {
       dispatch(clearQueue());
       dispatch(clearPlayback());
     };
-  }, [code, enabled, dispatch]);
+  }, [code, enabled, dispatch, navigate]);
 };

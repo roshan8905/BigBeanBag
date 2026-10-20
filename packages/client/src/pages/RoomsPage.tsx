@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Compass, DoorOpen, Plus, Users } from 'lucide-react';
+import { Compass, DoorOpen, Plus, Users, X } from 'lucide-react';
 import { AppHeader } from '@/components/AppHeader';
 import { Loader } from '@/components/Loader';
 import { CreateRoomDialog } from '@/features/rooms/CreateRoomDialog';
@@ -9,15 +9,38 @@ import { RoomCard } from '@/features/rooms/RoomCard';
 import { apiErrorMessage } from '@/lib/errors';
 import { useGetRoomsQuery } from '@/lib/api';
 
+const notices: Record<string, string> = {
+  kicked: 'A host removed you from that room.',
+  banned: 'You were banned from that room by a host.',
+  deleted: 'That room was deleted by its owner.',
+};
+
 export const RoomsPage = () => {
   const { data, isLoading, error } = useGetRoomsQuery();
   const [params] = useSearchParams();
   const [createOpen, setCreateOpen] = useState(params.get('create') === '1');
   const [joinOpen, setJoinOpen] = useState(params.get('join') === '1');
+  const [noticeDismissed, setNoticeDismissed] = useState(false);
+  const notice = params.get('notice');
+  const noticeText = notice ? notices[notice] : undefined;
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-8 px-5 py-6 sm:px-8">
       <AppHeader />
+
+      {noticeText && !noticeDismissed ? (
+        <div className="flex items-start justify-between gap-3 rounded-xl border border-coral/30 bg-coral/10 px-4 py-3 text-sm text-coral">
+          <p>{noticeText}</p>
+          <button
+            type="button"
+            onClick={() => setNoticeDismissed(true)}
+            className="rounded-md p-0.5 text-coral/80 hover:bg-white/5 hover:text-coral"
+            aria-label="Dismiss notice"
+          >
+            <X size={15} />
+          </button>
+        </div>
+      ) : null}
 
       <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>

@@ -47,6 +47,9 @@ const roomSlice = createSlice({
     roomReceived: (state, action: PayloadAction<Room>) => {
       state.room = action.payload;
     },
+    roleReceived: (state, action: PayloadAction<Role>) => {
+      if (state.me) state.me.role = action.payload;
+    },
     connectionChanged: (state, action: PayloadAction<ConnectionState>) => {
       state.connection = action.payload;
     },
@@ -62,6 +65,7 @@ export const {
   membersReceived,
   presenceReceived,
   roomReceived,
+  roleReceived,
   connectionChanged,
   errorReceived,
   resetRoom,

@@ -9,7 +9,10 @@ import type {
   PlaybackState,
   QueueItem,
   QueueUpdated,
+  RoomMember,
   RoomSnapshot,
+  Role,
+  Room,
   ServerToClientEvents,
 } from '@bigbeanbag/shared';
 import { createApp } from './app';
@@ -28,6 +31,7 @@ const sockets: TestSocket[] = [];
 let baseUrl = '';
 let ownerId = '';
 let guestId = '';
+let memberId = '';
 let roomCode = '';
 let roomId = '';
 
@@ -109,6 +113,21 @@ const seek = (socket: TestSocket, positionMs: number) =>
 const skip = (socket: TestSocket) =>
   new Promise<AckResult<PlaybackState>>((resolve) => socket.emit('playback:skip', resolve));
 
+const promote = (socket: TestSocket, userId: string) =>
+  new Promise<AckResult<RoomMember>>((resolve) =>
+    socket.emit('member:promote', { userId }, resolve),
+  );
+
+const demote = (socket: TestSocket, userId: string) =>
+  new Promise<AckResult<RoomMember>>((resolve) =>
+    socket.emit('member:demote', { userId }, resolve),
+  );
+
+const moderate = (socket: TestSocket, userId: string, action: 'mute' | 'unmute' | 'kick' | 'ban' | 'unban') =>
+  new Promise<AckResult<undefined>>((resolve) =>
+    socket.emit('moderation:act', { userId, action }, resolve),
+  );
+
 const mockYoutube = () => {
   vi.stubGlobal(
     'fetch',
@@ -140,6 +159,7 @@ beforeAll(async () => {
   mockYoutube();
   ownerId = await makeUser('owner');
   guestId = await makeUser('guest');
+  memberId = await makeUser('member');
 
   await new Promise<void>((resolve) => {
     httpServer.listen(0, '127.0.0.1', resolve);
@@ -314,4 +334,104 @@ describe('playback control', () => {
       expect(finished.data).toMatchObject({ status: 'IDLE', currentItemId: null });
     }
   });
+});
+
+describe('roles and moderation', () => {
+  it('keeps roles owner-only and limits hosts to moderating members', async () => {
+    const created = await request(app)
+      .post('/api/rooms')
+      .set('x-test-user-id', ownerId)
+      .send({ name: 'Mod room', visibility: 'UNLISTED' });
+
+    const code = created.body.room.code as string;
+    for (const userId of [guestId, memberId]) {
+      await request(app).post('/api/rooms/join').set('x-test-user-id', userId).send({ code });
+    }
+
+    const owner = await connect(ownerId);
+    const guest = await connect(guestId);
+    const member = await connect(memberId);
+
+    expect((await joinRoom(owner, code)).ok).toBe(true);
+    expect((await joinRoom(guest, code)).ok).toBe(true);
+    expect((await joinRoom(member, code)).ok).toBe(true);
+
+    const guestRole = new Promise<{ role: Role }>((resolve) => guest.once('room:role', resolve));
+    const promoted = await promote(owner, guestId);
+    expect(promoted.ok).toBe(true);
+    if (promoted.ok) expect(promoted.data.role).toBe('HOST');
+    expect((await guestRole).role).toBe('HOST');
+
+    const hostPromote = await promote(guest, memberId);
+    expect(hostPromote.ok).toBe(false);
+
+    const ownerDemote = await demote(guest, ownerId);
+    expect(ownerDemote.ok).toBe(false);
+
+    const muted = await moderate(guest, memberId, 'mute');
+    expect(muted.ok).toBe(true);
+
+    const ownerBan = await moderate(guest, ownerId, 'ban');
+    expect(ownerBan.ok).toBe(false);
+
+    const guestRoleAgain = new Promise<{ role: Role }>((resolve) =>
+      guest.once('room:role', resolve),
+    );
+    const demoted = await demote(owner, guestId);
+    expect(demoted.ok).toBe(true);
+    expect((await guestRoleAgain).role).toBe('MEMBER');
+
+    const kicked = new Promise<{ reason: string }>((resolve) =>
+      member.once('session:ended', resolve),
+    );
+    const kick = await moderate(owner, memberId, 'kick');
+    expect(kick.ok).toBe(true);
+    expect((await kicked).reason).toBe('kicked');
+
+    const rejoin = await request(app)
+      .post('/api/rooms/join')
+      .set('x-test-user-id', memberId)
+      .send({ code });
+    expect(rejoin.status).toBe(200);
+
+    const banned = await moderate(owner, memberId, 'ban');
+    expect(banned.ok).toBe(true);
+
+    const blocked = await request(app)
+      .post('/api/rooms/join')
+      .set('x-test-user-id', memberId)
+      .send({ code });
+    expect(blocked.status).toBe(403);
+    expect(blocked.body.error.code).toBe('BANNED');
+
+    const unbanned = await moderate(owner, memberId, 'unban');
+    expect(unbanned.ok).toBe(true);
+
+    const allowed = await request(app)
+      .post('/api/rooms/join')
+      .set('x-test-user-id', memberId)
+      .send({ code });
+    expect(allowed.status).toBe(200);
+
+    const restrictEvent = new Promise<Room>((resolve) => guest.once('room:updated', resolve));
+    const restricted = await new Promise<AckResult<Room>>((resolve) =>
+      owner.emit('room:restrict', { chatRestricted: true, locked: true }, resolve),
+    );
+    expect(restricted.ok).toBe(true);
+
+    const liveRoom = await restrictEvent;
+    expect(liveRoom.chatRestricted).toBe(true);
+    expect(liveRoom.locked).toBe(true);
+
+    const guestDelete = await new Promise<AckResult<undefined>>((resolve) =>
+      guest.emit('room:delete', resolve),
+    );
+    expect(guestDelete.ok).toBe(false);
+
+    const renamed = await new Promise<AckResult<Room>>((resolve) =>
+      owner.emit('room:update', { name: 'Renamed room' }, resolve),
+    );
+    expect(renamed.ok).toBe(true);
+    if (renamed.ok) expect(renamed.data.name).toBe('Renamed room');
+  }, 60000);
 });

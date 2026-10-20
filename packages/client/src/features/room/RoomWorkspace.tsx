@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import type { RoomDetail } from '@bigbeanbag/shared';
+import type { AckResult, Room, RoomDetail, RoomMember } from '@bigbeanbag/shared';
 import {
   ArrowLeft,
   Check,
@@ -11,6 +11,7 @@ import {
   Lock,
   LockKeyhole,
   Mic2,
+  Settings,
   ShieldCheck,
   Trash2,
   Unlock,
@@ -22,13 +23,10 @@ import { AddSongDialog } from '@/features/room/AddSongDialog';
 import { MembersPanel } from '@/features/room/MembersPanel';
 import { PlaybackPanel } from '@/features/room/PlaybackPanel';
 import { QueuePanel } from '@/features/room/QueuePanel';
+import { RoomSettingsDialog } from '@/features/room/RoomSettingsDialog';
 import { useRoomSync } from '@/features/room/useRoomSync';
 import { InvitePanel } from '@/features/rooms/InvitePanel';
-import { apiErrorMessage } from '@/lib/errors';
-import {
-  useDeleteRoomMutation,
-  useSetRoomLockedMutation,
-} from '@/lib/api';
+import { getSocket } from '@/lib/socket';
 
 const visibilityMeta = {
   PUBLIC: { label: 'Public', icon: Globe2 },
@@ -56,10 +54,10 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
   const queue = useAppSelector((state) => state.queue.items);
 
   const [addOpen, setAddOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [actionError, setActionError] = useState('');
-  const [setLocked, { isLoading: locking }] = useSetRoomLockedMutation();
-  const [deleteRoom, { isLoading: deleting }] = useDeleteRoomMutation();
+  const [busy, setBusy] = useState('');
 
   const room = liveRoom ?? detail.room;
   const members = liveMembers.length ? liveMembers : detail.members;
@@ -83,22 +81,62 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
 
   const toggleLock = async () => {
     setActionError('');
-    try {
-      await setLocked({ code, locked: !room.locked }).unwrap();
-    } catch (cause) {
-      setActionError(apiErrorMessage(cause, 'Could not update the lock'));
-    }
+    setBusy('lock');
+
+    const result = await new Promise<AckResult<Room>>((resolve) => {
+      getSocket().emit('room:restrict', { locked: !room.locked }, resolve);
+    });
+
+    setBusy('');
+    if (!result.ok) setActionError(result.message);
   };
 
   const removeRoom = async () => {
     if (!window.confirm('Delete this room for everyone? This cannot be undone.')) return;
     setActionError('');
-    try {
-      await deleteRoom(code).unwrap();
-      navigate('/rooms');
-    } catch (cause) {
-      setActionError(apiErrorMessage(cause, 'Could not delete the room'));
+    setBusy('delete');
+
+    const result = await new Promise<AckResult<undefined>>((resolve) => {
+      getSocket().emit('room:delete', resolve);
+    });
+
+    setBusy('');
+    if (!result.ok) {
+      setActionError(result.message);
+      return;
     }
+
+    navigate('/rooms', { replace: true });
+  };
+
+  const changeRole = async (userId: string, action: 'promote' | 'demote') => {
+    setActionError('');
+
+    const result = await new Promise<AckResult<RoomMember>>((resolve) => {
+      const socket = getSocket();
+      if (action === 'promote') socket.emit('member:promote', { userId }, resolve);
+      else socket.emit('member:demote', { userId }, resolve);
+    });
+
+    if (!result.ok) setActionError(result.message);
+  };
+
+  const moderate = async (
+    userId: string,
+    action: 'mute' | 'unmute' | 'kick' | 'ban',
+  ) => {
+    if (action === 'kick' || action === 'ban') {
+      const label = action === 'ban' ? 'Ban' : 'Kick';
+      if (!window.confirm(`${label} this person from the room?`)) return;
+    }
+
+    setActionError('');
+
+    const result = await new Promise<AckResult<undefined>>((resolve) => {
+      getSocket().emit('moderation:act', { userId, action }, resolve);
+    });
+
+    if (!result.ok) setActionError(result.message);
   };
 
   return (
@@ -180,7 +218,14 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
             </div>
           </section>
 
-          <MembersPanel members={members} presentIds={presentIds} meId={me?.userId ?? ''} />
+          <MembersPanel
+            members={members}
+            presentIds={presentIds}
+            meId={me?.userId ?? ''}
+            myRole={role}
+            onRoleChange={(userId, action) => void changeRole(userId, action)}
+            onModerate={(userId, action) => void moderate(userId, action)}
+          />
 
           {isOwner ? <InvitePanel code={code} /> : null}
 
@@ -190,19 +235,32 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
               <button
                 type="button"
                 className="btn-ghost w-full justify-start text-xs"
-                onClick={() => void toggleLock()}
-                disabled={locking}
+                onClick={() => setSettingsOpen(true)}
               >
-                {locking ? <Loader2 size={14} className="animate-spin" /> : room.locked ? <Unlock size={14} /> : <Lock size={14} />}
+                <Settings size={14} /> Room settings
+              </button>
+              <button
+                type="button"
+                className="btn-ghost w-full justify-start text-xs"
+                onClick={() => void toggleLock()}
+                disabled={busy === 'lock'}
+              >
+                {busy === 'lock' ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : room.locked ? (
+                  <Unlock size={14} />
+                ) : (
+                  <Lock size={14} />
+                )}
                 {room.locked ? 'Unlock room' : 'Lock room'}
               </button>
               <button
                 type="button"
                 className="btn-ghost w-full justify-start text-xs text-coral"
                 onClick={() => void removeRoom()}
-                disabled={deleting}
+                disabled={busy === 'delete'}
               >
-                <Trash2 size={14} /> {deleting ? 'Deleting…' : 'Delete room'}
+                <Trash2 size={14} /> {busy === 'delete' ? 'Deleting…' : 'Delete room'}
               </button>
             </section>
           ) : null}
@@ -210,6 +268,13 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
       </div>
 
       <AddSongDialog open={addOpen} onClose={() => setAddOpen(false)} />
+      {isOwner ? (
+        <RoomSettingsDialog
+          open={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+          room={room}
+        />
+      ) : null}
     </main>
   );
 };
