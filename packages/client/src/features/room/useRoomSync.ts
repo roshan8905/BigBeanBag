@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type {
+  Battle,
   ChatMessage,
   PlaybackState,
+  Poll,
   QueueUpdated,
   ReactionSummary,
   Room,
@@ -11,8 +13,10 @@ import type {
   Role,
 } from '@bigbeanbag/shared';
 import { useAppDispatch } from '@/app/hooks';
+import { battleEnded, battleUpdated, clearBattle } from '@/app/slices/battleSlice';
 import { chatAppended, chatLoaded, clearChat, reactionsUpdated } from '@/app/slices/chatSlice';
 import { clearPlayback, playbackUpdated } from '@/app/slices/playbackSlice';
+import { clearPoll, pollUpdated } from '@/app/slices/pollSlice';
 import { clearQueue, queueUpdated } from '@/app/slices/queueSlice';
 import {
   connectionChanged,
@@ -41,6 +45,8 @@ export const useRoomSync = (code: string, enabled: boolean) => {
       dispatch(queueUpdated(snapshot.queue));
       dispatch(playbackUpdated(snapshot.playback));
       dispatch(chatLoaded({ messages: snapshot.chat, reactions: snapshot.reactions }));
+      if (snapshot.poll) dispatch(pollUpdated(snapshot.poll));
+      if (snapshot.battle) dispatch(battleUpdated(snapshot.battle));
     };
 
     const onQueue = (payload: QueueUpdated) => dispatch(queueUpdated(payload.items));
@@ -51,6 +57,9 @@ export const useRoomSync = (code: string, enabled: boolean) => {
     const onRoom = (room: Room) => dispatch(roomReceived(room));
     const onChat = (message: ChatMessage) => dispatch(chatAppended(message));
     const onReactions = (summary: ReactionSummary[]) => dispatch(reactionsUpdated(summary));
+    const onPoll = (poll: Poll) => dispatch(pollUpdated(poll));
+    const onBattle = (battle: Battle) => dispatch(battleUpdated(battle));
+    const onBattleEnded = (battle: Battle) => dispatch(battleEnded(battle));
     const onError = (payload: { message: string }) => dispatch(errorReceived(payload.message));
     const onDisconnect = () => dispatch(connectionChanged('connecting'));
 
@@ -83,6 +92,9 @@ export const useRoomSync = (code: string, enabled: boolean) => {
     socket.on('playback:updated', onPlayback);
     socket.on('chat:new', onChat);
     socket.on('reactions:summary', onReactions);
+    socket.on('poll:updated', onPoll);
+    socket.on('battle:updated', onBattle);
+    socket.on('battle:ended', onBattleEnded);
     socket.on('room:error', onError);
     socket.on('disconnect', onDisconnect);
     socket.on('connect', join);
@@ -100,6 +112,9 @@ export const useRoomSync = (code: string, enabled: boolean) => {
       socket.off('playback:updated', onPlayback);
       socket.off('chat:new', onChat);
       socket.off('reactions:summary', onReactions);
+      socket.off('poll:updated', onPoll);
+      socket.off('battle:updated', onBattle);
+      socket.off('battle:ended', onBattleEnded);
       socket.off('room:error', onError);
       socket.off('disconnect', onDisconnect);
       socket.off('connect', join);
@@ -109,6 +124,8 @@ export const useRoomSync = (code: string, enabled: boolean) => {
       dispatch(clearQueue());
       dispatch(clearPlayback());
       dispatch(clearChat());
+      dispatch(clearPoll());
+      dispatch(clearBattle());
     };
   }, [code, enabled, dispatch, navigate]);
 };

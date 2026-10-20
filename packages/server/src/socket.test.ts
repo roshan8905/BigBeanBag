@@ -5,9 +5,11 @@ import { io as createClient, type Socket } from 'socket.io-client';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import type {
   AckResult,
+  Battle,
   ChatMessage,
   ClientToServerEvents,
   PlaybackState,
+  Poll,
   QueueItem,
   QueueUpdated,
   ReactionSummary,
@@ -136,6 +138,34 @@ const sendChat = (socket: TestSocket, body: string) =>
 const sendReaction = (socket: TestSocket, emoji: string) =>
   new Promise<AckResult<undefined>>((resolve) =>
     socket.emit('reaction:send', { emoji }, resolve),
+  );
+
+const createPoll = (socket: TestSocket, question: string, options: string[]) =>
+  new Promise<AckResult<Poll>>((resolve) =>
+    socket.emit('poll:create', { question, options }, resolve),
+  );
+
+const votePoll = (socket: TestSocket, pollId: string, optionId: string) =>
+  new Promise<AckResult<Poll>>((resolve) =>
+    socket.emit('poll:vote', { pollId, optionId }, resolve),
+  );
+
+const closePoll = (socket: TestSocket, pollId: string) =>
+  new Promise<AckResult<Poll>>((resolve) => socket.emit('poll:close', { pollId }, resolve));
+
+const createBattle = (
+  socket: TestSocket,
+  itemAId: string,
+  itemBId: string,
+  durationSec = 15,
+) =>
+  new Promise<AckResult<Battle>>((resolve) =>
+    socket.emit('battle:create', { itemAId, itemBId, durationSec }, resolve),
+  );
+
+const voteBattle = (socket: TestSocket, battleId: string, itemId: string) =>
+  new Promise<AckResult<Battle>>((resolve) =>
+    socket.emit('battle:vote', { battleId, itemId }, resolve),
   );
 
 const mockYoutube = () => {
@@ -512,6 +542,84 @@ describe('chat and reactions', () => {
     if (snapshot.ok) {
       expect(snapshot.data.chat.map((message) => message.body)).toContain('hello beans');
       expect(snapshot.data.chat.map((message) => message.body)).toContain('hosts can still talk');
+    }
+  }, 60000);
+});
+
+describe('polls and battles', () => {
+  it('runs a poll and a timed song battle that boosts the winner', async () => {
+    const created = await request(app)
+      .post('/api/rooms')
+      .set('x-test-user-id', ownerId)
+      .send({ name: 'Games room', visibility: 'UNLISTED' });
+
+    const code = created.body.room.code as string;
+    await request(app).post('/api/rooms/join').set('x-test-user-id', guestId).send({ code });
+
+    const owner = await connect(ownerId);
+    const guest = await connect(guestId);
+    expect((await joinRoom(owner, code)).ok).toBe(true);
+    expect((await joinRoom(guest, code)).ok).toBe(true);
+
+    const first = await addItem(owner, 'TSTVID00001', 'Battle A');
+    const second = await addItem(owner, 'TSTVID00002', 'Battle B');
+    expect(first.ok).toBe(true);
+    expect(second.ok).toBe(true);
+    if (!first.ok || !second.ok) return;
+
+    const ownerPoll = new Promise<Poll>((resolve) => owner.once('poll:updated', resolve));
+    const poll = await createPoll(guest, 'Which one first?', ['Song A', 'Song B']);
+    expect(poll.ok).toBe(true);
+    if (!poll.ok) return;
+    expect((await ownerPoll).options).toHaveLength(2);
+
+    const optionId = poll.data.options[1]?.id ?? '';
+    const guestPoll = new Promise<Poll>((resolve) => guest.once('poll:updated', resolve));
+    const ownerPollVote = new Promise<Poll>((resolve) => owner.once('poll:updated', resolve));
+
+    const voted = await votePoll(guest, poll.data.id, optionId);
+    expect(voted.ok).toBe(true);
+    if (voted.ok) {
+      expect(voted.data.totalVotes).toBe(1);
+      expect(voted.data.myVoteOptionId).toBe(optionId);
+    }
+
+    const ownerView = await ownerPollVote;
+    expect(ownerView.totalVotes).toBe(1);
+    expect(ownerView.myVoteOptionId).toBeNull();
+    expect((await guestPoll).myVoteOptionId).toBe(optionId);
+
+    const closed = await closePoll(guest, poll.data.id);
+    expect(closed.ok).toBe(true);
+    if (closed.ok) expect(closed.data.status).toBe('CLOSED');
+
+    const battleEnded = new Promise<Battle>((resolve) => owner.once('battle:ended', resolve));
+    const guestCreate = new Promise<Battle>((resolve) => guest.once('battle:updated', resolve));
+    const battle = await createBattle(owner, first.data.id, second.data.id, 15);
+    expect(battle.ok).toBe(true);
+    if (!battle.ok) return;
+
+    const createdView = await guestCreate;
+    expect(createdView.entries).toHaveLength(2);
+
+    const guestBattle = new Promise<Battle>((resolve) => guest.once('battle:updated', resolve));
+    const battleVote = await voteBattle(guest, battle.data.id, first.data.id);
+    expect(battleVote.ok).toBe(true);
+
+    const guestView = await guestBattle;
+    expect(guestView.entries.find((entry) => entry.itemId === first.data.id)?.votes).toBe(1);
+    expect(guestView.myVoteItemId).toBe(first.data.id);
+
+    const ended = await battleEnded;
+    expect(ended.status).toBe('CLOSED');
+    expect(ended.winnerItemId).toBe(first.data.id);
+
+    const snapshot = await joinRoom(owner, code);
+    expect(snapshot.ok).toBe(true);
+    if (snapshot.ok) {
+      expect(snapshot.data.battle?.winnerItemId).toBe(first.data.id);
+      const winner = snapshot.data.queue.find((item) => item.id === first.data.id);
+      expect(winner?.voteCount).toBe(1);
     }
   }, 60000);
 });

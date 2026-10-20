@@ -3,6 +3,7 @@ import { ChatBodySchema, DisplayNameSchema, IdSchema, RoomCodeSchema } from './c
 import { PlaybackStateSchema } from './playback';
 import { QueueItemSchema } from './queue';
 import { ChatMessageSchema, ReactionSummarySchema } from './chat';
+import { BattleSchema, PollSchema } from './poll';
 import { RoleSchema } from './user';
 
 export const VisibilitySchema = z.enum(['PUBLIC', 'UNLISTED', 'PRIVATE']);
@@ -89,6 +90,8 @@ export const RoomSnapshotSchema = z.object({
   playback: PlaybackStateSchema,
   chat: z.array(ChatMessageSchema),
   reactions: z.array(ReactionSummarySchema),
+  poll: PollSchema.nullable(),
+  battle: BattleSchema.nullable(),
   serverNow: z.number(),
 });
 export type RoomSnapshot = z.infer<typeof RoomSnapshotSchema>;

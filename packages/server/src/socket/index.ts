@@ -3,6 +3,7 @@ import { Server } from 'socket.io';
 import type { AppServer } from './ack';
 import { socketAuth, type AppSocket } from './auth';
 import { registerChatHandlers } from './chat-handlers';
+import { registerGameHandlers, startBattleSweeper } from './game-handlers';
 import { registerOwnerHandlers } from './owner-handlers';
 import { registerPlaybackHandlers } from './playback-handlers';
 import { registerRoomHandlers } from './room-handlers';
@@ -25,7 +26,10 @@ export const createSocketServer = (httpServer: HttpServer): AppServer => {
     registerPlaybackHandlers(io, socket as AppSocket);
     registerOwnerHandlers(io, socket as AppSocket);
     registerChatHandlers(io, socket as AppSocket);
+    registerGameHandlers(io, socket as AppSocket);
   });
+
+  startBattleSweeper(io);
 
   return io;
 };

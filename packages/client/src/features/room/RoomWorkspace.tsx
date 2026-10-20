@@ -20,9 +20,11 @@ import {
 } from 'lucide-react';
 import { useAppSelector } from '@/app/hooks';
 import { AddSongDialog } from '@/features/room/AddSongDialog';
+import { BattlePanel } from '@/features/room/BattlePanel';
 import { ChatPanel } from '@/features/room/ChatPanel';
 import { MembersPanel } from '@/features/room/MembersPanel';
 import { PlaybackPanel } from '@/features/room/PlaybackPanel';
+import { PollPanel } from '@/features/room/PollPanel';
 import { QueuePanel } from '@/features/room/QueuePanel';
 import { RoomSettingsDialog } from '@/features/room/RoomSettingsDialog';
 import { useRoomSync } from '@/features/room/useRoomSync';
@@ -209,6 +211,10 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
       <div className="grid flex-1 gap-4 lg:grid-cols-[1.55fr_1fr]">
         <div className="flex flex-col gap-4">
           <PlaybackPanel canControl={canControl} />
+          <div className="grid gap-4 md:grid-cols-2">
+            <PollPanel meId={me?.userId ?? ''} canModerate={canRemove} />
+            <BattlePanel canStart={canControl} />
+          </div>
           <QueuePanel canRemove={canRemove} onAdd={() => setAddOpen(true)} />
         </div>
 
