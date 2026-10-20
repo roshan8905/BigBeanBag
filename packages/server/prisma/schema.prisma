@@ -81,11 +81,11 @@ model Room {
   name           String
   visibility     Visibility   @default(UNLISTED)
   ownerId        String
-  owner          User         @relation("RoomOwner", fields: [ownerId], references: [id])
+  owner          User         @relation("RoomOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   locked         Boolean      @default(false)
   chatRestricted Boolean      @default(false)
   addRestricted  Boolean      @default(false)
-  inviteToken    String       @unique
+  inviteToken    String?      @unique
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   members        RoomMember[]

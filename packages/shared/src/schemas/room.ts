@@ -39,6 +39,18 @@ export const RoomSchema = z.object({
 });
 export type Room = z.infer<typeof RoomSchema>;
 
+export const RoomSummarySchema = RoomSchema.extend({
+  ownerName: z.string(),
+  role: RoleSchema.nullable(),
+});
+export type RoomSummary = z.infer<typeof RoomSummarySchema>;
+
+export const RoomListSchema = z.object({
+  mine: z.array(RoomSummarySchema),
+  publicRooms: z.array(RoomSummarySchema),
+});
+export type RoomList = z.infer<typeof RoomListSchema>;
+
 export const RoomMemberSchema = z.object({
   userId: IdSchema,
   name: z.string(),
@@ -48,6 +60,20 @@ export const RoomMemberSchema = z.object({
   joinedAt: z.string(),
 });
 export type RoomMember = z.infer<typeof RoomMemberSchema>;
+
+export const RoomDetailSchema = z.object({
+  room: RoomSchema,
+  ownerName: z.string(),
+  role: RoleSchema.nullable(),
+  members: z.array(RoomMemberSchema),
+});
+export type RoomDetail = z.infer<typeof RoomDetailSchema>;
+
+export const InviteStateSchema = z.object({
+  token: z.string().nullable(),
+  url: z.string().nullable(),
+});
+export type InviteState = z.infer<typeof InviteStateSchema>;
 
 export const RoomSnapshotSchema = z.object({
   room: RoomSchema,
@@ -93,3 +119,8 @@ export const RoomRestrictionSchema = z.object({
   locked: z.boolean().optional(),
 });
 export type RoomRestrictionInput = z.infer<typeof RoomRestrictionSchema>;
+
+export const LockRoomSchema = z.object({
+  locked: z.boolean(),
+});
+export type LockRoomInput = z.infer<typeof LockRoomSchema>;

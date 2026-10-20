@@ -1,4 +1,5 @@
 import express, { type NextFunction, type Request, type Response } from 'express';
+import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import passport from 'passport';
 import { ZodError } from 'zod';
@@ -8,8 +9,10 @@ import { authRouter } from './auth/routes';
 import { prisma } from './lib/prisma';
 import { apiLimiter, authLimiter } from './lib/rate-limit';
 import { sessionMiddleware } from './lib/session';
+import { testAuth } from './lib/test-auth';
 import { authApiRouter } from './routes/auth';
 import { healthRouter } from './routes/health';
+import { roomsRouter } from './routes/rooms';
 
 configurePassport();
 
@@ -20,14 +23,17 @@ export const createApp = () => {
   app.disable('x-powered-by');
   app.use(helmet());
   app.use(express.json({ limit: '100kb' }));
+  app.use(cookieParser());
 
   app.use(sessionMiddleware);
   app.use(passport.initialize());
   app.use(passport.session());
+  app.use(testAuth);
 
   app.use('/api', healthRouter);
   app.use('/auth', authLimiter, authRouter);
   app.use('/api/auth', apiLimiter, authApiRouter);
+  app.use('/api/rooms', apiLimiter, roomsRouter);
 
   app.use('/api', (_req, res) => {
     res.status(404).json({ error: { code: ERROR_CODES.NOT_FOUND, message: 'Route not found' } });

@@ -1,10 +1,14 @@
 import { Router } from 'express';
 import passport from 'passport';
-import { env, googleOAuthConfigured } from '../env';
+import { env, googleOAuthConfigured, isProduction } from '../env';
 
 export const authRouter = Router();
 
 const failureRedirect = `${env.APP_URL}/login?error=google`;
+const returnToCookie = 'bbb.returnTo';
+
+const safeReturnTo = (value: unknown) =>
+  typeof value === 'string' && value.startsWith('/') && !value.startsWith('//') ? value : '/rooms';
 
 authRouter.get('/google', (req, res, next) => {
   if (!googleOAuthConfigured) {
@@ -13,6 +17,13 @@ authRouter.get('/google', (req, res, next) => {
     });
     return;
   }
+
+  res.cookie(returnToCookie, safeReturnTo(req.query.returnTo), {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: isProduction,
+    maxAge: 10 * 60 * 1000,
+  });
 
   passport.authenticate('google', {
     scope: ['profile', 'email'],
@@ -29,7 +40,9 @@ authRouter.get('/google/callback', (req, res, next) => {
 
   passport.authenticate('google', { failureRedirect })(req, res, next);
 }, (req, res) => {
-  res.redirect(`${env.APP_URL}/rooms`);
+  const returnTo = safeReturnTo(req.cookies?.[returnToCookie]);
+  res.clearCookie(returnToCookie);
+  res.redirect(`${env.APP_URL}${returnTo}`);
 });
 
 authRouter.post('/logout', (req, res, next) => {
