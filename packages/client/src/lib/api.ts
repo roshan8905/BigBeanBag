@@ -1,4 +1,15 @@
-import type { AuthState, CreateRoomInput, InviteState, Room, RoomDetail, RoomList, UpdateRoomInput } from '@bigbeanbag/shared';
+import type {
+  AuthState,
+  CreateRoomInput,
+  InviteState,
+  MediaFilter,
+  ResolvedMedia,
+  Room,
+  RoomDetail,
+  RoomList,
+  SearchResults,
+  UpdateRoomInput,
+} from '@bigbeanbag/shared';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export type HealthResponse = {
@@ -71,6 +82,13 @@ export const api = createApi({
       query: (code) => ({ url: `/rooms/${code}/invite`, method: 'DELETE' }),
       invalidatesTags: (_result, _error, code) => [{ type: 'Room', id: `${code}:invite` }],
     }),
+    searchMedia: builder.query<SearchResults, { query: string; filter: MediaFilter }>({
+      query: ({ query, filter }) =>
+        `/media/search?query=${encodeURIComponent(query)}&filter=${filter}&limit=15`,
+    }),
+    resolveMedia: builder.mutation<ResolvedMedia, { url: string }>({
+      query: (body) => ({ url: '/media/resolve', method: 'POST', body }),
+    }),
   }),
 });
 
@@ -92,4 +110,6 @@ export const {
   useGetInviteQuery,
   useRotateInviteMutation,
   useRevokeInviteMutation,
+  useSearchMediaQuery,
+  useResolveMediaMutation,
 } = api;

@@ -1,11 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { authReducer } from '@/features/auth/authSlice';
+import { playbackReducer } from './slices/playbackSlice';
+import { queueReducer } from './slices/queueSlice';
+import { roomReducer } from './slices/roomSlice';
 import { api } from '@/lib/api';
 
 export const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
     auth: authReducer,
+    room: roomReducer,
+    queue: queueReducer,
+    playback: playbackReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
 });

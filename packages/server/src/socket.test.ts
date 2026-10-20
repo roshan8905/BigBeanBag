@@ -6,6 +6,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import type {
   AckResult,
   ClientToServerEvents,
+  PlaybackState,
   QueueItem,
   QueueUpdated,
   RoomSnapshot,
@@ -89,6 +90,24 @@ const vote = (socket: TestSocket, itemId: string) =>
 
 const remove = (socket: TestSocket, itemId: string) =>
   new Promise<AckResult<QueueUpdated>>((resolve) => socket.emit('queue:remove', { itemId }, resolve));
+
+const play = (socket: TestSocket, positionMs?: number) =>
+  new Promise<AckResult<PlaybackState>>((resolve) =>
+    socket.emit('playback:play', positionMs === undefined ? {} : { positionMs }, resolve),
+  );
+
+const pause = (socket: TestSocket, positionMs?: number) =>
+  new Promise<AckResult<PlaybackState>>((resolve) =>
+    socket.emit('playback:pause', positionMs === undefined ? {} : { positionMs }, resolve),
+  );
+
+const seek = (socket: TestSocket, positionMs: number) =>
+  new Promise<AckResult<PlaybackState>>((resolve) =>
+    socket.emit('playback:seek', { positionMs }, resolve),
+  );
+
+const skip = (socket: TestSocket) =>
+  new Promise<AckResult<PlaybackState>>((resolve) => socket.emit('playback:skip', resolve));
 
 const mockYoutube = () => {
   vi.stubGlobal(
@@ -235,5 +254,64 @@ describe('live queue', () => {
     expect(removed.ok).toBe(true);
     if (!removed.ok) return;
     expect(removed.data.items.map((item) => item.id)).toEqual([first.data.id]);
+  });
+});
+
+describe('playback control', () => {
+  it('lets only the owner or host drive playback and keeps the room in sync', async () => {
+    const created = await request(app)
+      .post('/api/rooms')
+      .set('x-test-user-id', ownerId)
+      .send({ name: 'Playback room', visibility: 'UNLISTED' });
+
+    const code = created.body.room.code as string;
+    await request(app).post('/api/rooms/join').set('x-test-user-id', guestId).send({ code });
+
+    const owner = await connect(ownerId);
+    const guest = await connect(guestId);
+    expect((await joinRoom(owner, code)).ok).toBe(true);
+    expect((await joinRoom(guest, code)).ok).toBe(true);
+
+    const added = await addItem(owner, 'TSTVID00001', 'Playable song');
+    expect(added.ok).toBe(true);
+    if (!added.ok) return;
+
+    const denied = await play(guest);
+    expect(denied.ok).toBe(false);
+    if (!denied.ok) expect(denied.code).toBe('FORBIDDEN');
+
+    const guestPlayback = new Promise<PlaybackState>((resolve) =>
+      guest.once('playback:updated', resolve),
+    );
+
+    const started = await play(owner);
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+    expect(started.data).toMatchObject({
+      status: 'PLAYING',
+      currentItemId: added.data.id,
+      positionMs: 0,
+    });
+
+    const broadcast = await guestPlayback;
+    expect(broadcast.currentItemId).toBe(added.data.id);
+
+    const sought = await seek(owner, 5000);
+    expect(sought.ok).toBe(true);
+    if (sought.ok) expect(sought.data.positionMs).toBe(5000);
+
+    const paused = await pause(owner, 5000);
+    expect(paused.ok).toBe(true);
+    if (paused.ok) expect(paused.data.status).toBe('PAUSED');
+
+    const resumed = await play(owner, 5000);
+    expect(resumed.ok).toBe(true);
+    if (resumed.ok) expect(resumed.data.status).toBe('PLAYING');
+
+    const finished = await skip(owner);
+    expect(finished.ok).toBe(true);
+    if (finished.ok) {
+      expect(finished.data).toMatchObject({ status: 'IDLE', currentItemId: null });
+    }
   });
 });

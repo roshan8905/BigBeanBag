@@ -7,49 +7,21 @@ import {
   VoteToggleSchema,
   canControlPlayback,
   canRemoveFromQueue,
-  type Role,
 } from '@bigbeanbag/shared';
 import { prisma } from '../lib/prisma';
-import { addQueueItem, getQueue, loadQueueRows, orderQueue, removeQueueItem, toQueueItemDto, toggleVote } from '../services/queue';
-import { getMembership } from '../services/rooms';
+import { addQueueItem, getQueue, removeQueueItem, toggleVote } from '../services/queue';
+import { loadPlayback } from '../services/playback';
 import { buildRoomSnapshot } from '../services/snapshot';
 import { respond, type AppServer } from './ack';
 import type { AppSocket } from './auth';
+import {
+  broadcastPlayback,
+  broadcastQueue,
+  emitPresence,
+  requireRole,
+  requireRoomContext,
+} from './broadcast';
 import { clearSocket, takeToken } from './rate-limit';
-
-const roomContext = (socket: AppSocket) => {
-  if (!socket.data.roomId) {
-    throw new AppError(ERROR_CODES.FORBIDDEN, 'Join a room before doing that', 403);
-  }
-
-  return { roomId: socket.data.roomId, userId: socket.data.userId };
-};
-
-const requireRole = async (roomId: string, userId: string): Promise<Role> => {
-  const membership = await getMembership(roomId, userId);
-  if (!membership) throw new AppError(ERROR_CODES.FORBIDDEN, 'You are not in this room', 403);
-  return membership.role;
-};
-
-export const emitPresence = async (io: AppServer, roomId: string) => {
-  const sockets = await io.in(roomId).fetchSockets();
-  const userIds = [
-    ...new Set(sockets.map((socket) => socket.data.userId).filter((id): id is string => Boolean(id))),
-  ];
-
-  io.to(roomId).emit('room:presence', { userIds });
-};
-
-const broadcastQueue = async (io: AppServer, roomId: string) => {
-  const [rows, sockets] = await Promise.all([loadQueueRows(roomId), io.in(roomId).fetchSockets()]);
-  const ordered = orderQueue(rows);
-
-  for (const target of sockets) {
-    target.emit('queue:updated', {
-      items: ordered.map((row) => toQueueItemDto(row, target.data.userId)),
-    });
-  }
-};
 
 export const registerRoomHandlers = (io: AppServer, socket: AppSocket) => {
   socket.on('sync:ping', (payload, ack) => {
@@ -62,10 +34,7 @@ export const registerRoomHandlers = (io: AppServer, socket: AppSocket) => {
       const room = await prisma.room.findUnique({ where: { code }, select: { id: true } });
       if (!room) throw new AppError(ERROR_CODES.NOT_FOUND, 'Room not found', 404);
 
-      const membership = await getMembership(room.id, socket.data.userId);
-      if (!membership) {
-        throw new AppError(ERROR_CODES.FORBIDDEN, 'Join this room before opening it live', 403);
-      }
+      const role = await requireRole(room.id, socket.data.userId);
 
       if (socket.data.roomId && socket.data.roomId !== room.id) {
         socket.leave(socket.data.roomId);
@@ -73,7 +42,7 @@ export const registerRoomHandlers = (io: AppServer, socket: AppSocket) => {
 
       socket.join(room.id);
       socket.data.roomId = room.id;
-      socket.data.role = membership.role;
+      socket.data.role = role;
 
       const snapshot = await buildRoomSnapshot(room.id, socket.data.userId);
       socket.to(room.id).emit('room:members', snapshot.members);
@@ -102,7 +71,7 @@ export const registerRoomHandlers = (io: AppServer, socket: AppSocket) => {
         throw new AppError(ERROR_CODES.RATE_LIMITED, 'Slow down, that is a lot of songs', 429);
       }
 
-      const { roomId, userId } = roomContext(socket);
+      const { roomId, userId } = requireRoomContext(socket);
       const role = await requireRole(roomId, userId);
       const room = await prisma.room.findUniqueOrThrow({
         where: { id: roomId },
@@ -126,7 +95,7 @@ export const registerRoomHandlers = (io: AppServer, socket: AppSocket) => {
         throw new AppError(ERROR_CODES.RATE_LIMITED, 'Easy on the votes', 429);
       }
 
-      const { roomId, userId } = roomContext(socket);
+      const { roomId, userId } = requireRoomContext(socket);
       const { itemId } = VoteToggleSchema.parse(payload);
       const result = await toggleVote(roomId, itemId, userId);
       await broadcastQueue(io, roomId);
@@ -136,7 +105,7 @@ export const registerRoomHandlers = (io: AppServer, socket: AppSocket) => {
 
   socket.on('queue:remove', (payload, ack) =>
     respond(ack, async () => {
-      const { roomId, userId } = roomContext(socket);
+      const { roomId, userId } = requireRoomContext(socket);
       const role = await requireRole(roomId, userId);
       if (!canRemoveFromQueue(role)) {
         throw new AppError(ERROR_CODES.FORBIDDEN, 'Only hosts can remove queue items', 403);
@@ -145,6 +114,7 @@ export const registerRoomHandlers = (io: AppServer, socket: AppSocket) => {
       const { itemId } = RemoveQueueItemSchema.parse(payload);
       await removeQueueItem(roomId, itemId);
       await broadcastQueue(io, roomId);
+      broadcastPlayback(io, roomId, await loadPlayback(roomId));
       return { items: await getQueue(roomId, userId) };
     }),
   );

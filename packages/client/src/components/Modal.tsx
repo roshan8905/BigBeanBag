@@ -7,10 +7,11 @@ type ModalProps = {
   onClose: () => void;
   title: string;
   description?: string;
+  size?: 'md' | 'lg';
   children: ReactNode;
 };
 
-export const Modal = ({ open, onClose, title, description, children }: ModalProps) => {
+export const Modal = ({ open, onClose, title, description, size = 'md', children }: ModalProps) => {
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -45,7 +46,7 @@ export const Modal = ({ open, onClose, title, description, children }: ModalProp
         aria-modal="true"
         aria-labelledby="modal-title"
         tabIndex={-1}
-        className="card w-full max-w-md p-6 outline-none"
+        className={`card w-full p-6 outline-none ${size === 'lg' ? 'max-w-2xl' : 'max-w-md'}`}
       >
         <div className="flex items-start justify-between gap-4">
           <div>

@@ -2,6 +2,7 @@ import type { Prisma } from '@prisma/client';
 import { AppError, ERROR_CODES, type AddQueueItemInput, type QueueItem as QueueItemDto } from '@bigbeanbag/shared';
 import { prisma } from '../lib/prisma';
 import { getYoutubeItem } from './youtube';
+import { skipTrack } from './playback';
 
 export const queueInclude = {
   votes: { select: { userId: true } },
@@ -101,9 +102,6 @@ export const removeQueueItem = async (roomId: string, itemId: string) => {
   await prisma.queueItem.delete({ where: { id: item.id } });
 
   if (item.status === 'PLAYING') {
-    await prisma.playbackState.updateMany({
-      where: { roomId, currentItemId: item.id },
-      data: { currentItemId: null, status: 'IDLE', positionMs: 0 },
-    });
+    await skipTrack(roomId);
   }
 };
