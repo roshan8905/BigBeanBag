@@ -5,14 +5,16 @@ import { io as createClient, type Socket } from 'socket.io-client';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import type {
   AckResult,
+  ChatMessage,
   ClientToServerEvents,
   PlaybackState,
   QueueItem,
   QueueUpdated,
+  ReactionSummary,
+  Room,
   RoomMember,
   RoomSnapshot,
   Role,
-  Room,
   ServerToClientEvents,
 } from '@bigbeanbag/shared';
 import { createApp } from './app';
@@ -126,6 +128,14 @@ const demote = (socket: TestSocket, userId: string) =>
 const moderate = (socket: TestSocket, userId: string, action: 'mute' | 'unmute' | 'kick' | 'ban' | 'unban') =>
   new Promise<AckResult<undefined>>((resolve) =>
     socket.emit('moderation:act', { userId, action }, resolve),
+  );
+
+const sendChat = (socket: TestSocket, body: string) =>
+  new Promise<AckResult<ChatMessage>>((resolve) => socket.emit('chat:send', { body }, resolve));
+
+const sendReaction = (socket: TestSocket, emoji: string) =>
+  new Promise<AckResult<undefined>>((resolve) =>
+    socket.emit('reaction:send', { emoji }, resolve),
   );
 
 const mockYoutube = () => {
@@ -433,5 +443,75 @@ describe('roles and moderation', () => {
     );
     expect(renamed.ok).toBe(true);
     if (renamed.ok) expect(renamed.data.name).toBe('Renamed room');
+  }, 60000);
+});
+
+describe('chat and reactions', () => {
+  it('broadcasts chat, toggles emoji reactions, and respects mute and chat restrictions', async () => {
+    const created = await request(app)
+      .post('/api/rooms')
+      .set('x-test-user-id', ownerId)
+      .send({ name: 'Chat room', visibility: 'UNLISTED' });
+
+    const code = created.body.room.code as string;
+    await request(app).post('/api/rooms/join').set('x-test-user-id', guestId).send({ code });
+
+    const owner = await connect(ownerId);
+    const guest = await connect(guestId);
+    expect((await joinRoom(owner, code)).ok).toBe(true);
+    expect((await joinRoom(guest, code)).ok).toBe(true);
+
+    const incoming = new Promise<ChatMessage>((resolve) => owner.once('chat:new', resolve));
+    const sent = await sendChat(guest, 'hello beans');
+    expect(sent.ok).toBe(true);
+
+    const received = await incoming;
+    expect(received.body).toBe('hello beans');
+    expect(received.userId).toBe(guestId);
+
+    const summaryPromise = new Promise<ReactionSummary[]>((resolve) =>
+      owner.once('reactions:summary', resolve),
+    );
+    const reaction = await sendReaction(guest, '🔥');
+    expect(reaction.ok).toBe(true);
+
+    const summary = await summaryPromise;
+    expect(summary.find((entry) => entry.emoji === '🔥')?.count).toBe(1);
+
+    const clearedPromise = new Promise<ReactionSummary[]>((resolve) =>
+      owner.once('reactions:summary', resolve),
+    );
+    const cleared = await sendReaction(guest, '🔥');
+    expect(cleared.ok).toBe(true);
+    expect((await clearedPromise).find((entry) => entry.emoji === '🔥')).toBeUndefined();
+
+    const mute = await moderate(owner, guestId, 'mute');
+    expect(mute.ok).toBe(true);
+
+    const mutedChat = await sendChat(guest, 'can anyone hear me');
+    expect(mutedChat.ok).toBe(false);
+    if (!mutedChat.ok) expect(mutedChat.code).toBe('MUTED');
+
+    const unmute = await moderate(owner, guestId, 'unmute');
+    expect(unmute.ok).toBe(true);
+
+    const restricted = await new Promise<AckResult<Room>>((resolve) =>
+      owner.emit('room:restrict', { chatRestricted: true }, resolve),
+    );
+    expect(restricted.ok).toBe(true);
+
+    const restrictedChat = await sendChat(guest, 'hello?');
+    expect(restrictedChat.ok).toBe(false);
+    if (!restrictedChat.ok) expect(restrictedChat.code).toBe('CHAT_RESTRICTED');
+
+    const hostChat = await sendChat(owner, 'hosts can still talk');
+    expect(hostChat.ok).toBe(true);
+
+    const snapshot = await joinRoom(owner, code);
+    expect(snapshot.ok).toBe(true);
+    if (snapshot.ok) {
+      expect(snapshot.data.chat.map((message) => message.body)).toContain('hello beans');
+      expect(snapshot.data.chat.map((message) => message.body)).toContain('hosts can still talk');
+    }
   }, 60000);
 });

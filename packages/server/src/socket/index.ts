@@ -2,6 +2,7 @@ import type { Server as HttpServer } from 'node:http';
 import { Server } from 'socket.io';
 import type { AppServer } from './ack';
 import { socketAuth, type AppSocket } from './auth';
+import { registerChatHandlers } from './chat-handlers';
 import { registerOwnerHandlers } from './owner-handlers';
 import { registerPlaybackHandlers } from './playback-handlers';
 import { registerRoomHandlers } from './room-handlers';
@@ -23,6 +24,7 @@ export const createSocketServer = (httpServer: HttpServer): AppServer => {
     registerRoomHandlers(io, socket as AppSocket);
     registerPlaybackHandlers(io, socket as AppSocket);
     registerOwnerHandlers(io, socket as AppSocket);
+    registerChatHandlers(io, socket as AppSocket);
   });
 
   return io;

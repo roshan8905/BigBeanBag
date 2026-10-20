@@ -1,5 +1,13 @@
-import type { Prisma, Room, RoomMember, User } from '@prisma/client';
-import type { Role, Room as RoomDto, RoomDetail, RoomMember as RoomMemberDto, RoomSummary } from '@bigbeanbag/shared';
+import type { Prisma, ChatMessage, Reaction, Room, RoomMember, User } from '@prisma/client';
+import type {
+  ChatMessage as ChatMessageDto,
+  Reaction as ReactionDto,
+  Role,
+  Room as RoomDto,
+  RoomDetail,
+  RoomMember as RoomMemberDto,
+  RoomSummary,
+} from '@bigbeanbag/shared';
 
 export const roomMetaInclude = {
   owner: { select: { name: true } },
@@ -55,3 +63,24 @@ export const toRoomDetail = (room: RoomWithDetail, role: Role | null): RoomDetai
 });
 
 export type RoomRecord = Room;
+
+type ChatWithUser = ChatMessage & { user: Pick<User, 'id' | 'name' | 'avatarUrl'> };
+
+export const toChatMessageDto = (message: ChatWithUser): ChatMessageDto => ({
+  id: message.id,
+  userId: message.user.id,
+  name: message.user.name,
+  avatarUrl: message.user.avatarUrl,
+  body: message.body,
+  createdAt: message.createdAt.toISOString(),
+});
+
+type ReactionWithUser = Reaction & { user: Pick<User, 'id' | 'name'> };
+
+export const toReactionDto = (reaction: ReactionWithUser): ReactionDto => ({
+  id: reaction.id,
+  userId: reaction.user.id,
+  name: reaction.user.name,
+  emoji: reaction.emoji,
+  createdAt: reaction.createdAt.toISOString(),
+});

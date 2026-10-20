@@ -1,6 +1,7 @@
 import type { RoomSnapshot } from '@bigbeanbag/shared';
 import { prisma } from '../lib/prisma';
 import { roomDetailInclude, toMemberDto, toRoomDto, type RoomWithDetail } from '../lib/dto';
+import { listReactionSummary, listRecentMessages } from './chat';
 import { orderQueue, loadQueueRows, toQueueItemDto } from './queue';
 import { ensurePlayback, toPlaybackDto } from './playback';
 
@@ -11,7 +12,13 @@ export const buildRoomSnapshot = async (roomId: string, userId: string): Promise
   const membership = room.members.find((member) => member.userId === userId);
   if (!membership) throw new Error('Membership missing while building snapshot');
 
-  const [rows, playbackRow] = await Promise.all([loadQueueRows(roomId), ensurePlayback(roomId)]);
+  const [rows, playbackRow, chat, reactions] = await Promise.all([
+    loadQueueRows(roomId),
+    ensurePlayback(roomId),
+    listRecentMessages(roomId),
+    listReactionSummary(roomId),
+  ]);
+
   const ordered = orderQueue(rows);
   const current = ordered.find((row) => row.id === playbackRow.currentItemId) ?? null;
 
@@ -21,6 +28,8 @@ export const buildRoomSnapshot = async (roomId: string, userId: string): Promise
     members: room.members.map(toMemberDto),
     queue: ordered.map((row) => toQueueItemDto(row, userId)),
     playback: toPlaybackDto(playbackRow, current?.durationMs ?? null),
+    chat,
+    reactions,
     serverNow: Date.now(),
   };
 };

@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { authReducer } from '@/features/auth/authSlice';
+import { chatReducer } from './slices/chatSlice';
 import { playbackReducer } from './slices/playbackSlice';
 import { queueReducer } from './slices/queueSlice';
 import { roomReducer } from './slices/roomSlice';
@@ -12,6 +13,7 @@ export const store = configureStore({
     room: roomReducer,
     queue: queueReducer,
     playback: playbackReducer,
+    chat: chatReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
 });

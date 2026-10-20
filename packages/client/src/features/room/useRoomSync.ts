@@ -1,7 +1,17 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { PlaybackState, QueueUpdated, Room, RoomMember, RoomSnapshot, Role } from '@bigbeanbag/shared';
+import type {
+  ChatMessage,
+  PlaybackState,
+  QueueUpdated,
+  ReactionSummary,
+  Room,
+  RoomMember,
+  RoomSnapshot,
+  Role,
+} from '@bigbeanbag/shared';
 import { useAppDispatch } from '@/app/hooks';
+import { chatAppended, chatLoaded, clearChat, reactionsUpdated } from '@/app/slices/chatSlice';
 import { clearPlayback, playbackUpdated } from '@/app/slices/playbackSlice';
 import { clearQueue, queueUpdated } from '@/app/slices/queueSlice';
 import {
@@ -30,6 +40,7 @@ export const useRoomSync = (code: string, enabled: boolean) => {
       dispatch(snapshotReceived({ snapshot, receivedAt: Date.now() }));
       dispatch(queueUpdated(snapshot.queue));
       dispatch(playbackUpdated(snapshot.playback));
+      dispatch(chatLoaded({ messages: snapshot.chat, reactions: snapshot.reactions }));
     };
 
     const onQueue = (payload: QueueUpdated) => dispatch(queueUpdated(payload.items));
@@ -38,6 +49,8 @@ export const useRoomSync = (code: string, enabled: boolean) => {
     const onPlayback = (state: PlaybackState) => dispatch(playbackUpdated(state));
     const onRole = (payload: { role: Role }) => dispatch(roleReceived(payload.role));
     const onRoom = (room: Room) => dispatch(roomReceived(room));
+    const onChat = (message: ChatMessage) => dispatch(chatAppended(message));
+    const onReactions = (summary: ReactionSummary[]) => dispatch(reactionsUpdated(summary));
     const onError = (payload: { message: string }) => dispatch(errorReceived(payload.message));
     const onDisconnect = () => dispatch(connectionChanged('connecting'));
 
@@ -68,6 +81,8 @@ export const useRoomSync = (code: string, enabled: boolean) => {
     socket.on('room:deleted', onDeleted);
     socket.on('session:ended', onSessionEnded);
     socket.on('playback:updated', onPlayback);
+    socket.on('chat:new', onChat);
+    socket.on('reactions:summary', onReactions);
     socket.on('room:error', onError);
     socket.on('disconnect', onDisconnect);
     socket.on('connect', join);
@@ -83,6 +98,8 @@ export const useRoomSync = (code: string, enabled: boolean) => {
       socket.off('room:deleted', onDeleted);
       socket.off('session:ended', onSessionEnded);
       socket.off('playback:updated', onPlayback);
+      socket.off('chat:new', onChat);
+      socket.off('reactions:summary', onReactions);
       socket.off('room:error', onError);
       socket.off('disconnect', onDisconnect);
       socket.off('connect', join);
@@ -91,6 +108,7 @@ export const useRoomSync = (code: string, enabled: boolean) => {
       dispatch(resetRoom());
       dispatch(clearQueue());
       dispatch(clearPlayback());
+      dispatch(clearChat());
     };
   }, [code, enabled, dispatch, navigate]);
 };

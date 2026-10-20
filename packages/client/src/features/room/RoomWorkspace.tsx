@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useAppSelector } from '@/app/hooks';
 import { AddSongDialog } from '@/features/room/AddSongDialog';
+import { ChatPanel } from '@/features/room/ChatPanel';
 import { MembersPanel } from '@/features/room/MembersPanel';
 import { PlaybackPanel } from '@/features/room/PlaybackPanel';
 import { QueuePanel } from '@/features/room/QueuePanel';
@@ -68,6 +69,15 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
   const canControl = canRemove;
   const queuedCount = queue.filter((item) => item.status === 'QUEUED').length;
   const totalVotes = queue.reduce((sum, item) => sum + item.voteCount, 0);
+  const meMember = members.find((member) => member.userId === me?.userId);
+  const isMuted = Boolean(meMember?.muted);
+  const chatRestricted = room.chatRestricted && role === 'MEMBER';
+  const canChat = !isMuted && !chatRestricted;
+  const chatBlockedReason = isMuted
+    ? 'You are muted by a host.'
+    : chatRestricted
+      ? 'Only hosts can chat right now.'
+      : undefined;
 
   const copyCode = async () => {
     try {
@@ -217,6 +227,12 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
               votes
             </div>
           </section>
+
+          <ChatPanel
+            meId={me?.userId ?? ''}
+            canChat={canChat}
+            blockedReason={chatBlockedReason}
+          />
 
           <MembersPanel
             members={members}
