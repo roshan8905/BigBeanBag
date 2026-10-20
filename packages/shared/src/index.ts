@@ -10,3 +10,4 @@ export * from './schemas/chat';
 export * from './schemas/poll';
 export * from './schemas/socket';
 export * from './logic/permissions';
+export * from './logic/links';

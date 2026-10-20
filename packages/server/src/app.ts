@@ -12,6 +12,7 @@ import { sessionMiddleware } from './lib/session';
 import { testAuth } from './lib/test-auth';
 import { authApiRouter } from './routes/auth';
 import { healthRouter } from './routes/health';
+import { mediaRouter } from './routes/media';
 import { roomsRouter } from './routes/rooms';
 
 configurePassport();
@@ -34,6 +35,7 @@ export const createApp = () => {
   app.use('/auth', authLimiter, authRouter);
   app.use('/api/auth', apiLimiter, authApiRouter);
   app.use('/api/rooms', apiLimiter, roomsRouter);
+  app.use('/api/media', apiLimiter, mediaRouter);
 
   app.use('/api', (_req, res) => {
     res.status(404).json({ error: { code: ERROR_CODES.NOT_FOUND, message: 'Route not found' } });

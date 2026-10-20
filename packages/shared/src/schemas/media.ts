@@ -41,6 +41,11 @@ export const ResolvedMediaSchema = z.object({
 });
 export type ResolvedMedia = z.infer<typeof ResolvedMediaSchema>;
 
+export const SearchResultsSchema = z.object({
+  items: z.array(MediaItemSchema),
+});
+export type SearchResults = z.infer<typeof SearchResultsSchema>;
+
 export const SpotifyTrackMetaSchema = z.object({
   id: z.string(),
   title: z.string(),
