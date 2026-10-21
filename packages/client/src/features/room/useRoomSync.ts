@@ -46,7 +46,9 @@ export const useRoomSync = (code: string, enabled: boolean) => {
       dispatch(playbackUpdated(snapshot.playback));
       dispatch(chatLoaded({ messages: snapshot.chat, reactions: snapshot.reactions }));
       if (snapshot.poll) dispatch(pollUpdated(snapshot.poll));
+      else dispatch(clearPoll());
       if (snapshot.battle) dispatch(battleUpdated(snapshot.battle));
+      else dispatch(clearBattle());
     };
 
     const onQueue = (payload: QueueUpdated) => dispatch(queueUpdated(payload.items));
@@ -62,6 +64,10 @@ export const useRoomSync = (code: string, enabled: boolean) => {
     const onBattleEnded = (battle: Battle) => dispatch(battleEnded(battle));
     const onError = (payload: { message: string }) => dispatch(errorReceived(payload.message));
     const onDisconnect = () => dispatch(connectionChanged('connecting'));
+    const onConnectError = (error: Error) => {
+      dispatch(connectionChanged('error'));
+      dispatch(errorReceived(error.message || 'Could not connect to the room.'));
+    };
 
     const onDeleted = () => {
       dispatch(errorReceived('This room was deleted by its owner.'));
@@ -97,6 +103,7 @@ export const useRoomSync = (code: string, enabled: boolean) => {
     socket.on('battle:ended', onBattleEnded);
     socket.on('room:error', onError);
     socket.on('disconnect', onDisconnect);
+    socket.on('connect_error', onConnectError);
     socket.on('connect', join);
 
     if (socket.connected) join();
@@ -117,6 +124,7 @@ export const useRoomSync = (code: string, enabled: boolean) => {
       socket.off('battle:ended', onBattleEnded);
       socket.off('room:error', onError);
       socket.off('disconnect', onDisconnect);
+      socket.off('connect_error', onConnectError);
       socket.off('connect', join);
 
       if (socket.connected) socket.emit('room:leave');
