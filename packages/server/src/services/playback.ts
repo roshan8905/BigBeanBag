@@ -1,6 +1,7 @@
 import type { PlaybackState as DbPlaybackState } from '@prisma/client';
 import type { PlaybackState } from '@bigbeanbag/shared';
 import { prisma } from '../lib/prisma';
+import { maybeAutoplay } from './autoplay';
 
 export const ensurePlayback = async (roomId: string) =>
   prisma.playbackState.upsert({
@@ -17,11 +18,32 @@ export const toPlaybackDto = (state: DbPlaybackState, durationMs: number | null)
   durationMs,
 });
 
-const nextQueued = async (roomId: string) =>
-  prisma.queueItem.findFirst({
+const nextQueued = async (roomId: string) => {
+  const room = await prisma.room.findUnique({
+    where: { id: roomId },
+    select: { queueManual: true },
+  });
+
+  if (room?.queueManual) {
+    return prisma.queueItem.findFirst({
+      where: { roomId, status: 'QUEUED' },
+      orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
+    });
+  }
+
+  return prisma.queueItem.findFirst({
     where: { roomId, status: 'QUEUED' },
     orderBy: [{ votes: { _count: 'desc' } }, { createdAt: 'asc' }],
   });
+};
+
+const nextQueuedWithAutoplay = async (roomId: string) => {
+  const next = await nextQueued(roomId);
+  if (next) return next;
+
+  await maybeAutoplay(roomId);
+  return nextQueued(roomId);
+};
 
 export const loadPlayback = async (roomId: string) => {
   const state = await ensurePlayback(roomId);
@@ -41,7 +63,7 @@ export const startPlayback = async (roomId: string, positionMs?: number) => {
   const state = await ensurePlayback(roomId);
 
   if (!state.currentItemId) {
-    const next = await nextQueued(roomId);
+    const next = await nextQueuedWithAutoplay(roomId);
     if (!next) return loadPlayback(roomId);
 
     await prisma.queueItem.update({ where: { id: next.id }, data: { status: 'PLAYING' } });
@@ -114,7 +136,7 @@ export const skipTrack = async (roomId: string) => {
     });
   }
 
-  const next = await nextQueued(roomId);
+  const next = await nextQueuedWithAutoplay(roomId);
 
   if (!next) {
     const idle = await prisma.playbackState.update({

@@ -36,21 +36,42 @@ export const toQueueItemDto = (row: QueueRow, userId: string): QueueItemDto => (
   createdAt: row.createdAt.toISOString(),
 });
 
-export const orderQueue = (rows: QueueRow[]) => {
+const byVotes = (a: QueueRow, b: QueueRow) =>
+  b.votes.length - a.votes.length || a.createdAt.getTime() - b.createdAt.getTime();
+
+const byPosition = (a: QueueRow, b: QueueRow) =>
+  (a.position ?? Number.MAX_SAFE_INTEGER) - (b.position ?? Number.MAX_SAFE_INTEGER) ||
+  a.createdAt.getTime() - b.createdAt.getTime();
+
+export const orderQueue = (rows: QueueRow[], queueManual = false) => {
   const playing = rows.filter((row) => row.status === 'PLAYING');
-  const queued = rows
-    .filter((row) => row.status === 'QUEUED')
-    .sort((a, b) => b.votes.length - a.votes.length || a.createdAt.getTime() - b.createdAt.getTime());
+  const queued = rows.filter((row) => row.status === 'QUEUED').sort(queueManual ? byPosition : byVotes);
 
   return [...playing, ...queued];
 };
 
-export const getQueue = async (roomId: string, userId: string) =>
-  orderQueue(await loadQueueRows(roomId)).map((row) => toQueueItemDto(row, userId));
+export const getQueue = async (roomId: string, userId: string) => {
+  const [rows, room] = await Promise.all([
+    loadQueueRows(roomId),
+    prisma.room.findUnique({ where: { id: roomId }, select: { queueManual: true } }),
+  ]);
+
+  return orderQueue(rows, room?.queueManual ?? false).map((row) => toQueueItemDto(row, userId));
+};
+
+const nextQueuePosition = async (roomId: string) => {
+  const max = await prisma.queueItem.aggregate({ where: { roomId }, _max: { position: true } });
+  return (max._max.position ?? 0) + 1;
+};
 
 export const addQueueItem = async (roomId: string, userId: string, input: AddQueueItemInput) => {
   const canonical = await getYoutubeItem(input.youtubeId);
   const keepMatchTitle = input.source === 'SPOTIFY_MATCHED';
+  const room = await prisma.room.findUniqueOrThrow({
+    where: { id: roomId },
+    select: { queueManual: true },
+  });
+  const position = room.queueManual ? await nextQueuePosition(roomId) : null;
 
   const row = await prisma.queueItem.create({
     data: {
@@ -64,6 +85,7 @@ export const addQueueItem = async (roomId: string, userId: string, input: AddQue
       thumbnail: canonical.thumbnail,
       durationMs: canonical.durationMs,
       mediaType: canonical.mediaType,
+      position,
     },
     include: queueInclude,
   });
@@ -104,4 +126,62 @@ export const removeQueueItem = async (roomId: string, itemId: string) => {
   if (item.status === 'PLAYING') {
     await skipTrack(roomId);
   }
+};
+
+const writeManualOrder = async (roomId: string, queued: QueueRow[]) => {
+  await prisma.$transaction([
+    prisma.room.update({ where: { id: roomId }, data: { queueManual: true } }),
+    ...queued.map((row, index) =>
+      prisma.queueItem.update({ where: { id: row.id }, data: { position: index + 1 } }),
+    ),
+  ]);
+};
+
+export const shuffleQueue = async (roomId: string) => {
+  const room = await prisma.room.findUnique({ where: { id: roomId }, select: { queueManual: true } });
+  if (!room) throw new AppError(ERROR_CODES.NOT_FOUND, 'Room not found', 404);
+
+  const rows = await loadQueueRows(roomId);
+  const queued = orderQueue(rows, room.queueManual).filter((row) => row.status === 'QUEUED');
+
+  for (let index = queued.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    const current = queued[index];
+    const swap = queued[swapIndex];
+    if (!current || !swap) continue;
+
+    queued[index] = swap;
+    queued[swapIndex] = current;
+  }
+
+  await writeManualOrder(roomId, queued);
+};
+
+export const moveQueueItem = async (
+  roomId: string,
+  itemId: string,
+  direction: 'up' | 'down',
+) => {
+  const room = await prisma.room.findUnique({ where: { id: roomId }, select: { queueManual: true } });
+  if (!room) throw new AppError(ERROR_CODES.NOT_FOUND, 'Room not found', 404);
+
+  const rows = await loadQueueRows(roomId);
+  const queued = orderQueue(rows, room.queueManual).filter((row) => row.status === 'QUEUED');
+  const index = queued.findIndex((row) => row.id === itemId);
+
+  if (index === -1) {
+    if (rows.some((row) => row.id === itemId && row.status === 'PLAYING')) {
+      throw new AppError(ERROR_CODES.FORBIDDEN, 'The playing song cannot be reordered', 400);
+    }
+    throw new AppError(ERROR_CODES.NOT_FOUND, 'That queue item is gone', 404);
+  }
+
+  const targetIndex = direction === 'up' ? index - 1 : index + 1;
+  const current = queued[index];
+  const target = queued[targetIndex];
+  if (!current || !target) return;
+
+  queued[index] = target;
+  queued[targetIndex] = current;
+  await writeManualOrder(roomId, queued);
 };

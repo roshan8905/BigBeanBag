@@ -38,6 +38,7 @@ export const RoomSchema = z.object({
   locked: z.boolean(),
   chatRestricted: z.boolean(),
   addRestricted: z.boolean(),
+  autoplay: z.boolean(),
   memberCount: z.number().int().nonnegative(),
   createdAt: z.string(),
 });

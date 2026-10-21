@@ -13,8 +13,12 @@ export const emitPresence = async (io: AppServer, roomId: string) => {
 };
 
 export const broadcastQueue = async (io: AppServer, roomId: string) => {
-  const [rows, sockets] = await Promise.all([loadQueueRows(roomId), io.in(roomId).fetchSockets()]);
-  const ordered = orderQueue(rows);
+  const [rows, sockets, room] = await Promise.all([
+    loadQueueRows(roomId),
+    io.in(roomId).fetchSockets(),
+    prisma.room.findUnique({ where: { id: roomId }, select: { queueManual: true } }),
+  ]);
+  const ordered = orderQueue(rows, room?.queueManual ?? false);
 
   for (const target of sockets) {
     target.emit('queue:updated', {

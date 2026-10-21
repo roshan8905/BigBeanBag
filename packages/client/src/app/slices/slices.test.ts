@@ -97,6 +97,7 @@ const snapshot: RoomSnapshot = {
     locked: false,
     chatRestricted: false,
     addRestricted: false,
+    autoplay: false,
     memberCount: 1,
     createdAt: '2026-01-01T00:00:00.000Z',
   },

@@ -8,6 +8,7 @@ import {
   roomMetaInclude,
   toMemberDto,
   toRoomDetail,
+  toRoomDto,
   toRoomSummary,
   type RoomWithDetail,
 } from '../lib/dto';
@@ -152,6 +153,15 @@ export const setRoomRestrictions = async (
     include: roomDetailInclude,
   });
   return toRoomDetail(updated, 'OWNER');
+};
+
+export const setRoomAutoplay = async (roomId: string, autoplay: boolean) => {
+  const room = await prisma.room.update({
+    where: { id: roomId },
+    data: { autoplay },
+    include: roomMetaInclude,
+  });
+  return toRoomDto(room);
 };
 
 export const deleteRoom = async (code: string, userId: string) => {

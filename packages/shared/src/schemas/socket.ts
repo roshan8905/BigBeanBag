@@ -2,7 +2,9 @@ import type { ErrorCode } from '../errors';
 import type { ChatMessage, Reaction, ReactionSummary } from './chat';
 import type {
   AddQueueItemInput,
+  QueueAutoplayInput,
   QueueItem,
+  QueueMoveInput,
   QueueUpdated,
   RemoveQueueItemInput,
   VoteToggleInput,
@@ -41,6 +43,9 @@ export interface ClientToServerEvents {
   'queue:add': (payload: AddQueueItemInput, ack: Ack<QueueItem>) => void;
   'queue:vote': (payload: VoteToggleInput, ack: Ack<{ itemId: string; voted: boolean; voteCount: number }>) => void;
   'queue:remove': (payload: RemoveQueueItemInput, ack: Ack<QueueUpdated>) => void;
+  'queue:shuffle': (ack: Ack<QueueUpdated>) => void;
+  'queue:move': (payload: QueueMoveInput, ack: Ack<QueueUpdated>) => void;
+  'queue:autoplay': (payload: QueueAutoplayInput, ack: Ack<Room>) => void;
   'playback:play': (payload: PlayCommandInput, ack: Ack<PlaybackState>) => void;
   'playback:pause': (payload: PlayCommandInput, ack: Ack<PlaybackState>) => void;
   'playback:seek': (payload: SeekCommandInput, ack: Ack<PlaybackState>) => void;

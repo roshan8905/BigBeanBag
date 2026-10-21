@@ -10,8 +10,8 @@ Built as a pnpm monorepo with a React client, an Express + Socket.IO API, Postgr
 - Public, unlisted, and private rooms with invite links, QR codes, revocation, and rotation
 - Members can leave a room at any time; owners delete their room instead
 - Owner / host / member roles with server-enforced permissions
-- Shared queue ordered by votes, then by who added the song first
-- One upvote per person per song with live queue updates
+- Shared queue ordered by votes by default, with host reshuffle and manual reordering
+- One upvote per person per song, plus host autoplay that refills the queue from suggestions
 - Owner or host drives playback; everyone else follows with drift correction
 - Chat with muted and host-only modes, plus emoji reactions
 - Timed song battles that turn the winning song's battle votes into queue votes
@@ -131,9 +131,13 @@ The server re-checks the caller's membership and role for every action. The owne
 
 ### Queue and playback
 
-Queue order is derived on the server: vote count descending, then `createdAt` ascending. Votes are unique per `(item, user)`. Queue broadcasts are personalized per socket so each client sees its own `votedByMe`.
+By default, queue order is derived on the server: vote count descending, then `createdAt` ascending. Votes are unique per `(item, user)`. Queue broadcasts are personalized per socket so each client sees its own `votedByMe`.
 
-Playback is server-authoritative. The owner or host issues play, pause, seek, and skip commands; the server stores an updated position and timestamp and broadcasts a `PlaybackState`. Followers run a YouTube IFrame player, compare their position, and correct drift. The host client reports track end, and the server advances to the next queued song by vote order.
+The owner or a host can reshuffle the queued songs or move individual songs up and down from the row menu. The first reshuffle or move switches the room to manual order, persisted with `QueueItem.position`; from then on, vote counts keep updating live but no longer reorder the queue. New songs join at the end of a manual queue.
+
+Autoplay is also controlled by the owner or a host. When it is on and playback runs out of queued songs, the server searches for suggestions seeded by recent queue artists and inserts up to three tracks before advancing. If the queue has no artist history yet, it falls back to mood-style queries. Autoplay tracks are attributed to the room owner in the queue.
+
+Playback is server-authoritative. The owner or host issues play, pause, seek, and skip commands; the server stores an updated position and timestamp and broadcasts a `PlaybackState`. Followers run a YouTube IFrame player, compare their position, and correct drift. The host client reports track end, and the server advances to the next song in the active queue order.
 
 Joining a room returns a full snapshot: room, members, queue, playback, recent chat, reaction summary, current poll, and current battle.
 
@@ -144,7 +148,7 @@ Joining a room returns a full snapshot: room, members, queue, playback, recent c
 - Spotify only accepts individual tracks. Albums, playlists, episodes, and shows are rejected.
 - Spotify tracks are resolved to an embeddable YouTube video; without Spotify credentials the server falls back to Spotify oEmbed metadata plus a YouTube match.
 - Resolved metadata is cached in PostgreSQL.
-- The add-song dialog suggests tracks from artists already in the room queue and offers mood shortcuts when the queue is empty.
+- The add-song dialog and autoplay suggest tracks from artists already in the room queue; without artist history they offer mood shortcuts.
 
 ### Chat, reactions, polls, and battles
 
@@ -177,7 +181,7 @@ Socket handlers use per-socket token buckets for chat, reactions, polls, battles
 
 - `@bigbeanbag/shared`: schema and permission unit tests, fully offline.
 - `@bigbeanbag/server`: REST service tests plus Socket.IO integration tests that hit a real PostgreSQL database. Set `DATABASE_URL`/`DIRECT_URL` in `.env`; tests use `NODE_ENV=test` and clean up their users. The socket suite is intentionally slower because it exercises live timers.
-- `@bigbeanbag/client`: reducer, formatting, and YouTube error-copy tests.
+- `@bigbeanbag/client`: reducer, queue-control, formatting, and YouTube error-copy tests.
 
 ```bash
 pnpm test
@@ -200,6 +204,7 @@ The current realtime layer is designed for a single API instance: rate limits, b
 - Playback is YouTube-only at runtime; Spotify is a metadata and discovery source.
 - Spotify-to-YouTube matching can miss obscure tracks.
 - YouTube playback depends on the video owner allowing embeds and on regional availability.
+- Autoplay depends on the YouTube search quota; when it is exhausted, playback stops at the end of the queue.
 - No file uploads or hosted audio.
 - No password or guest login; Google is the only identity provider.
 - Invite links grant access to unlisted/private rooms through a token until revoked or rotated.

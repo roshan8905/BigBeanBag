@@ -40,6 +40,17 @@ export const RemoveQueueItemSchema = z.object({
 });
 export type RemoveQueueItemInput = z.infer<typeof RemoveQueueItemSchema>;
 
+export const QueueMoveSchema = z.object({
+  itemId: IdSchema,
+  direction: z.enum(['up', 'down']),
+});
+export type QueueMoveInput = z.infer<typeof QueueMoveSchema>;
+
+export const QueueAutoplaySchema = z.object({
+  enabled: z.boolean(),
+});
+export type QueueAutoplayInput = z.infer<typeof QueueAutoplaySchema>;
+
 export const QueueUpdatedSchema = z.object({
   items: z.array(QueueItemSchema),
 });

@@ -3,15 +3,24 @@ import {
   AppError,
   ERROR_CODES,
   JoinRoomSchema,
+  QueueAutoplaySchema,
+  QueueMoveSchema,
   RemoveQueueItemSchema,
   VoteToggleSchema,
   canControlPlayback,
   canRemoveFromQueue,
 } from '@bigbeanbag/shared';
 import { prisma } from '../lib/prisma';
-import { addQueueItem, getQueue, removeQueueItem, toggleVote } from '../services/queue';
+import {
+  addQueueItem,
+  getQueue,
+  moveQueueItem,
+  removeQueueItem,
+  shuffleQueue,
+  toggleVote,
+} from '../services/queue';
 import { loadPlayback } from '../services/playback';
-import { leaveRoom } from '../services/rooms';
+import { leaveRoom, setRoomAutoplay } from '../services/rooms';
 import { buildRoomSnapshot } from '../services/snapshot';
 import { respond, type AppServer } from './ack';
 import type { AppSocket } from './auth';
@@ -132,6 +141,62 @@ export const registerRoomHandlers = (io: AppServer, socket: AppSocket) => {
       await broadcastQueue(io, roomId);
       broadcastPlayback(io, roomId, await loadPlayback(roomId));
       return { items: await getQueue(roomId, userId) };
+    }),
+  );
+
+  socket.on('queue:shuffle', (ack) =>
+    respond(ack, async () => {
+      if (!takeToken(`${socket.id}:queue-order`, 12, 5000)) {
+        throw new AppError(ERROR_CODES.RATE_LIMITED, 'Easy on the queue changes', 429);
+      }
+
+      const { roomId, userId } = requireRoomContext(socket);
+      const role = await requireRole(roomId, userId);
+      if (!canRemoveFromQueue(role)) {
+        throw new AppError(ERROR_CODES.FORBIDDEN, 'Only hosts can reshuffle the queue', 403);
+      }
+
+      await shuffleQueue(roomId);
+      await broadcastQueue(io, roomId);
+      return { items: await getQueue(roomId, userId) };
+    }),
+  );
+
+  socket.on('queue:move', (payload, ack) =>
+    respond(ack, async () => {
+      if (!takeToken(`${socket.id}:queue-order`, 12, 5000)) {
+        throw new AppError(ERROR_CODES.RATE_LIMITED, 'Easy on the queue changes', 429);
+      }
+
+      const { roomId, userId } = requireRoomContext(socket);
+      const role = await requireRole(roomId, userId);
+      if (!canRemoveFromQueue(role)) {
+        throw new AppError(ERROR_CODES.FORBIDDEN, 'Only hosts can reorder the queue', 403);
+      }
+
+      const { itemId, direction } = QueueMoveSchema.parse(payload);
+      await moveQueueItem(roomId, itemId, direction);
+      await broadcastQueue(io, roomId);
+      return { items: await getQueue(roomId, userId) };
+    }),
+  );
+
+  socket.on('queue:autoplay', (payload, ack) =>
+    respond(ack, async () => {
+      if (!takeToken(`${socket.id}:autoplay`, 8, 5000)) {
+        throw new AppError(ERROR_CODES.RATE_LIMITED, 'Easy on the autoplay toggle', 429);
+      }
+
+      const { roomId, userId } = requireRoomContext(socket);
+      const role = await requireRole(roomId, userId);
+      if (!canControlPlayback(role)) {
+        throw new AppError(ERROR_CODES.FORBIDDEN, 'Only hosts can change autoplay', 403);
+      }
+
+      const { enabled } = QueueAutoplaySchema.parse(payload);
+      const room = await setRoomAutoplay(roomId, enabled);
+      io.to(roomId).emit('room:updated', room);
+      return room;
     }),
   );
 

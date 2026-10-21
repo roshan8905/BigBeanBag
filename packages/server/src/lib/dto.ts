@@ -34,6 +34,7 @@ export const toRoomDto = (room: RoomWithMeta): RoomDto => ({
   locked: room.locked,
   chatRestricted: room.chatRestricted,
   addRestricted: room.addRestricted,
+  autoplay: room.autoplay,
   memberCount: room._count.members,
   createdAt: room.createdAt.toISOString(),
 });

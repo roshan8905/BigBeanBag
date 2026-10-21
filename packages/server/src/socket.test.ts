@@ -101,6 +101,19 @@ const remove = (socket: TestSocket, itemId: string) =>
     socket.emit('queue:remove', { itemId }, resolve),
   );
 
+const shuffle = (socket: TestSocket) =>
+  new Promise<AckResult<QueueUpdated>>((resolve) => socket.emit('queue:shuffle', resolve));
+
+const moveItem = (socket: TestSocket, itemId: string, direction: 'up' | 'down') =>
+  new Promise<AckResult<QueueUpdated>>((resolve) =>
+    socket.emit('queue:move', { itemId, direction }, resolve),
+  );
+
+const setAutoplay = (socket: TestSocket, enabled: boolean) =>
+  new Promise<AckResult<Room>>((resolve) =>
+    socket.emit('queue:autoplay', { enabled }, resolve),
+  );
+
 const play = (socket: TestSocket, positionMs?: number) =>
   new Promise<AckResult<PlaybackState>>((resolve) =>
     socket.emit('playback:play', positionMs === undefined ? {} : { positionMs }, resolve),
@@ -172,6 +185,26 @@ const mockYoutube = () => {
     'fetch',
     vi.fn(async (input: string | URL) => {
       const url = new URL(String(input));
+      const query = url.searchParams.get('q');
+
+      if (query) {
+        const seed = query.replace(/[^a-z0-9]/gi, '').slice(0, 8).toUpperCase();
+        const suggested = [1, 2, 3].map((index) => ({
+          id: { videoId: `AUT${seed}${index}` },
+          snippet: {
+            title: `Suggested ${seed} ${index}`,
+            channelTitle: 'Socket Channel',
+            thumbnails: { high: { url: 'https://i.ytimg.com/vi/autoplay/hqdefault.jpg' } },
+            categoryId: '10',
+          },
+        }));
+
+        return new Response(JSON.stringify({ items: suggested }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        });
+      }
+
       const ids = (url.searchParams.get('id') ?? '').split(',').filter(Boolean);
 
       const items = ids.map((id) => ({
@@ -227,13 +260,19 @@ afterAll(async () => {
   await new Promise<void>((resolve) => io.close(() => resolve()));
 
   const media = userMediaKeys();
-  await prisma.mediaCache.deleteMany({ where: { key: { in: media } } });
+  await prisma.mediaCache.deleteMany({
+    where: { OR: [{ key: { in: media } }, { key: { startsWith: 'yt:search:' } }] },
+  });
   await prisma.user.deleteMany({ where: { id: { in: userIds } } });
   await prisma.$disconnect();
   vi.unstubAllGlobals();
 });
 
-const userMediaKeys = () => ['yt:video:TSTVID00001', 'yt:video:TSTVID00002'];
+const userMediaKeys = () => [
+  'yt:video:TSTVID00001',
+  'yt:video:TSTVID00002',
+  'yt:video:TSTVID00003',
+];
 
 describe('socket room access', () => {
   it('refuses sockets without a valid session', async () => {
@@ -317,6 +356,148 @@ describe('live queue', () => {
     if (!removed.ok) return;
     expect(removed.data.items.map((item) => item.id)).toEqual([first.data.id]);
   });
+});
+
+describe('queue ordering and autoplay', () => {
+  it('lets hosts reshuffle and reorder, then keeps the manual order over votes', async () => {
+    const created = await request(app)
+      .post('/api/rooms')
+      .set('x-test-user-id', ownerId)
+      .send({ name: 'Ordering room', visibility: 'UNLISTED' });
+
+    const code = created.body.room.code as string;
+    await request(app).post('/api/rooms/join').set('x-test-user-id', guestId).send({ code });
+
+    const owner = await connect(ownerId);
+    const guest = await connect(guestId);
+    expect((await joinRoom(owner, code)).ok).toBe(true);
+    expect((await joinRoom(guest, code)).ok).toBe(true);
+
+    const first = await addItem(owner, 'TSTVID00001', 'First song');
+    const second = await addItem(owner, 'TSTVID00002', 'Second song');
+    const third = await addItem(owner, 'TSTVID00003', 'Third song');
+    expect(first.ok && second.ok && third.ok).toBe(true);
+    if (!first.ok || !second.ok || !third.ok) return;
+
+    const guestShuffle = await shuffle(guest);
+    expect(guestShuffle.ok).toBe(false);
+    if (!guestShuffle.ok) expect(guestShuffle.code).toBe('FORBIDDEN');
+
+    const guestMove = await moveItem(guest, third.data.id, 'up');
+    expect(guestMove.ok).toBe(false);
+    if (!guestMove.ok) expect(guestMove.code).toBe('FORBIDDEN');
+
+    const movedOnce = await moveItem(owner, third.data.id, 'up');
+    expect(movedOnce.ok).toBe(true);
+    if (!movedOnce.ok) return;
+    expect(movedOnce.data.items.map((item) => item.id)).toEqual([
+      first.data.id,
+      third.data.id,
+      second.data.id,
+    ]);
+
+    const movedTwice = await moveItem(owner, third.data.id, 'up');
+    expect(movedTwice.ok).toBe(true);
+    if (!movedTwice.ok) return;
+    expect(movedTwice.data.items.map((item) => item.id)).toEqual([
+      third.data.id,
+      first.data.id,
+      second.data.id,
+    ]);
+
+    const movedBack = await moveItem(owner, third.data.id, 'down');
+    expect(movedBack.ok).toBe(true);
+    if (!movedBack.ok) return;
+    expect(movedBack.data.items.map((item) => item.id)).toEqual([
+      first.data.id,
+      third.data.id,
+      second.data.id,
+    ]);
+
+    const voted = await vote(guest, second.data.id);
+    expect(voted.ok).toBe(true);
+
+    const snapshotAfterVote = await joinRoom(owner, code);
+    expect(snapshotAfterVote.ok).toBe(true);
+    if (snapshotAfterVote.ok) {
+      expect(snapshotAfterVote.data.queue.map((item) => item.id)).toEqual([
+        first.data.id,
+        third.data.id,
+        second.data.id,
+      ]);
+      expect(
+        snapshotAfterVote.data.queue.find((item) => item.id === second.data.id)?.voteCount,
+      ).toBe(1);
+    }
+
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0);
+    const shuffled = await shuffle(owner);
+    random.mockRestore();
+
+    expect(shuffled.ok).toBe(true);
+    if (!shuffled.ok) return;
+    expect(shuffled.data.items.map((item) => item.id)).toEqual([
+      third.data.id,
+      second.data.id,
+      first.data.id,
+    ]);
+  }, 60000);
+
+  it('fills the queue from suggestions when autoplay is on and the queue runs out', async () => {
+    const created = await request(app)
+      .post('/api/rooms')
+      .set('x-test-user-id', ownerId)
+      .send({ name: 'Autoplay room', visibility: 'UNLISTED' });
+
+    const code = created.body.room.code as string;
+    await request(app).post('/api/rooms/join').set('x-test-user-id', guestId).send({ code });
+
+    const owner = await connect(ownerId);
+    const guest = await connect(guestId);
+    expect((await joinRoom(owner, code)).ok).toBe(true);
+    expect((await joinRoom(guest, code)).ok).toBe(true);
+
+    const added = await addItem(owner, 'TSTVID00001', 'Seed song');
+    expect(added.ok).toBe(true);
+    if (!added.ok) return;
+
+    const guestToggle = await setAutoplay(guest, true);
+    expect(guestToggle.ok).toBe(false);
+    if (!guestToggle.ok) expect(guestToggle.code).toBe('FORBIDDEN');
+
+    const roomUpdate = new Promise<Room>((resolve) => guest.once('room:updated', resolve));
+    const enabled = await setAutoplay(owner, true);
+    expect(enabled.ok).toBe(true);
+    if (!enabled.ok) return;
+    expect(enabled.data.autoplay).toBe(true);
+    expect((await roomUpdate).autoplay).toBe(true);
+
+    const withAutoplay = await joinRoom(owner, code);
+    expect(withAutoplay.ok).toBe(true);
+    if (withAutoplay.ok) expect(withAutoplay.data.room.autoplay).toBe(true);
+
+    const started = await play(owner);
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+    expect(started.data).toMatchObject({ status: 'PLAYING', currentItemId: added.data.id });
+
+    const queueUpdate = nextQueue(owner);
+    const skipped = await skip(owner);
+    expect(skipped.ok).toBe(true);
+    if (!skipped.ok) return;
+    expect(skipped.data.status).toBe('PLAYING');
+    expect(skipped.data.currentItemId).toBeTruthy();
+
+    const items = (await queueUpdate).items;
+    expect(items).toHaveLength(3);
+    expect(items.every((item) => item.youtubeId.startsWith('AUT'))).toBe(true);
+    expect(items.some((item) => item.id === skipped.data.currentItemId)).toBe(true);
+    expect(items.find((item) => item.id === skipped.data.currentItemId)?.status).toBe('PLAYING');
+
+    const disabled = await setAutoplay(owner, false);
+    expect(disabled.ok).toBe(true);
+    if (disabled.ok) expect(disabled.data.autoplay).toBe(false);
+  }, 60000);
 });
 
 describe('playback control', () => {

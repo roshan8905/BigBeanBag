@@ -25,7 +25,7 @@ export const buildRoomSnapshot = async (roomId: string, userId: string): Promise
     latestBattle(roomId, userId),
   ]);
 
-  const ordered = orderQueue(rows);
+  const ordered = orderQueue(rows, room.queueManual);
   const current = ordered.find((row) => row.id === playbackRow.currentItemId) ?? null;
 
   return {

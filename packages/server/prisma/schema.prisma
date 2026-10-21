@@ -85,6 +85,8 @@ model Room {
   locked         Boolean      @default(false)
   chatRestricted Boolean      @default(false)
   addRestricted  Boolean      @default(false)
+  autoplay       Boolean      @default(false)
+  queueManual    Boolean      @default(false)
   inviteToken    String?      @unique
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
@@ -159,6 +161,7 @@ model QueueItem {
   addedById   String
   addedBy     User        @relation(fields: [addedById], references: [id], onDelete: Cascade)
   status      QueueStatus @default(QUEUED)
+  position    Int?
   playedAt    DateTime?
   createdAt   DateTime    @default(now())
   votes       Vote[]
@@ -167,6 +170,7 @@ model QueueItem {
   battleWins  Battle[]    @relation("BattleWinner")
 
   @@index([roomId, status])
+  @@index([roomId, status, position])
 }
 
 model Vote {
