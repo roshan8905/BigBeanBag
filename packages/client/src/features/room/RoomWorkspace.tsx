@@ -215,7 +215,11 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
             <PollPanel meId={me?.userId ?? ''} canModerate={canRemove} />
             <BattlePanel canStart={canControl} />
           </div>
-          <QueuePanel canRemove={canRemove} onAdd={() => setAddOpen(true)} />
+          <QueuePanel
+            canAdd={!room.addRestricted || canControl}
+            canRemove={canRemove}
+            onAdd={() => setAddOpen(true)}
+          />
         </div>
 
         <aside className="space-y-4">
@@ -290,12 +294,8 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
       </div>
 
       <AddSongDialog open={addOpen} onClose={() => setAddOpen(false)} />
-      {isOwner ? (
-        <RoomSettingsDialog
-          open={settingsOpen}
-          onClose={() => setSettingsOpen(false)}
-          room={room}
-        />
+      {isOwner && settingsOpen ? (
+        <RoomSettingsDialog open onClose={() => setSettingsOpen(false)} room={room} />
       ) : null}
     </main>
   );

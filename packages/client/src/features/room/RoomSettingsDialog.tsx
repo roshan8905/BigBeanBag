@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { Room, Visibility } from '@bigbeanbag/shared';
 import { Loader2 } from 'lucide-react';
 import { Modal } from '@/components/Modal';
@@ -26,16 +26,6 @@ export const RoomSettingsDialog = ({
   const [addRestricted, setAddRestricted] = useState(room.addRestricted);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (!open) return;
-    setName(room.name);
-    setVisibility(room.visibility);
-    setLocked(room.locked);
-    setChatRestricted(room.chatRestricted);
-    setAddRestricted(room.addRestricted);
-    setError('');
-  }, [open, room]);
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();

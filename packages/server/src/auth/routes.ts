@@ -38,11 +38,34 @@ authRouter.get('/google/callback', (req, res, next) => {
     return;
   }
 
-  passport.authenticate('google', { failureRedirect })(req, res, next);
-}, (req, res) => {
-  const returnTo = safeReturnTo(req.cookies?.[returnToCookie]);
-  res.clearCookie(returnToCookie);
-  res.redirect(`${env.APP_URL}${returnTo}`);
+  passport.authenticate(
+    'google',
+    { failureRedirect },
+    (error: Error | null, user: Express.User | false | undefined) => {
+      if (error || !user) {
+        res.redirect(failureRedirect);
+        return;
+      }
+
+      req.session.regenerate((regenerateError) => {
+        if (regenerateError) {
+          next(regenerateError);
+          return;
+        }
+
+        req.logIn(user, (loginError) => {
+          if (loginError) {
+            next(loginError);
+            return;
+          }
+
+          const returnTo = safeReturnTo(req.cookies?.[returnToCookie]);
+          res.clearCookie(returnToCookie);
+          res.redirect(`${env.APP_URL}${returnTo}`);
+        });
+      });
+    },
+  )(req, res, next);
 });
 
 authRouter.post('/logout', (req, res, next) => {

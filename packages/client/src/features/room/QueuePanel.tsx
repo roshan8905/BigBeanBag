@@ -90,7 +90,15 @@ const QueueRow = ({
   );
 };
 
-export const QueuePanel = ({ canRemove, onAdd }: { canRemove: boolean; onAdd: () => void }) => {
+export const QueuePanel = ({
+  canAdd,
+  canRemove,
+  onAdd,
+}: {
+  canAdd: boolean;
+  canRemove: boolean;
+  onAdd: () => void;
+}) => {
   const items = useAppSelector((state) => state.queue.items);
   const [votingId, setVotingId] = useState('');
   const [error, setError] = useState('');
@@ -121,7 +129,13 @@ export const QueuePanel = ({ canRemove, onAdd }: { canRemove: boolean; onAdd: ()
             {queued.length}
           </span>
         </h2>
-        <button type="button" className="btn-primary px-3 py-1.5 text-xs" onClick={onAdd}>
+        <button
+          type="button"
+          className="btn-primary px-3 py-1.5 text-xs"
+          onClick={onAdd}
+          disabled={!canAdd}
+          title={canAdd ? 'Add a song' : 'Only hosts can add songs right now'}
+        >
           <Plus size={14} /> Add song
         </button>
       </div>
@@ -149,11 +163,15 @@ export const QueuePanel = ({ canRemove, onAdd }: { canRemove: boolean; onAdd: ()
           </span>
           <p className="mt-3 text-sm font-medium">The queue is empty</p>
           <p className="mt-1 max-w-xs text-xs text-cream-500">
-            Search for a song or paste a link. The room votes on what plays next.
+            {canAdd
+              ? 'Search for a song or paste a link. The room votes on what plays next.'
+              : 'Only hosts can add songs right now. Ask one to queue something.'}
           </p>
-          <button type="button" className="btn-ghost mt-3 text-xs" onClick={onAdd}>
-            <Plus size={14} /> Add the first song
-          </button>
+          {canAdd ? (
+            <button type="button" className="btn-ghost mt-3 text-xs" onClick={onAdd}>
+              <Plus size={14} /> Add the first song
+            </button>
+          ) : null}
         </div>
       )}
     </section>

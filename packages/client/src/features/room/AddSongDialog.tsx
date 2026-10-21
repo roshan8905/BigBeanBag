@@ -87,7 +87,7 @@ export const AddSongDialog = ({ open, onClose }: { open: boolean; onClose: () =>
     [debouncedQuery, filter],
   );
   const { data, isFetching, error: searchError } = useSearchMediaQuery(searchArgs, {
-    skip: debouncedQuery.trim().length < 2,
+    skip: !open || debouncedQuery.trim().length < 2,
   });
   const [resolveMedia, { isLoading: resolving }] = useResolveMediaMutation();
 
