@@ -35,10 +35,14 @@ const broadcastBattle = async (io: AppServer, roomId: string) => {
   }
 };
 
+const reportBackgroundError = (error: unknown) => {
+  console.error('Background battle task failed', error);
+};
+
 const scheduleBattleEnd = (io: AppServer, battleId: string, roomId: string, endsAt: Date) => {
   const delay = Math.max(endsAt.getTime() - Date.now(), 0);
   const timer = setTimeout(() => {
-    void endBattle(io, battleId, roomId);
+    endBattle(io, battleId, roomId).catch(reportBackgroundError);
   }, delay);
 
   timer.unref();
@@ -62,7 +66,7 @@ const endBattle = async (io: AppServer, battleId: string, roomId: string) => {
 
 export const startBattleSweeper = (io: AppServer) => {
   const timer = setInterval(() => {
-    void (async () => {
+    const sweep = async () => {
       const expired = await prisma.battle.findMany({
         where: { status: 'OPEN', endsAt: { lte: new Date() } },
         select: { id: true, roomId: true },
@@ -71,7 +75,9 @@ export const startBattleSweeper = (io: AppServer) => {
       for (const battle of expired) {
         await endBattle(io, battle.id, battle.roomId);
       }
-    })();
+    };
+
+    sweep().catch(reportBackgroundError);
   }, 15_000);
 
   timer.unref();
