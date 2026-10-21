@@ -206,6 +206,7 @@ const PollBody = ({
             type="button"
             onClick={() => vote(option.id)}
             disabled={!open || voting}
+            aria-pressed={mine}
             className={`relative block w-full overflow-hidden rounded-lg border px-2.5 py-2 text-left text-xs transition disabled:cursor-default ${
               mine
                 ? 'border-bean-400/50 bg-bean-400/10'
@@ -233,7 +234,7 @@ const PollBody = ({
       <div className="flex items-center justify-between text-[11px] text-cream-500">
         <span>
           {total} {total === 1 ? 'vote' : 'votes'}
-          {open ? ' · tap an option' : ''}
+          {open ? ' · tap your pick again to clear' : ''}
         </span>
         {canClose ? (
           <button
@@ -252,13 +253,7 @@ const PollBody = ({
   );
 };
 
-export const PollPanel = ({
-  meId,
-  canModerate,
-}: {
-  meId: string;
-  canModerate: boolean;
-}) => {
+export const PollPanel = ({ meId, canModerate }: { meId: string; canModerate: boolean }) => {
   const poll = useAppSelector((state) => state.poll.poll);
   const [createOpen, setCreateOpen] = useState(false);
   const canStart = !poll || poll.status === 'CLOSED';

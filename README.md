@@ -144,12 +144,13 @@ Joining a room returns a full snapshot: room, members, queue, playback, recent c
 - Spotify only accepts individual tracks. Albums, playlists, episodes, and shows are rejected.
 - Spotify tracks are resolved to an embeddable YouTube video; without Spotify credentials the server falls back to Spotify oEmbed metadata plus a YouTube match.
 - Resolved metadata is cached in PostgreSQL.
+- The add-song dialog suggests tracks from artists already in the room queue and offers mood shortcuts when the queue is empty.
 
 ### Chat, reactions, polls, and battles
 
 Chat is stored per room, with the latest 50 messages in the join snapshot and a 200-message live window on the client. Muted members cannot chat or react. When chat is host-only, members can read but not send. Reactions are an allow-listed emoji set with one reaction per user per emoji.
 
-Polls allow all members to vote and one open poll per room. The creator or a host can close it.
+Polls allow all members to vote and one open poll per room. Tap an option to vote, tap another to switch, or tap your current pick again to clear it. The creator or a host can close the poll.
 
 Battles are started by the owner or host between two queued songs with a 15-300 second timer. Members vote once each and can switch their pick. When time expires, the higher-vote song wins (ties go to the earlier queued song), and every battle vote for the winner is converted into a queue vote. Battle timers are per-process; a sweeper finalizes expired battles and the room snapshot repairs state after a restart.
 

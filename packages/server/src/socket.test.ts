@@ -97,7 +97,9 @@ const vote = (socket: TestSocket, itemId: string) =>
   );
 
 const remove = (socket: TestSocket, itemId: string) =>
-  new Promise<AckResult<QueueUpdated>>((resolve) => socket.emit('queue:remove', { itemId }, resolve));
+  new Promise<AckResult<QueueUpdated>>((resolve) =>
+    socket.emit('queue:remove', { itemId }, resolve),
+  );
 
 const play = (socket: TestSocket, positionMs?: number) =>
   new Promise<AckResult<PlaybackState>>((resolve) =>
@@ -127,7 +129,11 @@ const demote = (socket: TestSocket, userId: string) =>
     socket.emit('member:demote', { userId }, resolve),
   );
 
-const moderate = (socket: TestSocket, userId: string, action: 'mute' | 'unmute' | 'kick' | 'ban' | 'unban') =>
+const moderate = (
+  socket: TestSocket,
+  userId: string,
+  action: 'mute' | 'unmute' | 'kick' | 'ban' | 'unban',
+) =>
   new Promise<AckResult<undefined>>((resolve) =>
     socket.emit('moderation:act', { userId, action }, resolve),
   );
@@ -136,9 +142,7 @@ const sendChat = (socket: TestSocket, body: string) =>
   new Promise<AckResult<ChatMessage>>((resolve) => socket.emit('chat:send', { body }, resolve));
 
 const sendReaction = (socket: TestSocket, emoji: string) =>
-  new Promise<AckResult<undefined>>((resolve) =>
-    socket.emit('reaction:send', { emoji }, resolve),
-  );
+  new Promise<AckResult<undefined>>((resolve) => socket.emit('reaction:send', { emoji }, resolve));
 
 const createPoll = (socket: TestSocket, question: string, options: string[]) =>
   new Promise<AckResult<Poll>>((resolve) =>
@@ -153,12 +157,7 @@ const votePoll = (socket: TestSocket, pollId: string, optionId: string) =>
 const closePoll = (socket: TestSocket, pollId: string) =>
   new Promise<AckResult<Poll>>((resolve) => socket.emit('poll:close', { pollId }, resolve));
 
-const createBattle = (
-  socket: TestSocket,
-  itemAId: string,
-  itemBId: string,
-  durationSec = 15,
-) =>
+const createBattle = (socket: TestSocket, itemAId: string, itemBId: string, durationSec = 15) =>
   new Promise<AckResult<Battle>>((resolve) =>
     socket.emit('battle:create', { itemAId, itemBId, durationSec }, resolve),
   );
@@ -217,7 +216,10 @@ beforeAll(async () => {
   roomCode = created.body.room.code;
   roomId = created.body.room.id;
 
-  await request(app).post('/api/rooms/join').set('x-test-user-id', guestId).send({ code: roomCode });
+  await request(app)
+    .post('/api/rooms/join')
+    .set('x-test-user-id', guestId)
+    .send({ code: roomCode });
 });
 
 afterAll(async () => {
@@ -604,6 +606,14 @@ describe('polls and battles', () => {
     expect(ownerView.totalVotes).toBe(1);
     expect(ownerView.myVoteOptionId).toBeNull();
     expect((await guestPoll).myVoteOptionId).toBe(optionId);
+
+    const cleared = await votePoll(guest, poll.data.id, optionId);
+    expect(cleared.ok).toBe(true);
+    if (cleared.ok) {
+      expect(cleared.data.totalVotes).toBe(0);
+      expect(cleared.data.myVoteOptionId).toBeNull();
+      expect(cleared.data.options.find((option) => option.id === optionId)?.votes).toBe(0);
+    }
 
     const closed = await closePoll(guest, poll.data.id);
     expect(closed.ok).toBe(true);

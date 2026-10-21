@@ -1,10 +1,22 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { MediaFilter, MediaItem, ResolvedMedia } from '@bigbeanbag/shared';
-import { Check, Link2, Loader2, Music2, Play, Plus, Search, Video } from 'lucide-react';
+import {
+  Check,
+  Link2,
+  Loader2,
+  Music2,
+  Plus,
+  RefreshCw,
+  Search,
+  Sparkles,
+  Video,
+} from 'lucide-react';
+import { useAppSelector } from '@/app/hooks';
 import { Modal } from '@/components/Modal';
 import { apiErrorMessage } from '@/lib/errors';
 import { formatDuration } from '@/lib/format';
 import { getSocket } from '@/lib/socket';
+import { buildSuggestionQueries } from '@/lib/suggestions';
 import { useResolveMediaMutation, useSearchMediaQuery } from '@/lib/api';
 
 const filters: { value: MediaFilter; label: string }[] = [
@@ -12,6 +24,8 @@ const filters: { value: MediaFilter; label: string }[] = [
   { value: 'MUSIC', label: 'Music' },
   { value: 'VIDEO', label: 'Videos' },
 ];
+
+const ideaPrompts = ['Top hits', 'Chill songs', 'Throwback hits', 'Live sessions'];
 
 const SearchResultRow = ({
   item,
@@ -81,15 +95,42 @@ export const AddSongDialog = ({ open, onClose }: { open: boolean; onClose: () =>
   const [addedKeys, setAddedKeys] = useState<string[]>([]);
   const [addingKey, setAddingKey] = useState('');
   const [error, setError] = useState('');
+  const [suggestionQueries, setSuggestionQueries] = useState<string[]>([]);
+  const [suggestionTurn, setSuggestionTurn] = useState(0);
 
-  const searchArgs = useMemo(
-    () => ({ query: debouncedQuery.trim(), filter }),
-    [debouncedQuery, filter],
-  );
-  const { data, isFetching, error: searchError } = useSearchMediaQuery(searchArgs, {
-    skip: !open || debouncedQuery.trim().length < 2,
+  const queue = useAppSelector((state) => state.queue.items);
+  const queueRef = useRef(queue);
+  queueRef.current = queue;
+
+  const searchTerm = debouncedQuery.trim();
+  const hasSearch = searchTerm.length >= 2;
+  const suggestionQuery =
+    suggestionQueries.length > 0
+      ? (suggestionQueries[suggestionTurn % suggestionQueries.length] ?? '')
+      : '';
+  const queuedIds = useMemo(() => new Set(queue.map((item) => item.youtubeId)), [queue]);
+
+  const searchArgs = useMemo(() => ({ query: searchTerm, filter }), [searchTerm, filter]);
+  const {
+    currentData: searchData,
+    isFetching: searching,
+    error: searchError,
+  } = useSearchMediaQuery(searchArgs, {
+    skip: !open || !hasSearch,
   });
+  const {
+    currentData: ideaData,
+    isFetching: loadingIdeas,
+    error: ideasError,
+  } = useSearchMediaQuery(
+    { query: suggestionQuery, filter: 'ALL' },
+    { skip: !open || hasSearch || !suggestionQuery },
+  );
   const [resolveMedia, { isLoading: resolving }] = useResolveMediaMutation();
+
+  const ideaItems = (ideaData?.items ?? [])
+    .filter((item) => !queuedIds.has(item.youtubeId))
+    .slice(0, 6);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setDebouncedQuery(query), 350);
@@ -105,6 +146,8 @@ export const AddSongDialog = ({ open, onClose }: { open: boolean; onClose: () =>
     setResolved(null);
     setError('');
     setAddedKeys([]);
+    setSuggestionQueries(buildSuggestionQueries(queueRef.current));
+    setSuggestionTurn(0);
   }, [open]);
 
   const keyOf = (item: MediaItem) => `${item.source}:${item.youtubeId}`;
@@ -181,7 +224,10 @@ export const AddSongDialog = ({ open, onClose }: { open: boolean; onClose: () =>
         <div className="mt-4 space-y-3">
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-cream-500" />
+              <Search
+                size={15}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-cream-500"
+              />
               <input
                 className="input pl-9"
                 value={query}
@@ -209,44 +255,111 @@ export const AddSongDialog = ({ open, onClose }: { open: boolean; onClose: () =>
           </div>
 
           <div className="max-h-80 min-h-40 overflow-y-auto pr-1">
-            {isFetching ? (
-              <div className="flex h-40 items-center justify-center gap-2 text-sm text-cream-400">
-                <Loader2 size={16} className="animate-spin" /> Searching YouTube
+            {!hasSearch ? (
+              <div className="space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="flex items-center gap-1.5 text-sm font-medium text-cream-200">
+                      <Sparkles size={14} className="text-bean-300" /> Ideas for this room
+                    </p>
+                    <p className="mt-0.5 text-[11px] text-cream-500">
+                      {suggestionQuery
+                        ? 'Tracks inspired by what the room is queueing.'
+                        : 'Pick a mood to get the search started.'}
+                    </p>
+                  </div>
+                  {suggestionQuery ? (
+                    <button
+                      type="button"
+                      onClick={() => setSuggestionTurn((turn) => turn + 1)}
+                      disabled={loadingIdeas}
+                      className="btn-ghost shrink-0 px-2 py-1 text-[11px] disabled:opacity-50"
+                    >
+                      <RefreshCw size={12} /> Shuffle
+                    </button>
+                  ) : null}
+                </div>
+
+                {loadingIdeas ? (
+                  <div className="flex h-28 items-center justify-center gap-2 text-sm text-cream-400">
+                    <Loader2 size={16} className="animate-spin" /> Finding ideas
+                  </div>
+                ) : null}
+
+                {!loadingIdeas && ideasError ? (
+                  <p className="rounded-xl border border-coral/25 bg-coral/10 p-3 text-xs text-coral">
+                    {apiErrorMessage(ideasError, 'Could not load suggestions')}
+                  </p>
+                ) : null}
+
+                {!loadingIdeas && !ideasError && ideaItems.length > 0 ? (
+                  <ul className="space-y-2">
+                    {ideaItems.map((item) => (
+                      <SearchResultRow
+                        key={keyOf(item)}
+                        item={item}
+                        added={addedKeys.includes(keyOf(item))}
+                        adding={addingKey === keyOf(item)}
+                        onAdd={(entry) => void addToQueue(entry)}
+                      />
+                    ))}
+                  </ul>
+                ) : null}
+
+                {!loadingIdeas && !ideasError && suggestionQuery && ideaItems.length === 0 ? (
+                  <div className="flex h-28 flex-col items-center justify-center text-center text-xs text-cream-500">
+                    No fresh ideas from this artist yet. Try a mood below.
+                  </div>
+                ) : null}
+
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {ideaPrompts.map((prompt) => (
+                    <button
+                      key={prompt}
+                      type="button"
+                      onClick={() => setQuery(prompt)}
+                      className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-ink-900/60 px-2.5 py-1 text-[11px] text-cream-400 transition hover:border-white/20 hover:text-cream-200"
+                    >
+                      <Search size={11} /> {prompt}
+                    </button>
+                  ))}
+                </div>
               </div>
-            ) : null}
+            ) : (
+              <>
+                {searching ? (
+                  <div className="flex h-40 items-center justify-center gap-2 text-sm text-cream-400">
+                    <Loader2 size={16} className="animate-spin" /> Searching YouTube
+                  </div>
+                ) : null}
 
-            {!isFetching && searchError ? (
-              <p className="rounded-xl border border-coral/25 bg-coral/10 p-3 text-sm text-coral">
-                {apiErrorMessage(searchError, 'Search is unavailable right now')}
-              </p>
-            ) : null}
+                {!searching && searchError ? (
+                  <p className="rounded-xl border border-coral/25 bg-coral/10 p-3 text-sm text-coral">
+                    {apiErrorMessage(searchError, 'Search is unavailable right now')}
+                  </p>
+                ) : null}
 
-            {!isFetching && !searchError && debouncedQuery.trim().length < 2 ? (
-              <div className="flex h-40 flex-col items-center justify-center text-center text-sm text-cream-500">
-                <Play size={22} className="mb-2 text-cream-600" />
-                Type at least two characters to search
-              </div>
-            ) : null}
+                {!searching && !searchError && searchData && searchData.items.length === 0 ? (
+                  <div className="flex h-40 flex-col items-center justify-center text-center text-sm text-cream-500">
+                    Nothing playable came back. Try another search or paste a link.
+                  </div>
+                ) : null}
 
-            {!isFetching && data && data.items.length === 0 ? (
-              <div className="flex h-40 flex-col items-center justify-center text-center text-sm text-cream-500">
-                Nothing playable came back. Try another search or paste a link.
-              </div>
-            ) : null}
-
-            {data && data.items.length > 0 ? (
-              <ul className="space-y-2">
-                {data.items.map((item) => (
-                  <SearchResultRow
-                    key={keyOf(item)}
-                    item={item}
-                    added={addedKeys.includes(keyOf(item))}
-                    adding={addingKey === keyOf(item)}
-                    onAdd={(entry) => void addToQueue(entry)}
-                  />
-                ))}
-              </ul>
-            ) : null}
+                {!searchError && searchData && searchData.items.length > 0 ? (
+                  <ul className="space-y-2">
+                    {searchData.items.map((item) => (
+                      <SearchResultRow
+                        key={keyOf(item)}
+                        item={item}
+                        added={addedKeys.includes(keyOf(item))}
+                        adding={addingKey === keyOf(item)}
+                        onAdd={(entry) => void addToQueue(entry)}
+                      />
+                    ))}
+                  </ul>
+                ) : null}
+              </>
+            )}
           </div>
         </div>
       ) : (
@@ -276,8 +389,8 @@ export const AddSongDialog = ({ open, onClose }: { open: boolean; onClose: () =>
             <div className="rounded-xl border border-white/10 bg-ink-900/40 p-3">
               {resolved.needsConfirmation ? (
                 <p className="mb-3 rounded-lg border border-bean-400/25 bg-bean-400/10 px-3 py-2 text-xs leading-relaxed text-bean-200">
-                  Spotify cannot play inside BigBeanBag. We matched this track to a YouTube video — check the
-                  match before queuing.
+                  Spotify cannot play inside BigBeanBag. We matched this track to a YouTube video —
+                  check the match before queuing.
                 </p>
               ) : null}
 
@@ -289,7 +402,9 @@ export const AddSongDialog = ({ open, onClose }: { open: boolean; onClose: () =>
                 />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold">{resolved.item.title}</p>
-                  <p className="truncate text-xs text-cream-500">{resolved.item.artist ?? 'YouTube'}</p>
+                  <p className="truncate text-xs text-cream-500">
+                    {resolved.item.artist ?? 'YouTube'}
+                  </p>
                   <p className="text-[11px] text-cream-500">
                     {formatDuration(resolved.item.durationMs)} ·{' '}
                     {resolved.needsConfirmation ? 'Matched YouTube video' : 'YouTube'}
@@ -300,8 +415,7 @@ export const AddSongDialog = ({ open, onClose }: { open: boolean; onClose: () =>
                   className="btn-primary shrink-0 text-xs"
                   onClick={() => void addToQueue(resolved.item)}
                   disabled={
-                    addingKey === keyOf(resolved.item) ||
-                    addedKeys.includes(keyOf(resolved.item))
+                    addingKey === keyOf(resolved.item) || addedKeys.includes(keyOf(resolved.item))
                   }
                 >
                   {addedKeys.includes(keyOf(resolved.item)) ? (
@@ -319,8 +433,8 @@ export const AddSongDialog = ({ open, onClose }: { open: boolean; onClose: () =>
             </div>
           ) : (
             <p className="rounded-xl border border-white/5 bg-ink-900/30 p-4 text-xs leading-relaxed text-cream-500">
-              YouTube videos need embedding enabled. Spotify albums, playlists, and episodes are rejected —
-              paste a single track link.
+              YouTube videos need embedding enabled. Spotify albums, playlists, and episodes are
+              rejected — paste a single track link.
             </p>
           )}
         </div>

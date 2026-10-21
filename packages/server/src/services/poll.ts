@@ -34,7 +34,11 @@ export const findPollRow = (pollId: string) =>
   prisma.poll.findUnique({ where: { id: pollId }, include: pollInclude });
 
 export const latestPollRow = (roomId: string) =>
-  prisma.poll.findFirst({ where: { roomId }, orderBy: { createdAt: 'desc' }, include: pollInclude });
+  prisma.poll.findFirst({
+    where: { roomId },
+    orderBy: { createdAt: 'desc' },
+    include: pollInclude,
+  });
 
 export const latestPoll = async (roomId: string, userId: string) => {
   const poll = await latestPollRow(roomId);
@@ -42,9 +46,16 @@ export const latestPoll = async (roomId: string, userId: string) => {
 };
 
 export const createPoll = async (roomId: string, userId: string, input: CreatePollInput) => {
-  const open = await prisma.poll.findFirst({ where: { roomId, status: 'OPEN' }, select: { id: true } });
+  const open = await prisma.poll.findFirst({
+    where: { roomId, status: 'OPEN' },
+    select: { id: true },
+  });
   if (open) {
-    throw new AppError(ERROR_CODES.VALIDATION_FAILED, 'Close the open poll before starting another', 400);
+    throw new AppError(
+      ERROR_CODES.VALIDATION_FAILED,
+      'Close the open poll before starting another',
+      400,
+    );
   }
 
   const poll = await prisma.poll.create({
@@ -74,11 +85,16 @@ export const votePoll = async (roomId: string, userId: string, input: VotePollIn
     throw new AppError(ERROR_CODES.VALIDATION_FAILED, 'That option is not part of the poll', 400);
   }
 
-  await prisma.pollVote.upsert({
-    where: { pollId_userId: { pollId: poll.id, userId } },
-    create: { pollId: poll.id, optionId: input.optionId, userId },
-    update: { optionId: input.optionId },
-  });
+  const existing = poll.votes.find((vote) => vote.userId === userId);
+  if (existing?.optionId === input.optionId) {
+    await prisma.pollVote.deleteMany({ where: { pollId: poll.id, userId } });
+  } else {
+    await prisma.pollVote.upsert({
+      where: { pollId_userId: { pollId: poll.id, userId } },
+      create: { pollId: poll.id, optionId: input.optionId, userId },
+      update: { optionId: input.optionId },
+    });
+  }
 
   return toPollDto((await findPollRow(poll.id)) as PollRow, userId);
 };
@@ -96,7 +112,11 @@ export const closePoll = async (
   if (poll.status === 'CLOSED') return toPollDto(poll, userId);
 
   if (poll.createdById !== userId && !canControlPlayback(role)) {
-    throw new AppError(ERROR_CODES.FORBIDDEN, 'Only the creator or a host can close this poll', 403);
+    throw new AppError(
+      ERROR_CODES.FORBIDDEN,
+      'Only the creator or a host can close this poll',
+      403,
+    );
   }
 
   await prisma.poll.update({
