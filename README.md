@@ -8,6 +8,7 @@ Built as a pnpm monorepo with a React client, an Express + Socket.IO API, Postgr
 
 - Google sign-in with server-side PostgreSQL sessions
 - Public, unlisted, and private rooms with invite links, QR codes, revocation, and rotation
+- Members can leave a room at any time; owners delete their room instead
 - Owner / host / member roles with server-enforced permissions
 - Shared queue ordered by votes, then by who added the song first
 - One upvote per person per song with live queue updates

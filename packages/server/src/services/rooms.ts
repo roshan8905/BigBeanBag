@@ -6,6 +6,7 @@ import { prisma } from '../lib/prisma';
 import {
   roomDetailInclude,
   roomMetaInclude,
+  toMemberDto,
   toRoomDetail,
   toRoomSummary,
   type RoomWithDetail,
@@ -156,6 +157,23 @@ export const setRoomRestrictions = async (
 export const deleteRoom = async (code: string, userId: string) => {
   const room = await requireOwner(code, userId);
   await prisma.room.delete({ where: { id: room.id } });
+};
+
+export const leaveRoom = async (roomId: string, userId: string) => {
+  const membership = await getMembership(roomId, userId);
+  if (!membership) throw new AppError(ERROR_CODES.NOT_FOUND, 'You are not in this room', 404);
+  if (membership.role === 'OWNER') {
+    throw new AppError(
+      ERROR_CODES.VALIDATION_FAILED,
+      'Owners cannot leave their own room. Delete it instead.',
+      400,
+    );
+  }
+
+  await prisma.roomMember.delete({ where: { roomId_userId: { roomId, userId } } });
+
+  const room = await prisma.room.findUnique({ where: { id: roomId }, include: roomDetailInclude });
+  return room ? room.members.map(toMemberDto) : [];
 };
 
 export const getInvite = async (code: string, userId: string) => {

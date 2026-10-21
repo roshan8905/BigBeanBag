@@ -11,6 +11,7 @@ import {
 import { prisma } from '../lib/prisma';
 import { addQueueItem, getQueue, removeQueueItem, toggleVote } from '../services/queue';
 import { loadPlayback } from '../services/playback';
+import { leaveRoom } from '../services/rooms';
 import { buildRoomSnapshot } from '../services/snapshot';
 import { respond, type AppServer } from './ack';
 import type { AppSocket } from './auth';
@@ -61,6 +62,21 @@ export const registerRoomHandlers = (io: AppServer, socket: AppSocket) => {
         socket.data.role = undefined;
         await emitPresence(io, roomId);
       }
+      return undefined;
+    }),
+  );
+
+  socket.on('room:exit', (ack) =>
+    respond(ack, async () => {
+      const { roomId, userId } = requireRoomContext(socket);
+      const members = await leaveRoom(roomId, userId);
+
+      socket.leave(roomId);
+      socket.data.roomId = undefined;
+      socket.data.role = undefined;
+
+      io.to(roomId).emit('room:members', members);
+      await emitPresence(io, roomId);
       return undefined;
     }),
   );

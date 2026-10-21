@@ -473,6 +473,22 @@ describe('roles and moderation', () => {
     );
     expect(renamed.ok).toBe(true);
     if (renamed.ok) expect(renamed.data.name).toBe('Renamed room');
+
+    const ownerExit = await new Promise<AckResult<undefined>>((resolve) =>
+      owner.emit('room:exit', resolve),
+    );
+    expect(ownerExit.ok).toBe(false);
+
+    const guestExit = await new Promise<AckResult<undefined>>((resolve) =>
+      guest.emit('room:exit', resolve),
+    );
+    expect(guestExit.ok).toBe(true);
+
+    const afterExit = await joinRoom(owner, code);
+    expect(afterExit.ok).toBe(true);
+    if (afterExit.ok) {
+      expect(afterExit.data.members.some((member) => member.userId === guestId)).toBe(false);
+    }
   }, 60000);
 });
 

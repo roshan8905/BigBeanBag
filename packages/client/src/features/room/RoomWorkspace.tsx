@@ -10,6 +10,7 @@ import {
   Loader2,
   Lock,
   LockKeyhole,
+  LogOut,
   Mic2,
   Settings,
   ShieldCheck,
@@ -18,7 +19,7 @@ import {
   Wifi,
   WifiOff,
 } from 'lucide-react';
-import { useAppSelector } from '@/app/hooks';
+import { useAppSelector, useAppDispatch } from '@/app/hooks';
 import { AddSongDialog } from '@/features/room/AddSongDialog';
 import { BattlePanel } from '@/features/room/BattlePanel';
 import { ChatPanel } from '@/features/room/ChatPanel';
@@ -29,6 +30,7 @@ import { QueuePanel } from '@/features/room/QueuePanel';
 import { RoomSettingsDialog } from '@/features/room/RoomSettingsDialog';
 import { useRoomSync } from '@/features/room/useRoomSync';
 import { InvitePanel } from '@/features/rooms/InvitePanel';
+import { api } from '@/lib/api';
 import { getSocket } from '@/lib/socket';
 
 const visibilityMeta = {
@@ -45,6 +47,7 @@ const roleStyles = {
 
 export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { code } = detail.room;
   useRoomSync(code, true);
 
@@ -151,6 +154,26 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
     if (!result.ok) setActionError(result.message);
   };
 
+  const leaveRoom = async () => {
+    if (!window.confirm(`Leave ${room.name}? You can rejoin later with the room code.`)) return;
+
+    setActionError('');
+    setBusy('leave');
+
+    const result = await new Promise<AckResult<undefined>>((resolve) => {
+      getSocket().emit('room:exit', resolve);
+    });
+
+    setBusy('');
+    if (!result.ok) {
+      setActionError(result.message);
+      return;
+    }
+
+    dispatch(api.util.invalidateTags(['Rooms']));
+    navigate('/rooms', { replace: true });
+  };
+
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-5 px-5 py-6 sm:px-8">
       <header className="flex flex-wrap items-center justify-between gap-3">
@@ -252,6 +275,22 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
             onRoleChange={(userId, action) => void changeRole(userId, action)}
             onModerate={(userId, action) => void moderate(userId, action)}
           />
+
+          {!isOwner ? (
+            <button
+              type="button"
+              className="btn-ghost w-full justify-center text-xs text-cream-400"
+              onClick={() => void leaveRoom()}
+              disabled={busy === 'leave'}
+            >
+              {busy === 'leave' ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <LogOut size={14} />
+              )}
+              {busy === 'leave' ? 'Leaving…' : 'Leave room'}
+            </button>
+          ) : null}
 
           {isOwner ? <InvitePanel code={code} /> : null}
 

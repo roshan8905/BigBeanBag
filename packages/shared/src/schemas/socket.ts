@@ -30,6 +30,7 @@ export type Ack<T = undefined> = (result: AckResult<T>) => void;
 export interface ClientToServerEvents {
   'room:join': (payload: JoinRoomInput, ack: Ack<RoomSnapshot>) => void;
   'room:leave': (ack?: Ack) => void;
+  'room:exit': (ack: Ack) => void;
   'room:update': (payload: UpdateRoomInput, ack: Ack<Room>) => void;
   'room:restrict': (payload: RoomRestrictionInput, ack: Ack<Room>) => void;
   'room:delete': (ack: Ack) => void;
