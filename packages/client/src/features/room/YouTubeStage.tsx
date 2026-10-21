@@ -168,7 +168,6 @@ export const YouTubeStage = ({
     player.unMute();
     player.setVolume(100);
     syncPlayer(true);
-    player.playVideo();
   };
 
   const togglePlayback = () => {
@@ -198,6 +197,16 @@ export const YouTubeStage = ({
     <section className="card overflow-hidden">
       <div className="relative aspect-video w-full bg-ink-950">
         <div ref={hostRef} className="absolute inset-0 [&_iframe]:h-full [&_iframe]:w-full" />
+
+        {ready && canControl && !error ? (
+          <button
+            type="button"
+            onClick={togglePlayback}
+            aria-label={playback.status === 'PLAYING' ? 'Pause video' : 'Play video'}
+            title={playback.status === 'PLAYING' ? 'Pause' : 'Play'}
+            className="absolute inset-0 cursor-pointer"
+          />
+        ) : null}
 
         {!ready && !error ? (
           <div className="absolute inset-0 grid place-items-center bg-ink-950/80">

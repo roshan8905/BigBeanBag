@@ -13,23 +13,27 @@ type ModalProps = {
 
 export const Modal = ({ open, onClose, title, description, size = 'md', children }: ModalProps) => {
   const panelRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     if (!open) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
+      if (event.key === 'Escape') onCloseRef.current();
     };
 
     document.addEventListener('keydown', onKeyDown);
     document.body.style.overflow = 'hidden';
-    panelRef.current?.focus();
+
+    const panel = panelRef.current;
+    if (panel && !panel.contains(document.activeElement)) panel.focus();
 
     return () => {
       document.removeEventListener('keydown', onKeyDown);
       document.body.style.overflow = '';
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 

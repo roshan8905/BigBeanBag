@@ -1,14 +1,15 @@
-import type {
-  AuthState,
-  CreateRoomInput,
-  InviteState,
-  MediaFilter,
-  ResolvedMedia,
-  Room,
-  RoomDetail,
-  RoomList,
-  SearchResults,
-  UpdateRoomInput,
+import {
+  MAX_SEARCH_RESULTS,
+  type AuthState,
+  type CreateRoomInput,
+  type InviteState,
+  type MediaFilter,
+  type ResolvedMedia,
+  type Room,
+  type RoomDetail,
+  type RoomList,
+  type SearchResults,
+  type UpdateRoomInput,
 } from '@bigbeanbag/shared';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
@@ -84,7 +85,7 @@ export const api = createApi({
     }),
     searchMedia: builder.query<SearchResults, { query: string; filter: MediaFilter }>({
       query: ({ query, filter }) =>
-        `/media/search?query=${encodeURIComponent(query)}&filter=${filter}&limit=15`,
+        `/media/search?query=${encodeURIComponent(query)}&filter=${filter}&limit=${MAX_SEARCH_RESULTS}`,
     }),
     resolveMedia: builder.mutation<ResolvedMedia, { url: string }>({
       query: (body) => ({ url: '/media/resolve', method: 'POST', body }),
