@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { Battle, QueueItem } from '@bigbeanbag/shared';
-import { Crown, Loader2, Plus, Swords, Timer } from 'lucide-react';
+import { Crown, Loader2, Swords, Timer } from 'lucide-react';
 import { Modal } from '@/components/Modal';
-import { useAppSelector } from '@/app/hooks';
 import { getSocket } from '@/lib/socket';
 
 const remainingLabel = (endsAt: string, now: number) => {
@@ -11,7 +10,7 @@ const remainingLabel = (endsAt: string, now: number) => {
   return `${minutes}:${String(seconds % 60).padStart(2, '0')}`;
 };
 
-const CreateBattleDialog = ({
+export const CreateBattleDialog = ({
   onClose,
   items,
 }: {
@@ -225,51 +224,24 @@ const BattleBody = ({ battle }: { battle: Battle }) => {
   );
 };
 
-export const BattlePanel = ({ canStart }: { canStart: boolean }) => {
-  const battle = useAppSelector((state) => state.battle.battle);
-  const queued = useAppSelector((state) =>
-    state.queue.items.filter((item) => item.status === 'QUEUED'),
-  );
-  const [createOpen, setCreateOpen] = useState(false);
-  const openBattle = battle?.status === 'OPEN';
-  const canCreate = canStart && !openBattle && queued.length >= 2;
+export const BattleActivity = ({ battle }: { battle: Battle }) => {
+  const open = battle.status === 'OPEN';
 
   return (
-    <section className="card p-4">
+    <section className="rounded-xl border border-white/10 bg-ink-900/60 p-3">
       <div className="flex items-center justify-between gap-2">
-        <h2 className="flex items-center gap-2 text-sm font-semibold">
-          <Swords size={15} className="text-bean-300" /> Battle
-        </h2>
-        {canCreate ? (
-          <button
-            type="button"
-            className="btn-ghost px-2 py-1 text-[11px]"
-            onClick={() => setCreateOpen(true)}
-          >
-            <Plus size={13} /> New battle
-          </button>
-        ) : null}
+        <h3 className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-bean-200">
+          <Swords size={12} /> Battle
+        </h3>
+        <span
+          className={`rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase ${
+            open ? 'bg-mint/15 text-mint' : 'bg-white/10 text-cream-400'
+          }`}
+        >
+          {open ? 'live' : 'closed'}
+        </span>
       </div>
-
-      {battle ? (
-        <BattleBody battle={battle} />
-      ) : (
-        <div className="mt-3 flex flex-col items-center justify-center py-5 text-center">
-          <span className="grid size-9 place-items-center rounded-xl bg-white/5 text-cream-500">
-            <Swords size={17} />
-          </span>
-          <p className="mt-2 text-xs text-cream-400">No battle yet.</p>
-          <p className="text-[11px] text-cream-500">
-            {canStart
-              ? 'Queue at least two songs, then pit them against each other.'
-              : 'A host can start a battle between two queued songs.'}
-          </p>
-        </div>
-      )}
-
-      {createOpen ? (
-        <CreateBattleDialog onClose={() => setCreateOpen(false)} items={queued} />
-      ) : null}
+      <BattleBody battle={battle} />
     </section>
   );
 };

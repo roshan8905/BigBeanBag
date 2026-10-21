@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import type { Poll } from '@bigbeanbag/shared';
-import { BarChart3, Check, Loader2, Plus, Vote, X } from 'lucide-react';
+import { BarChart3, Check, Loader2, Plus, X } from 'lucide-react';
 import { Modal } from '@/components/Modal';
-import { useAppSelector } from '@/app/hooks';
 import { getSocket } from '@/lib/socket';
 
-const CreatePollDialog = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+export const CreatePollDialog = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
   const [question, setQuestion] = useState('');
   const [options, setOptions] = useState(['', '']);
   const [saving, setSaving] = useState(false);
@@ -184,17 +183,8 @@ const PollBody = ({
   };
 
   return (
-    <div className="mt-3 space-y-2">
-      <div className="flex items-start justify-between gap-2">
-        <p className="text-sm font-medium leading-snug">{poll.question}</p>
-        <span
-          className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase ${
-            open ? 'bg-mint/15 text-mint' : 'bg-white/10 text-cream-400'
-          }`}
-        >
-          {open ? 'live' : 'closed'}
-        </span>
-      </div>
+    <div className="mt-2 space-y-2">
+      <p className="text-sm font-medium leading-snug">{poll.question}</p>
 
       {poll.options.map((option) => {
         const pct = total ? Math.round((option.votes / total) * 100) : 0;
@@ -253,41 +243,32 @@ const PollBody = ({
   );
 };
 
-export const PollPanel = ({ meId, canModerate }: { meId: string; canModerate: boolean }) => {
-  const poll = useAppSelector((state) => state.poll.poll);
-  const [createOpen, setCreateOpen] = useState(false);
-  const canStart = !poll || poll.status === 'CLOSED';
+export const PollActivity = ({
+  poll,
+  meId,
+  canModerate,
+}: {
+  poll: Poll;
+  meId: string;
+  canModerate: boolean;
+}) => {
+  const open = poll.status === 'OPEN';
 
   return (
-    <section className="card p-4">
+    <section className="rounded-xl border border-white/10 bg-ink-900/60 p-3">
       <div className="flex items-center justify-between gap-2">
-        <h2 className="flex items-center gap-2 text-sm font-semibold">
-          <BarChart3 size={15} className="text-bean-300" /> Poll
-        </h2>
-        {canStart ? (
-          <button
-            type="button"
-            className="btn-ghost px-2 py-1 text-[11px]"
-            onClick={() => setCreateOpen(true)}
-          >
-            <Plus size={13} /> New poll
-          </button>
-        ) : null}
+        <h3 className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-bean-200">
+          <BarChart3 size={12} /> Poll
+        </h3>
+        <span
+          className={`rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase ${
+            open ? 'bg-mint/15 text-mint' : 'bg-white/10 text-cream-400'
+          }`}
+        >
+          {open ? 'live' : 'closed'}
+        </span>
       </div>
-
-      {poll ? (
-        <PollBody poll={poll} meId={meId} canModerate={canModerate} />
-      ) : (
-        <div className="mt-3 flex flex-col items-center justify-center py-5 text-center">
-          <span className="grid size-9 place-items-center rounded-xl bg-white/5 text-cream-500">
-            <Vote size={17} />
-          </span>
-          <p className="mt-2 text-xs text-cream-400">No poll running.</p>
-          <p className="text-[11px] text-cream-500">Settle the next pick with a room vote.</p>
-        </div>
-      )}
-
-      <CreatePollDialog open={createOpen} onClose={() => setCreateOpen(false)} />
+      <PollBody poll={poll} meId={meId} canModerate={canModerate} />
     </section>
   );
 };

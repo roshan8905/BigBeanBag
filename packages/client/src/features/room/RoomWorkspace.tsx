@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import type { AckResult, Room, RoomDetail, RoomMember } from '@bigbeanbag/shared';
 import {
@@ -12,6 +12,7 @@ import {
   LockKeyhole,
   LogOut,
   Mic2,
+  MoreHorizontal,
   Settings,
   ShieldCheck,
   Trash2,
@@ -21,11 +22,9 @@ import {
 } from 'lucide-react';
 import { useAppSelector, useAppDispatch } from '@/app/hooks';
 import { AddSongDialog } from '@/features/room/AddSongDialog';
-import { BattlePanel } from '@/features/room/BattlePanel';
 import { ChatPanel } from '@/features/room/ChatPanel';
 import { MembersPanel } from '@/features/room/MembersPanel';
 import { PlaybackPanel } from '@/features/room/PlaybackPanel';
-import { PollPanel } from '@/features/room/PollPanel';
 import { QueuePanel } from '@/features/room/QueuePanel';
 import { RoomSettingsDialog } from '@/features/room/RoomSettingsDialog';
 import { useRoomSync } from '@/features/room/useRoomSync';
@@ -61,9 +60,11 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
 
   const [addOpen, setAddOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [ownerMenuOpen, setOwnerMenuOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [actionError, setActionError] = useState('');
   const [busy, setBusy] = useState('');
+  const ownerMenuRef = useRef<HTMLDivElement>(null);
 
   const room = liveRoom ?? detail.room;
   const members = liveMembers.length ? liveMembers : detail.members;
@@ -83,6 +84,25 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
     : chatRestricted
       ? 'Only hosts can chat right now.'
       : undefined;
+
+  useEffect(() => {
+    if (!ownerMenuOpen) return;
+
+    const onPointerDown = (event: MouseEvent) => {
+      if (!ownerMenuRef.current?.contains(event.target as Node)) setOwnerMenuOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOwnerMenuOpen(false);
+    };
+
+    document.addEventListener('mousedown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [ownerMenuOpen]);
 
   const copyCode = async () => {
     try {
@@ -211,6 +231,72 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
             {room.code}
             {copied ? <Check size={13} className="text-mint" /> : <Copy size={13} />}
           </button>
+          {isOwner ? (
+            <div ref={ownerMenuRef} className="relative">
+              <button
+                type="button"
+                onClick={() => setOwnerMenuOpen((open) => !open)}
+                className="inline-flex size-[30px] items-center justify-center rounded-lg border border-white/10 bg-white/5 text-cream-300 hover:bg-white/10 hover:text-cream-100"
+                aria-label="Room actions"
+                aria-haspopup="menu"
+                aria-expanded={ownerMenuOpen}
+                title="Room actions"
+              >
+                <MoreHorizontal size={16} />
+              </button>
+
+              {ownerMenuOpen ? (
+                <div
+                  role="menu"
+                  className="absolute left-0 top-full z-30 mt-1.5 w-44 rounded-xl border border-white/10 bg-ink-900 p-1.5 shadow-2xl shadow-black/40"
+                >
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-xs text-cream-300 transition hover:bg-white/5 hover:text-cream-100"
+                    onClick={() => {
+                      setOwnerMenuOpen(false);
+                      setSettingsOpen(true);
+                    }}
+                  >
+                    <Settings size={14} /> Room settings
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-xs text-cream-300 transition hover:bg-white/5 hover:text-cream-100 disabled:opacity-50"
+                    onClick={() => {
+                      setOwnerMenuOpen(false);
+                      void toggleLock();
+                    }}
+                    disabled={busy === 'lock'}
+                  >
+                    {busy === 'lock' ? (
+                      <Loader2 size={14} className="animate-spin" />
+                    ) : room.locked ? (
+                      <Unlock size={14} />
+                    ) : (
+                      <Lock size={14} />
+                    )}
+                    {room.locked ? 'Unlock room' : 'Lock room'}
+                  </button>
+                  <div className="my-1 h-px bg-white/5" />
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-xs text-coral transition hover:bg-coral/10 disabled:opacity-50"
+                    onClick={() => {
+                      setOwnerMenuOpen(false);
+                      void removeRoom();
+                    }}
+                    disabled={busy === 'delete'}
+                  >
+                    <Trash2 size={14} /> {busy === 'delete' ? 'Deleting…' : 'Delete room'}
+                  </button>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
           <span className="inline-flex items-center gap-1.5 rounded-lg bg-white/5 px-2.5 py-1.5 text-xs text-cream-300">
             <visibility.icon size={13} /> {visibility.label}
           </span>
@@ -234,10 +320,6 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
       <div className="grid flex-1 gap-4 lg:grid-cols-[1.55fr_1fr]">
         <div className="flex flex-col gap-4">
           <PlaybackPanel canControl={canControl} />
-          <div className="grid gap-4 md:grid-cols-2">
-            <PollPanel meId={me?.userId ?? ''} canModerate={canRemove} />
-            <BattlePanel canStart={canControl} />
-          </div>
           <QueuePanel
             canAdd={!room.addRestricted || canControl}
             canRemove={canRemove}
@@ -264,6 +346,7 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
           <ChatPanel
             meId={me?.userId ?? ''}
             canChat={canChat}
+            canControl={canControl}
             blockedReason={chatBlockedReason}
           />
 
@@ -293,42 +376,6 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
           ) : null}
 
           {isOwner ? <InvitePanel code={code} /> : null}
-
-          {isOwner ? (
-            <section className="card space-y-2 p-4">
-              <h2 className="text-sm font-semibold">Owner controls</h2>
-              <button
-                type="button"
-                className="btn-ghost w-full justify-start text-xs"
-                onClick={() => setSettingsOpen(true)}
-              >
-                <Settings size={14} /> Room settings
-              </button>
-              <button
-                type="button"
-                className="btn-ghost w-full justify-start text-xs"
-                onClick={() => void toggleLock()}
-                disabled={busy === 'lock'}
-              >
-                {busy === 'lock' ? (
-                  <Loader2 size={14} className="animate-spin" />
-                ) : room.locked ? (
-                  <Unlock size={14} />
-                ) : (
-                  <Lock size={14} />
-                )}
-                {room.locked ? 'Unlock room' : 'Lock room'}
-              </button>
-              <button
-                type="button"
-                className="btn-ghost w-full justify-start text-xs text-coral"
-                onClick={() => void removeRoom()}
-                disabled={busy === 'delete'}
-              >
-                <Trash2 size={14} /> {busy === 'delete' ? 'Deleting…' : 'Delete room'}
-              </button>
-            </section>
-          ) : null}
         </aside>
       </div>
 
