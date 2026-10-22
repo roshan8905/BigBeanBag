@@ -1,6 +1,6 @@
 # BigBeanBag
 
-A collaborative music room for listening together. Everyone joins a room, drops YouTube or Spotify links into a shared queue, votes on what plays next, and the room stays in sync from an authoritative host.
+A collaborative music room for listening together. Everyone joins a room, drops YouTube or Spotify links into a shared queue, and the room stays in sync from an authoritative host.
 
 Built as a pnpm monorepo with a React client, an Express + Socket.IO API, PostgreSQL via Prisma, and a shared Zod contract package.
 
@@ -10,11 +10,11 @@ Built as a pnpm monorepo with a React client, an Express + Socket.IO API, Postgr
 - Public, unlisted, and private rooms with invite links, QR codes, revocation, and rotation
 - Members can leave a room at any time; owners delete their room instead
 - Owner / host / member roles with server-enforced permissions
-- Shared queue ordered by votes by default, with host reshuffle and manual reordering
-- One upvote per person per song, plus host autoplay that refills the queue from suggestions
+- Shared queue in add order, with host drag-and-drop reordering and reshuffle
+- Host autoplay that refills the queue from suggestions
 - Owner or host drives playback; everyone else follows with drift correction
 - Chat with muted and host-only modes, plus emoji reactions
-- Timed song battles that turn the winning song's battle votes into queue votes
+- Timed song battles with live results
 - Room polls with live results and one vote per person
 - Member moderation: promote, demote, mute, unmute, kick, and ban
 - YouTube and Spotify link support, with search and metadata resolution
@@ -22,13 +22,13 @@ Built as a pnpm monorepo with a React client, an Express + Socket.IO API, Postgr
 
 ## Stack
 
-| Layer    | Technology                                                                 |
-| -------- | -------------------------------------------------------------------------- |
+| Layer    | Technology                                                                        |
+| -------- | --------------------------------------------------------------------------------- |
 | Client   | React 18, Vite, TypeScript, Tailwind CSS, Redux Toolkit / RTK Query, React Router |
-| Server   | Node.js, Express, TypeScript, Socket.IO, Passport, Zod                     |
-| Database | PostgreSQL (Neon-compatible) with Prisma                                   |
-| Shared   | `@bigbeanbag/shared` Zod schemas, DTOs, constants, and permission helpers   |
-| Tooling  | pnpm workspaces, Vitest, ESLint, Prettier, tsup                            |
+| Server   | Node.js, Express, TypeScript, Socket.IO, Passport, Zod                            |
+| Database | PostgreSQL (Neon-compatible) with Prisma                                          |
+| Shared   | `@bigbeanbag/shared` Zod schemas, DTOs, constants, and permission helpers         |
+| Tooling  | pnpm workspaces, Vitest, ESLint, Prettier, tsup                                   |
 
 ## Monorepo layout
 
@@ -94,22 +94,22 @@ The Vite dev server proxies `/api`, `/auth`, and `/socket.io` to the API, so the
 
 ## Environment variables
 
-| Variable               | Required | Notes                                                              |
-| ---------------------- | :------: | ------------------------------------------------------------------ |
-| `NODE_ENV`             |    no    | `development`, `test`, or `production`                             |
-| `PORT`                 |    no    | API port, defaults to `4000`                                       |
-| `APP_URL`              |    no    | Client origin used for invite links, defaults to the dev client    |
-| `SERVER_URL`           |    no    | Public API origin, defaults to `http://localhost:4000`             |
-| `SESSION_SECRET`       |   yes*   | Long random string. Production requires a unique 32+ character value |
-| `SESSION_COOKIE_NAME`  |    no    | Session cookie name, defaults to `bbb.sid`                         |
-| `DATABASE_URL`         |   yes    | Pooled PostgreSQL connection string                                |
-| `DIRECT_URL`           |   yes    | Direct PostgreSQL connection string used by Prisma migrations      |
-| `GOOGLE_CLIENT_ID`     |   yes*   | Google OAuth client ID                                             |
-| `GOOGLE_CLIENT_SECRET` |   yes*   | Google OAuth client secret                                         |
-| `GOOGLE_CALLBACK_URL`  |    no    | Defaults to `http://localhost:4000/auth/google/callback`           |
-| `YOUTUBE_API_KEY`      |   yes    | YouTube Data API v3 key for search, validation, and canonicalization |
-| `SPOTIFY_CLIENT_ID`    |    no    | Enables the Spotify Web API; without it, Spotify links use oEmbed   |
-| `SPOTIFY_CLIENT_SECRET`|    no    | Pairs with `SPOTIFY_CLIENT_ID`                                     |
+| Variable                | Required | Notes                                                                |
+| ----------------------- | :------: | -------------------------------------------------------------------- |
+| `NODE_ENV`              |    no    | `development`, `test`, or `production`                               |
+| `PORT`                  |    no    | API port, defaults to `4000`                                         |
+| `APP_URL`               |    no    | Client origin used for invite links, defaults to the dev client      |
+| `SERVER_URL`            |    no    | Public API origin, defaults to `http://localhost:4000`               |
+| `SESSION_SECRET`        |   yes*   | Long random string. Production requires a unique 32+ character value |
+| `SESSION_COOKIE_NAME`   |    no    | Session cookie name, defaults to `bbb.sid`                           |
+| `DATABASE_URL`          |   yes    | Pooled PostgreSQL connection string                                  |
+| `DIRECT_URL`            |   yes    | Direct PostgreSQL connection string used by Prisma migrations        |
+| `GOOGLE_CLIENT_ID`      |   yes*   | Google OAuth client ID                                               |
+| `GOOGLE_CLIENT_SECRET`  |   yes*   | Google OAuth client secret                                           |
+| `GOOGLE_CALLBACK_URL`   |    no    | Defaults to `http://localhost:4000/auth/google/callback`             |
+| `YOUTUBE_API_KEY`       |   yes    | YouTube Data API v3 key for search, validation, and canonicalization |
+| `SPOTIFY_CLIENT_ID`     |    no    | Enables the Spotify Web API; without it, Spotify links use oEmbed    |
+| `SPOTIFY_CLIENT_SECRET` |    no    | Pairs with `SPOTIFY_CLIENT_ID`                                       |
 
 \* Required in production. The server refuses to boot in production with the development session secret or without Google OAuth credentials.
 
@@ -125,15 +125,13 @@ Google OAuth runs through Passport. Sessions are stored in PostgreSQL with `conn
 
 - `OWNER`: full control, including room settings, invite rotation, role changes, and deletion
 - `HOST`: moderates members, controls playback, starts battles, and can close polls
-- `MEMBER`: adds songs, votes, chats, reacts, votes in polls and battles
+- `MEMBER`: adds songs, chats, reacts, votes in polls and battles
 
 The server re-checks the caller's membership and role for every action. The owner cannot be kicked, banned, muted, demoted, or modified by anyone. Hosts can only moderate members.
 
 ### Queue and playback
 
-By default, queue order is derived on the server: vote count descending, then `createdAt` ascending. Votes are unique per `(item, user)`. Queue broadcasts are personalized per socket so each client sees its own `votedByMe`.
-
-The owner or a host can reshuffle the queued songs or move individual songs up and down from the row menu. The first reshuffle or move switches the room to manual order, persisted with `QueueItem.position`; from then on, vote counts keep updating live but no longer reorder the queue. New songs join at the end of a manual queue.
+By default, queued songs play in the order they were added, using `createdAt` ascending. The owner or a host can drag songs by the handle on each row to any position or reshuffle the queue. The first drag or reshuffle switches the room to manual order, persisted with `QueueItem.position`. New songs join at the end of a manual queue. The client applies the drop optimistically so rows settle into their new order immediately, then reconciles with the server broadcast.
 
 Autoplay is also controlled by the owner or a host. When it is on and playback runs out of queued songs, the server searches for suggestions seeded by recent queue artists and inserts up to three tracks before advancing. If the queue has no artist history yet, it falls back to mood-style queries. Autoplay tracks are attributed to the room owner in the queue.
 
@@ -156,7 +154,7 @@ Chat is stored per room, with the latest 50 messages in the join snapshot and a 
 
 Polls allow all members to vote and one open poll per room. Tap an option to vote, tap another to switch, or tap your current pick again to clear it. The creator or a host can close the poll.
 
-Battles are started by the owner or host between two queued songs with a 15-300 second timer. Members vote once each and can switch their pick. When time expires, the higher-vote song wins (ties go to the earlier queued song), and every battle vote for the winner is converted into a queue vote. Battle timers are per-process; a sweeper finalizes expired battles and the room snapshot repairs state after a restart.
+Battles are started by the owner or host between two queued songs with a 15-300 second timer. Members vote once each and can switch their pick. When time expires, the higher-vote song wins (ties go to the earlier queued song). Battle timers are per-process; a sweeper finalizes expired battles and the room snapshot repairs state after a restart.
 
 ### Realtime protection
 
@@ -164,18 +162,18 @@ Socket handlers use per-socket token buckets for chat, reactions, polls, battles
 
 ## Scripts
 
-| Command          | What it does                                              |
-| ---------------- | --------------------------------------------------------- |
-| `pnpm dev`       | Build shared, then run client and server in parallel      |
-| `pnpm build`     | Build every package                                       |
-| `pnpm typecheck` | TypeScript checks across the workspace                    |
-| `pnpm lint`      | ESLint across the workspace                               |
-| `pnpm format`    | Prettier write                                            |
-| `pnpm test`      | Run all Vitest suites                                     |
-| `pnpm db:migrate`| Create/apply a development migration                      |
-| `pnpm db:push`   | Push the Prisma schema without a migration                |
-| `pnpm db:studio` | Open Prisma Studio                                        |
-| `pnpm db:generate` | Regenerate the Prisma client                            |
+| Command            | What it does                                         |
+| ------------------ | ---------------------------------------------------- |
+| `pnpm dev`         | Build shared, then run client and server in parallel |
+| `pnpm build`       | Build every package                                  |
+| `pnpm typecheck`   | TypeScript checks across the workspace               |
+| `pnpm lint`        | ESLint across the workspace                          |
+| `pnpm format`      | Prettier write                                       |
+| `pnpm test`        | Run all Vitest suites                                |
+| `pnpm db:migrate`  | Create/apply a development migration                 |
+| `pnpm db:push`     | Push the Prisma schema without a migration           |
+| `pnpm db:studio`   | Open Prisma Studio                                   |
+| `pnpm db:generate` | Regenerate the Prisma client                         |
 
 ### Tests
 

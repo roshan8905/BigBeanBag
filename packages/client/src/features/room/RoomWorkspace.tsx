@@ -74,7 +74,6 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
   const canRemove = role === 'OWNER' || role === 'HOST';
   const canControl = canRemove;
   const queuedCount = queue.filter((item) => item.status === 'QUEUED').length;
-  const totalVotes = queue.reduce((sum, item) => sum + item.voteCount, 0);
   const meMember = members.find((member) => member.userId === me?.userId);
   const isMuted = Boolean(meMember?.muted);
   const chatRestricted = room.chatRestricted && role === 'MEMBER';
@@ -156,10 +155,7 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
     if (!result.ok) setActionError(result.message);
   };
 
-  const moderate = async (
-    userId: string,
-    action: 'mute' | 'unmute' | 'kick' | 'ban',
-  ) => {
+  const moderate = async (userId: string, action: 'mute' | 'unmute' | 'kick' | 'ban') => {
     if (action === 'kick' || action === 'ban') {
       const label = action === 'ban' ? 'Ban' : 'Kick';
       if (!window.confirm(`${label} this person from the room?`)) return;
@@ -305,7 +301,9 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
               <LockKeyhole size={13} /> Locked
             </span>
           ) : null}
-          <span className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold ${roleStyles[role]}`}>
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold ${roleStyles[role]}`}
+          >
             {role === 'OWNER' ? <ShieldCheck size={13} /> : <Mic2 size={13} />} {role.toLowerCase()}
           </span>
         </div>
@@ -330,7 +328,9 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
         <aside className="space-y-4">
           <section className="grid grid-cols-3 gap-2 text-center text-xs text-cream-400">
             <div className="card p-3">
-              <p className="text-lg font-semibold text-cream-100">{presentIds.length || members.length}</p>
+              <p className="text-lg font-semibold text-cream-100">
+                {presentIds.length || members.length}
+              </p>
               listening
             </div>
             <div className="card p-3">
@@ -338,8 +338,8 @@ export const RoomWorkspace = ({ detail }: { detail: RoomDetail }) => {
               queued
             </div>
             <div className="card p-3">
-              <p className="text-lg font-semibold text-cream-100">{totalVotes}</p>
-              votes
+              <p className="text-lg font-semibold text-cream-100">{room.autoplay ? 'On' : 'Off'}</p>
+              autoplay
             </div>
           </section>
 

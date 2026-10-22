@@ -10,7 +10,10 @@ export const ensurePlayback = async (roomId: string) =>
     update: {},
   });
 
-export const toPlaybackDto = (state: DbPlaybackState, durationMs: number | null): PlaybackState => ({
+export const toPlaybackDto = (
+  state: DbPlaybackState,
+  durationMs: number | null,
+): PlaybackState => ({
   currentItemId: state.currentItemId,
   status: state.status,
   positionMs: state.positionMs,
@@ -33,7 +36,7 @@ const nextQueued = async (roomId: string) => {
 
   return prisma.queueItem.findFirst({
     where: { roomId, status: 'QUEUED' },
-    orderBy: [{ votes: { _count: 'desc' } }, { createdAt: 'asc' }],
+    orderBy: { createdAt: 'asc' },
   });
 };
 

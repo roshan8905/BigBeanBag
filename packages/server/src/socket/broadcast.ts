@@ -6,25 +6,22 @@ import type { AppServer } from './ack';
 export const emitPresence = async (io: AppServer, roomId: string) => {
   const sockets = await io.in(roomId).fetchSockets();
   const userIds = [
-    ...new Set(sockets.map((socket) => socket.data.userId).filter((id): id is string => Boolean(id))),
+    ...new Set(
+      sockets.map((socket) => socket.data.userId).filter((id): id is string => Boolean(id)),
+    ),
   ];
 
   io.to(roomId).emit('room:presence', { userIds });
 };
 
 export const broadcastQueue = async (io: AppServer, roomId: string) => {
-  const [rows, sockets, room] = await Promise.all([
+  const [rows, room] = await Promise.all([
     loadQueueRows(roomId),
-    io.in(roomId).fetchSockets(),
     prisma.room.findUnique({ where: { id: roomId }, select: { queueManual: true } }),
   ]);
   const ordered = orderQueue(rows, room?.queueManual ?? false);
 
-  for (const target of sockets) {
-    target.emit('queue:updated', {
-      items: ordered.map((row) => toQueueItemDto(row, target.data.userId)),
-    });
-  }
+  io.to(roomId).emit('queue:updated', { items: ordered.map(toQueueItemDto) });
 };
 
 export const broadcastPlayback = (io: AppServer, roomId: string, state: PlaybackState) => {

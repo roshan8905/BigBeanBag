@@ -1,11 +1,15 @@
 import type { Prisma } from '@prisma/client';
-import { AppError, ERROR_CODES, type AddQueueItemInput, type QueueItem as QueueItemDto } from '@bigbeanbag/shared';
+import {
+  AppError,
+  ERROR_CODES,
+  type AddQueueItemInput,
+  type QueueItem as QueueItemDto,
+} from '@bigbeanbag/shared';
 import { prisma } from '../lib/prisma';
 import { getYoutubeItem } from './youtube';
 import { skipTrack } from './playback';
 
 export const queueInclude = {
-  votes: { select: { userId: true } },
   addedBy: { select: { id: true, name: true } },
 } satisfies Prisma.QueueItemInclude;
 
@@ -18,7 +22,7 @@ export const loadQueueRows = async (roomId: string) =>
     orderBy: { createdAt: 'asc' },
   });
 
-export const toQueueItemDto = (row: QueueRow, userId: string): QueueItemDto => ({
+export const toQueueItemDto = (row: QueueRow): QueueItemDto => ({
   id: row.id,
   roomId: row.roomId,
   source: row.source,
@@ -31,13 +35,10 @@ export const toQueueItemDto = (row: QueueRow, userId: string): QueueItemDto => (
   mediaType: row.mediaType,
   status: row.status,
   addedBy: { id: row.addedBy.id, name: row.addedBy.name },
-  voteCount: row.votes.length,
-  votedByMe: row.votes.some((vote) => vote.userId === userId),
   createdAt: row.createdAt.toISOString(),
 });
 
-const byVotes = (a: QueueRow, b: QueueRow) =>
-  b.votes.length - a.votes.length || a.createdAt.getTime() - b.createdAt.getTime();
+const byCreatedAt = (a: QueueRow, b: QueueRow) => a.createdAt.getTime() - b.createdAt.getTime();
 
 const byPosition = (a: QueueRow, b: QueueRow) =>
   (a.position ?? Number.MAX_SAFE_INTEGER) - (b.position ?? Number.MAX_SAFE_INTEGER) ||
@@ -45,18 +46,20 @@ const byPosition = (a: QueueRow, b: QueueRow) =>
 
 export const orderQueue = (rows: QueueRow[], queueManual = false) => {
   const playing = rows.filter((row) => row.status === 'PLAYING');
-  const queued = rows.filter((row) => row.status === 'QUEUED').sort(queueManual ? byPosition : byVotes);
+  const queued = rows
+    .filter((row) => row.status === 'QUEUED')
+    .sort(queueManual ? byPosition : byCreatedAt);
 
   return [...playing, ...queued];
 };
 
-export const getQueue = async (roomId: string, userId: string) => {
+export const getQueue = async (roomId: string) => {
   const [rows, room] = await Promise.all([
     loadQueueRows(roomId),
     prisma.room.findUnique({ where: { id: roomId }, select: { queueManual: true } }),
   ]);
 
-  return orderQueue(rows, room?.queueManual ?? false).map((row) => toQueueItemDto(row, userId));
+  return orderQueue(rows, room?.queueManual ?? false).map(toQueueItemDto);
 };
 
 const nextQueuePosition = async (roomId: string) => {
@@ -90,31 +93,7 @@ export const addQueueItem = async (roomId: string, userId: string, input: AddQue
     include: queueInclude,
   });
 
-  return toQueueItemDto(row, userId);
-};
-
-export const toggleVote = async (roomId: string, itemId: string, userId: string) => {
-  const item = await prisma.queueItem.findFirst({ where: { id: itemId, roomId } });
-  if (!item) throw new AppError(ERROR_CODES.NOT_FOUND, 'That queue item is gone', 404);
-  if (item.status !== 'QUEUED') {
-    throw new AppError(ERROR_CODES.FORBIDDEN, 'Only songs waiting in the queue can be voted on', 400);
-  }
-
-  const existing = await prisma.vote.findUnique({ where: { itemId_userId: { itemId, userId } } });
-  let voted: boolean;
-
-  if (existing) {
-    await prisma.vote.delete({ where: { id: existing.id } });
-    voted = false;
-  } else {
-    await prisma.vote.create({ data: { itemId, userId } }).catch((error) => {
-      if ((error as { code?: string }).code !== 'P2002') throw error;
-    });
-    voted = true;
-  }
-
-  const voteCount = await prisma.vote.count({ where: { itemId } });
-  return { itemId, voted, voteCount };
+  return toQueueItemDto(row);
 };
 
 export const removeQueueItem = async (roomId: string, itemId: string) => {
@@ -138,7 +117,10 @@ const writeManualOrder = async (roomId: string, queued: QueueRow[]) => {
 };
 
 export const shuffleQueue = async (roomId: string) => {
-  const room = await prisma.room.findUnique({ where: { id: roomId }, select: { queueManual: true } });
+  const room = await prisma.room.findUnique({
+    where: { id: roomId },
+    select: { queueManual: true },
+  });
   if (!room) throw new AppError(ERROR_CODES.NOT_FOUND, 'Room not found', 404);
 
   const rows = await loadQueueRows(roomId);
@@ -157,12 +139,11 @@ export const shuffleQueue = async (roomId: string) => {
   await writeManualOrder(roomId, queued);
 };
 
-export const moveQueueItem = async (
-  roomId: string,
-  itemId: string,
-  direction: 'up' | 'down',
-) => {
-  const room = await prisma.room.findUnique({ where: { id: roomId }, select: { queueManual: true } });
+export const moveQueueItem = async (roomId: string, itemId: string, toIndex: number) => {
+  const room = await prisma.room.findUnique({
+    where: { id: roomId },
+    select: { queueManual: true },
+  });
   if (!room) throw new AppError(ERROR_CODES.NOT_FOUND, 'Room not found', 404);
 
   const rows = await loadQueueRows(roomId);
@@ -176,12 +157,12 @@ export const moveQueueItem = async (
     throw new AppError(ERROR_CODES.NOT_FOUND, 'That queue item is gone', 404);
   }
 
-  const targetIndex = direction === 'up' ? index - 1 : index + 1;
-  const current = queued[index];
-  const target = queued[targetIndex];
-  if (!current || !target) return;
+  const targetIndex = Math.min(toIndex, queued.length - 1);
+  if (index === targetIndex) return;
 
-  queued[index] = target;
-  queued[targetIndex] = current;
+  const [current] = queued.splice(index, 1);
+  if (!current) return;
+
+  queued.splice(targetIndex, 0, current);
   await writeManualOrder(roomId, queued);
 };

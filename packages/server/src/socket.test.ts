@@ -91,11 +91,6 @@ const addItem = (socket: TestSocket, youtubeId: string, title: string) =>
     ),
   );
 
-const vote = (socket: TestSocket, itemId: string) =>
-  new Promise<AckResult<{ itemId: string; voted: boolean; voteCount: number }>>((resolve) =>
-    socket.emit('queue:vote', { itemId }, resolve),
-  );
-
 const remove = (socket: TestSocket, itemId: string) =>
   new Promise<AckResult<QueueUpdated>>((resolve) =>
     socket.emit('queue:remove', { itemId }, resolve),
@@ -104,15 +99,13 @@ const remove = (socket: TestSocket, itemId: string) =>
 const shuffle = (socket: TestSocket) =>
   new Promise<AckResult<QueueUpdated>>((resolve) => socket.emit('queue:shuffle', resolve));
 
-const moveItem = (socket: TestSocket, itemId: string, direction: 'up' | 'down') =>
+const moveItem = (socket: TestSocket, itemId: string, toIndex: number) =>
   new Promise<AckResult<QueueUpdated>>((resolve) =>
-    socket.emit('queue:move', { itemId, direction }, resolve),
+    socket.emit('queue:move', { itemId, toIndex }, resolve),
   );
 
 const setAutoplay = (socket: TestSocket, enabled: boolean) =>
-  new Promise<AckResult<Room>>((resolve) =>
-    socket.emit('queue:autoplay', { enabled }, resolve),
-  );
+  new Promise<AckResult<Room>>((resolve) => socket.emit('queue:autoplay', { enabled }, resolve));
 
 const play = (socket: TestSocket, positionMs?: number) =>
   new Promise<AckResult<PlaybackState>>((resolve) =>
@@ -188,7 +181,10 @@ const mockYoutube = () => {
       const query = url.searchParams.get('q');
 
       if (query) {
-        const seed = query.replace(/[^a-z0-9]/gi, '').slice(0, 8).toUpperCase();
+        const seed = query
+          .replace(/[^a-z0-9]/gi, '')
+          .slice(0, 8)
+          .toUpperCase();
         const suggested = [1, 2, 3].map((index) => ({
           id: { videoId: `AUT${seed}${index}` },
           snippet: {
@@ -281,7 +277,7 @@ describe('socket room access', () => {
 });
 
 describe('live queue', () => {
-  it('shares the queue, toggles votes, orders by votes, and enforces removal rights', async () => {
+  it('shares the queue in add order and enforces removal rights', async () => {
     const owner = await connect(ownerId);
     const guest = await connect(guestId);
 
@@ -313,7 +309,8 @@ describe('live queue', () => {
 
     const afterFirst = await guestQueueUpdate;
     expect(afterFirst.items).toHaveLength(1);
-    expect(afterFirst.items[0]?.votedByMe).toBe(false);
+    expect(afterFirst.items[0]).not.toHaveProperty('voteCount');
+    expect(afterFirst.items[0]).not.toHaveProperty('votedByMe');
 
     const ownerQueueUpdate = nextQueue(owner);
     const second = await addItem(guest, 'TSTVID00002', 'Second song');
@@ -321,31 +318,7 @@ describe('live queue', () => {
     if (!second.ok) return;
 
     const guestUpdate = await ownerQueueUpdate;
-    expect(guestUpdate.items).toHaveLength(2);
-
-    const ownerReorder = nextQueue(owner);
-    const guestReorder = nextQueue(guest);
-
-    const voteResult = await vote(guest, second.data.id);
-    expect(voteResult.ok).toBe(true);
-    if (!voteResult.ok) return;
-    expect(voteResult.data).toMatchObject({ voted: true, voteCount: 1 });
-
-    const reordered = await ownerReorder;
-    expect(reordered.items.map((item) => item.id)).toEqual([second.data.id, first.data.id]);
-    expect(reordered.items[0]?.votedByMe).toBe(false);
-
-    const guestOwnView = await guestReorder;
-    expect(guestOwnView.items[0]?.votedByMe).toBe(true);
-
-    const tiedPromise = nextQueue(owner);
-    const unvote = await vote(guest, second.data.id);
-    expect(unvote.ok).toBe(true);
-    if (!unvote.ok) return;
-    expect(unvote.data).toMatchObject({ voted: false, voteCount: 0 });
-
-    const tied = await tiedPromise;
-    expect(tied.items.map((item) => item.id)).toEqual([first.data.id, second.data.id]);
+    expect(guestUpdate.items.map((item) => item.id)).toEqual([first.data.id, second.data.id]);
 
     const denied = await remove(guest, second.data.id);
     expect(denied.ok).toBe(false);
@@ -359,7 +332,7 @@ describe('live queue', () => {
 });
 
 describe('queue ordering and autoplay', () => {
-  it('lets hosts reshuffle and reorder, then keeps the manual order over votes', async () => {
+  it('lets hosts reshuffle and drag songs to any position', async () => {
     const created = await request(app)
       .post('/api/rooms')
       .set('x-test-user-id', ownerId)
@@ -379,15 +352,25 @@ describe('queue ordering and autoplay', () => {
     expect(first.ok && second.ok && third.ok).toBe(true);
     if (!first.ok || !second.ok || !third.ok) return;
 
+    const initial = await joinRoom(owner, code);
+    expect(initial.ok).toBe(true);
+    if (initial.ok) {
+      expect(initial.data.queue.map((item) => item.id)).toEqual([
+        first.data.id,
+        second.data.id,
+        third.data.id,
+      ]);
+    }
+
     const guestShuffle = await shuffle(guest);
     expect(guestShuffle.ok).toBe(false);
     if (!guestShuffle.ok) expect(guestShuffle.code).toBe('FORBIDDEN');
 
-    const guestMove = await moveItem(guest, third.data.id, 'up');
+    const guestMove = await moveItem(guest, third.data.id, 0);
     expect(guestMove.ok).toBe(false);
     if (!guestMove.ok) expect(guestMove.code).toBe('FORBIDDEN');
 
-    const movedOnce = await moveItem(owner, third.data.id, 'up');
+    const movedOnce = await moveItem(owner, third.data.id, 1);
     expect(movedOnce.ok).toBe(true);
     if (!movedOnce.ok) return;
     expect(movedOnce.data.items.map((item) => item.id)).toEqual([
@@ -396,7 +379,7 @@ describe('queue ordering and autoplay', () => {
       second.data.id,
     ]);
 
-    const movedTwice = await moveItem(owner, third.data.id, 'up');
+    const movedTwice = await moveItem(owner, third.data.id, 0);
     expect(movedTwice.ok).toBe(true);
     if (!movedTwice.ok) return;
     expect(movedTwice.data.items.map((item) => item.id)).toEqual([
@@ -405,7 +388,7 @@ describe('queue ordering and autoplay', () => {
       second.data.id,
     ]);
 
-    const movedBack = await moveItem(owner, third.data.id, 'down');
+    const movedBack = await moveItem(owner, third.data.id, 1);
     expect(movedBack.ok).toBe(true);
     if (!movedBack.ok) return;
     expect(movedBack.data.items.map((item) => item.id)).toEqual([
@@ -414,20 +397,15 @@ describe('queue ordering and autoplay', () => {
       second.data.id,
     ]);
 
-    const voted = await vote(guest, second.data.id);
-    expect(voted.ok).toBe(true);
-
-    const snapshotAfterVote = await joinRoom(owner, code);
-    expect(snapshotAfterVote.ok).toBe(true);
-    if (snapshotAfterVote.ok) {
-      expect(snapshotAfterVote.data.queue.map((item) => item.id)).toEqual([
+    const snapshot = await joinRoom(owner, code);
+    expect(snapshot.ok).toBe(true);
+    if (snapshot.ok) {
+      expect(snapshot.data.queue.map((item) => item.id)).toEqual([
         first.data.id,
         third.data.id,
         second.data.id,
       ]);
-      expect(
-        snapshotAfterVote.data.queue.find((item) => item.id === second.data.id)?.voteCount,
-      ).toBe(1);
+      expect(snapshot.data.queue[0]).not.toHaveProperty('voteCount');
     }
 
     const random = vi.spyOn(Math, 'random').mockReturnValue(0);
@@ -746,7 +724,7 @@ describe('chat and reactions', () => {
 });
 
 describe('polls and battles', () => {
-  it('runs a poll and a timed song battle that boosts the winner', async () => {
+  it('runs a poll and a timed song battle', async () => {
     const created = await request(app)
       .post('/api/rooms')
       .set('x-test-user-id', ownerId)
@@ -825,8 +803,6 @@ describe('polls and battles', () => {
     expect(snapshot.ok).toBe(true);
     if (snapshot.ok) {
       expect(snapshot.data.battle?.winnerItemId).toBe(first.data.id);
-      const winner = snapshot.data.queue.find((item) => item.id === first.data.id);
-      expect(winner?.voteCount).toBe(1);
     }
   }, 60000);
 });

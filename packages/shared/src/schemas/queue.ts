@@ -24,16 +24,9 @@ export const QueueItemSchema = z.object({
     id: IdSchema,
     name: z.string(),
   }),
-  voteCount: z.number().int().nonnegative(),
-  votedByMe: z.boolean(),
   createdAt: z.string(),
 });
 export type QueueItem = z.infer<typeof QueueItemSchema>;
-
-export const VoteToggleSchema = z.object({
-  itemId: IdSchema,
-});
-export type VoteToggleInput = z.infer<typeof VoteToggleSchema>;
 
 export const RemoveQueueItemSchema = z.object({
   itemId: IdSchema,
@@ -42,7 +35,7 @@ export type RemoveQueueItemInput = z.infer<typeof RemoveQueueItemSchema>;
 
 export const QueueMoveSchema = z.object({
   itemId: IdSchema,
-  direction: z.enum(['up', 'down']),
+  toIndex: z.number().int().nonnegative(),
 });
 export type QueueMoveInput = z.infer<typeof QueueMoveSchema>;
 

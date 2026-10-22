@@ -32,7 +32,7 @@ export const buildRoomSnapshot = async (roomId: string, userId: string): Promise
     room: toRoomDto(room as RoomWithDetail),
     me: { userId, role: membership.role },
     members: room.members.map(toMemberDto),
-    queue: ordered.map((row) => toQueueItemDto(row, userId)),
+    queue: ordered.map(toQueueItemDto),
     playback: toPlaybackDto(playbackRow, current?.durationMs ?? null),
     chat,
     reactions,

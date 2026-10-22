@@ -40,12 +40,10 @@ const item = (id: string, index: number): QueueItem => ({
   mediaType: 'MUSIC',
   status: 'QUEUED',
   addedBy: { id: 'owner-1', name: 'Owner' },
-  voteCount: index,
-  votedByMe: false,
   createdAt: '2026-01-01T00:00:00.000Z',
 });
 
-const renderQueue = () => {
+const renderQueue = (canRemove = true) => {
   const store = configureStore({
     reducer: { queue: queueReducer, room: roomReducer },
     preloadedState: {
@@ -64,7 +62,7 @@ const renderQueue = () => {
 
   return render(
     <Provider store={store}>
-      <QueuePanel canAdd canRemove onAdd={vi.fn()} />
+      <QueuePanel canAdd canRemove={canRemove} onAdd={vi.fn()} />
     </Provider>,
   );
 };
@@ -76,36 +74,34 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe('QueuePanel', () => {
-  it('moves voting beside the row actions and exposes queue controls', () => {
+  it('exposes queue controls without song voting', () => {
     renderQueue();
 
     expect(screen.getByRole('button', { name: 'Reshuffle queue' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Turn autoplay on' })).toBeTruthy();
-
-    fireEvent.click(screen.getAllByRole('button', { name: 'Vote for this song' })[0] as HTMLElement);
-    expect(emit).toHaveBeenCalledWith('queue:vote', { itemId: 'one' }, expect.any(Function));
+    expect(screen.queryAllByRole('button', { name: /vote/i })).toHaveLength(0);
 
     fireEvent.click(screen.getByRole('button', { name: 'Reshuffle queue' }));
     expect(emit).toHaveBeenCalledWith('queue:shuffle', expect.any(Function));
 
     fireEvent.click(screen.getByRole('button', { name: 'Turn autoplay on' }));
     expect(emit).toHaveBeenCalledWith('queue:autoplay', { enabled: true }, expect.any(Function));
+    expect(emit).not.toHaveBeenCalledWith('queue:vote', expect.anything(), expect.any(Function));
   });
 
-  it('opens the row menu and emits queue moves', () => {
+  it('renders a drag handle for every queued song instead of a reorder menu', () => {
     renderQueue();
 
-    const handles = screen.getAllByRole('button', { name: 'Reorder song' });
-    expect(handles).toHaveLength(3);
+    expect(screen.getAllByRole('button', { name: 'Drag to reorder' })).toHaveLength(3);
+    expect(screen.queryByRole('menu')).toBeNull();
+    expect(screen.queryByRole('menuitem')).toBeNull();
+    expect(screen.getAllByRole('button', { name: 'Remove from queue' })).toHaveLength(3);
+  });
 
-    fireEvent.click(handles[0] as HTMLElement);
-    expect(screen.getByRole('menuitem', { name: 'Move up' })).toHaveProperty('disabled', true);
+  it('hides drag handles from members', () => {
+    renderQueue(false);
 
-    fireEvent.click(screen.getByRole('menuitem', { name: 'Move down' }));
-    expect(emit).toHaveBeenCalledWith(
-      'queue:move',
-      { itemId: 'one', direction: 'down' },
-      expect.any(Function),
-    );
+    expect(screen.queryAllByRole('button', { name: 'Drag to reorder' })).toHaveLength(0);
+    expect(screen.queryAllByRole('button', { name: 'Remove from queue' })).toHaveLength(0);
   });
 });

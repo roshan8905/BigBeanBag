@@ -1,9 +1,5 @@
 import type { Prisma } from '@prisma/client';
-import type {
-  Battle as BattleDto,
-  BattleVoteInput,
-  CreateBattleInput,
-} from '@bigbeanbag/shared';
+import type { Battle as BattleDto, BattleVoteInput, CreateBattleInput } from '@bigbeanbag/shared';
 import { AppError, ERROR_CODES } from '@bigbeanbag/shared';
 import { prisma } from '../lib/prisma';
 
@@ -85,7 +81,11 @@ export const createBattle = async (roomId: string, userId: string, input: Create
     throw new AppError(ERROR_CODES.VALIDATION_FAILED, 'Both songs must be in this room', 400);
   }
   if (items.some((item) => item.status !== 'QUEUED')) {
-    throw new AppError(ERROR_CODES.VALIDATION_FAILED, 'Both songs must be waiting in the queue', 400);
+    throw new AppError(
+      ERROR_CODES.VALIDATION_FAILED,
+      'Both songs must be waiting in the queue',
+      400,
+    );
   }
 
   const battle = await prisma.battle.create({
@@ -145,14 +145,6 @@ export const finalizeBattle = async (battleId: string) => {
       where: { id: battleId },
       data: { status: 'CLOSED', winnerItemId },
     });
-
-    for (const vote of battle.votes.filter((entry) => entry.itemId === winnerItemId)) {
-      await tx.vote.upsert({
-        where: { itemId_userId: { itemId: winnerItemId, userId: vote.userId } },
-        create: { itemId: winnerItemId, userId: vote.userId },
-        update: {},
-      });
-    }
   });
 
   return { roomId: battle.roomId, winnerItemId };

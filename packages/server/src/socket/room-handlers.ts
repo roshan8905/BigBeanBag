@@ -6,7 +6,6 @@ import {
   QueueAutoplaySchema,
   QueueMoveSchema,
   RemoveQueueItemSchema,
-  VoteToggleSchema,
   canControlPlayback,
   canRemoveFromQueue,
 } from '@bigbeanbag/shared';
@@ -17,7 +16,6 @@ import {
   moveQueueItem,
   removeQueueItem,
   shuffleQueue,
-  toggleVote,
 } from '../services/queue';
 import { loadPlayback } from '../services/playback';
 import { leaveRoom, setRoomAutoplay } from '../services/rooms';
@@ -114,20 +112,6 @@ export const registerRoomHandlers = (io: AppServer, socket: AppSocket) => {
     }),
   );
 
-  socket.on('queue:vote', (payload, ack) =>
-    respond(ack, async () => {
-      if (!takeToken(`${socket.id}:vote`, 20, 5000)) {
-        throw new AppError(ERROR_CODES.RATE_LIMITED, 'Easy on the votes', 429);
-      }
-
-      const { roomId, userId } = requireRoomContext(socket);
-      const { itemId } = VoteToggleSchema.parse(payload);
-      const result = await toggleVote(roomId, itemId, userId);
-      await broadcastQueue(io, roomId);
-      return result;
-    }),
-  );
-
   socket.on('queue:remove', (payload, ack) =>
     respond(ack, async () => {
       const { roomId, userId } = requireRoomContext(socket);
@@ -140,7 +124,7 @@ export const registerRoomHandlers = (io: AppServer, socket: AppSocket) => {
       await removeQueueItem(roomId, itemId);
       await broadcastQueue(io, roomId);
       broadcastPlayback(io, roomId, await loadPlayback(roomId));
-      return { items: await getQueue(roomId, userId) };
+      return { items: await getQueue(roomId) };
     }),
   );
 
@@ -158,7 +142,7 @@ export const registerRoomHandlers = (io: AppServer, socket: AppSocket) => {
 
       await shuffleQueue(roomId);
       await broadcastQueue(io, roomId);
-      return { items: await getQueue(roomId, userId) };
+      return { items: await getQueue(roomId) };
     }),
   );
 
@@ -174,10 +158,10 @@ export const registerRoomHandlers = (io: AppServer, socket: AppSocket) => {
         throw new AppError(ERROR_CODES.FORBIDDEN, 'Only hosts can reorder the queue', 403);
       }
 
-      const { itemId, direction } = QueueMoveSchema.parse(payload);
-      await moveQueueItem(roomId, itemId, direction);
+      const { itemId, toIndex } = QueueMoveSchema.parse(payload);
+      await moveQueueItem(roomId, itemId, toIndex);
       await broadcastQueue(io, roomId);
-      return { items: await getQueue(roomId, userId) };
+      return { items: await getQueue(roomId) };
     }),
   );
 

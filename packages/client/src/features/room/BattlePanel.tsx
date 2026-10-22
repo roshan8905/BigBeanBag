@@ -59,7 +59,7 @@ export const CreateBattleDialog = ({
       open
       onClose={onClose}
       title="Start a song battle"
-      description="Pick two queued tracks. The room votes, and the winner earns those votes in the queue."
+      description="Pick two queued tracks. The room votes, and the higher-vote track wins."
     >
       <form onSubmit={(event) => void submit(event)} className="space-y-3">
         {[
@@ -215,7 +215,7 @@ const BattleBody = ({ battle }: { battle: Battle }) => {
 
       {winner && battle.status === 'CLOSED' ? (
         <p className="mt-2 text-[11px] text-mint">
-          {winner.title} won and picked up {winner.votes} queue votes.
+          {winner.title} won the battle with {winner.votes} votes.
         </p>
       ) : null}
 

@@ -7,7 +7,6 @@ import type {
   QueueMoveInput,
   QueueUpdated,
   RemoveQueueItemInput,
-  VoteToggleInput,
 } from './queue';
 import type {
   JoinRoomInput,
@@ -19,13 +18,26 @@ import type {
   RoomSnapshot,
   UpdateRoomInput,
 } from './room';
-import type { ClockPong, PlaybackState, PlayCommandInput, SeekCommandInput, TrackEndedInput } from './playback';
-import type { Battle, BattleVoteInput, ClosePollInput, CreateBattleInput, CreatePollInput, Poll, VotePollInput } from './poll';
+import type {
+  ClockPong,
+  PlaybackState,
+  PlayCommandInput,
+  SeekCommandInput,
+  TrackEndedInput,
+} from './playback';
+import type {
+  Battle,
+  BattleVoteInput,
+  ClosePollInput,
+  CreateBattleInput,
+  CreatePollInput,
+  Poll,
+  VotePollInput,
+} from './poll';
 import type { SendChatMessageInput, SendReactionInput } from './chat';
 
 export type AckResult<T = undefined> =
-  | { ok: true; data: T }
-  | { ok: false; code: ErrorCode; message: string };
+  { ok: true; data: T } | { ok: false; code: ErrorCode; message: string };
 
 export type Ack<T = undefined> = (result: AckResult<T>) => void;
 
@@ -41,7 +53,6 @@ export interface ClientToServerEvents {
   'member:demote': (payload: PromoteMemberInput, ack: Ack<RoomMember>) => void;
   'moderation:act': (payload: ModerationInput, ack: Ack) => void;
   'queue:add': (payload: AddQueueItemInput, ack: Ack<QueueItem>) => void;
-  'queue:vote': (payload: VoteToggleInput, ack: Ack<{ itemId: string; voted: boolean; voteCount: number }>) => void;
   'queue:remove': (payload: RemoveQueueItemInput, ack: Ack<QueueUpdated>) => void;
   'queue:shuffle': (ack: Ack<QueueUpdated>) => void;
   'queue:move': (payload: QueueMoveInput, ack: Ack<QueueUpdated>) => void;

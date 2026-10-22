@@ -35,8 +35,6 @@ const makeItem = (id: string): QueueItem => ({
   mediaType: 'MUSIC',
   status: 'QUEUED',
   addedBy: { id: 'user-1', name: 'Ada' },
-  voteCount: 1,
-  votedByMe: false,
   createdAt: '2026-01-01T00:00:00.000Z',
 });
 

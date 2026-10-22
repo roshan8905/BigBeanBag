@@ -63,7 +63,6 @@ model User {
   ownedRooms   Room[]   @relation("RoomOwner")
   memberships  RoomMember[]
   queueItems   QueueItem[]
-  votes        Vote[]
   reactions    Reaction[]
   chatMessages ChatMessage[]
   polls        Poll[]
@@ -164,25 +163,12 @@ model QueueItem {
   position    Int?
   playedAt    DateTime?
   createdAt   DateTime    @default(now())
-  votes       Vote[]
   battlesAsA  Battle[]    @relation("BattleItemA")
   battlesAsB  Battle[]    @relation("BattleItemB")
   battleWins  Battle[]    @relation("BattleWinner")
 
   @@index([roomId, status])
   @@index([roomId, status, position])
-}
-
-model Vote {
-  id        String    @id @default(cuid())
-  itemId    String
-  item      QueueItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
-  userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime  @default(now())
-
-  @@unique([itemId, userId])
-  @@index([itemId])
 }
 
 model Reaction {

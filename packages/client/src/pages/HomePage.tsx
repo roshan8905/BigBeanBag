@@ -1,4 +1,4 @@
-import { Radio, Users, Vote } from 'lucide-react';
+import { ListMusic, Radio, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAppSelector } from '@/app/hooks';
 import { AppHeader } from '@/components/AppHeader';
@@ -11,9 +11,9 @@ const features = [
     body: 'Spin up a room, share a code or QR, and let everyone in.',
   },
   {
-    icon: Vote,
-    title: 'The queue votes back',
-    body: 'One upvote each. The crowd decides what plays next.',
+    icon: ListMusic,
+    title: 'The queue, your way',
+    body: 'Hosts drag songs into order, reshuffle, and keep the next track ready.',
   },
   {
     icon: Radio,
@@ -53,8 +53,8 @@ export const HomePage = () => {
             <span className="text-bean-300">Everyone&apos;s taste.</span>
           </h1>
           <p className="mt-5 max-w-lg text-base leading-relaxed text-cream-300 sm:text-lg">
-            BigBeanBag is a shared listening room. Drop in songs and videos, upvote the next track,
-            and let the host keep the whole room on the same beat.
+            BigBeanBag is a shared listening room. Drop in songs and videos, shape the queue
+            together, and let the host keep the whole room on the same beat.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             {user ? (
@@ -86,9 +86,14 @@ export const HomePage = () => {
           </div>
           <div className="mt-4 space-y-2">
             {[
-              { title: 'Midnight City', artist: 'M83', votes: 7, tone: 'bg-bean-400/20' },
-              { title: 'Redbone', artist: 'Childish Gambino', votes: 4, tone: 'bg-mint/15' },
-              { title: 'Nights', artist: 'Frank Ocean', votes: 2, tone: 'bg-coral/15' },
+              { title: 'Midnight City', artist: 'M83', duration: '4:03', tone: 'bg-bean-400/20' },
+              {
+                title: 'Redbone',
+                artist: 'Childish Gambino',
+                duration: '5:26',
+                tone: 'bg-mint/15',
+              },
+              { title: 'Nights', artist: 'Frank Ocean', duration: '6:07', tone: 'bg-coral/15' },
             ].map((track) => (
               <div
                 key={track.title}
@@ -100,7 +105,7 @@ export const HomePage = () => {
                   <span className="block truncate text-xs text-cream-400">{track.artist}</span>
                 </span>
                 <span className="rounded-full bg-white/5 px-2.5 py-1 text-xs font-semibold text-cream-200">
-                  ▲ {track.votes}
+                  {track.duration}
                 </span>
               </div>
             ))}
