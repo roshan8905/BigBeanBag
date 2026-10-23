@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
-import { createApp } from './app';
+import { createApp } from './create-app';
 
 describe('health endpoint', () => {
   it('reports the api and database status', async () => {

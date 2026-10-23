@@ -1,0 +1,53 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "client": {
+      "root": "packages/client",
+      "framework": "vite",
+      "buildCommand": "pnpm --filter @bigbeanbag/shared build && pnpm build",
+      "rewrites": [
+        {
+          "source": "/(.*)",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    "server": {
+      "root": "packages/server",
+      "framework": "express",
+      "buildCommand": "pnpm --filter @bigbeanbag/shared build && pnpm db:generate && pnpm build"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": {
+        "service": "server"
+      }
+    },
+    {
+      "source": "/auth/(.*)",
+      "destination": {
+        "service": "server"
+      }
+    },
+    {
+      "source": "/socket.io",
+      "destination": {
+        "service": "server"
+      }
+    },
+    {
+      "source": "/socket.io/(.*)",
+      "destination": {
+        "service": "server"
+      }
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "client"
+      }
+    }
+  ]
+}

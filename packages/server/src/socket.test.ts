@@ -19,7 +19,7 @@ import type {
   Role,
   ServerToClientEvents,
 } from '@bigbeanbag/shared';
-import { createApp } from './app';
+import { createApp } from './create-app';
 import { prisma } from './lib/prisma';
 import { createSocketServer, type AppServer } from './socket';
 

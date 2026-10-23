@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { RoomDetail } from '@bigbeanbag/shared';
-import { createApp } from './app';
+import { createApp } from './create-app';
 import { prisma } from './lib/prisma';
 
 const app = createApp();

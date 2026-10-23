@@ -190,6 +190,37 @@ pnpm --filter @bigbeanbag/server test -- src/socket.test.ts
 
 ## Deployment notes
 
+### Vercel
+
+The repository deploys as one Vercel project with two services:
+
+| Service  | Root              | Public paths                                      |
+| -------- | ----------------- | ------------------------------------------------- |
+| `client` | `packages/client` | Everything not routed to the server               |
+| `server` | `packages/server` | `/api/*`, `/auth/*`, `/socket.io/*`               |
+
+`vercel.json` owns the public routing. The browser calls those paths directly, so no service-to-service bindings are needed. The client is a static Vite app; the server is an Express service with Socket.IO.
+
+Set these Vercel environment variables:
+
+- `APP_URL` and `SERVER_URL`: the public deployment origin, for example `https://your-project.vercel.app`
+- `SESSION_SECRET`: a unique 32+ character secret
+- `DATABASE_URL` and `DIRECT_URL`: the pooled and direct PostgreSQL URLs
+- `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`
+- `GOOGLE_CALLBACK_URL`: `https://your-project.vercel.app/auth/google/callback`
+- `YOUTUBE_API_KEY`: required for media search
+- Optional: `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET`
+
+Add the same production callback URL to the Google OAuth client. Run migrations against `DIRECT_URL` before deploying:
+
+```bash
+pnpm --filter @bigbeanbag/server exec prisma migrate deploy
+```
+
+Socket.IO is configured for WebSocket transport only because Vercel does not support Socket.IO's HTTP long-polling handshake across function instances. Vercel closes WebSocket connections when the function reaches its maximum duration; the client reconnects and rejoins the room automatically.
+
+### Self-hosted
+
 1. Set `NODE_ENV=production`, a unique 32+ character `SESSION_SECRET`, public `APP_URL` and `SERVER_URL`, and Google OAuth credentials. Production validation fails fast otherwise.
 2. Run `pnpm --filter @bigbeanbag/server exec prisma migrate deploy` against `DIRECT_URL`.
 3. Build with `pnpm build`. Start the API with `pnpm --filter @bigbeanbag/server start`.
@@ -197,7 +228,7 @@ pnpm --filter @bigbeanbag/server test -- src/socket.test.ts
 5. Use HTTPS so the session cookie is sent with `secure`.
 6. Add the production callback URL to the Google OAuth client.
 
-The current realtime layer is designed for a single API instance: rate limits, battle timers, and presence live in memory. Horizontal scaling needs a Socket.IO Redis adapter and a shared rate-limit store.
+The current realtime layer keeps rate limits, battle timers, and presence in memory. A single API instance is safe; horizontal scaling needs a Socket.IO Redis adapter and a shared rate-limit store. Vercel Functions can scale to multiple instances, so treat the Vercel deployment as a single-instance beta until those shared stores are added.
 
 ## Known limitations
 

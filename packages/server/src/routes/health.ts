@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { checkDatabase } from '../app';
+import { checkDatabase } from '../create-app';
 
 export const healthRouter = Router();
 
