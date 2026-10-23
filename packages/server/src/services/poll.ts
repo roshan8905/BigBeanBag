@@ -30,34 +30,35 @@ export const toPollDto = (poll: PollRow, userId: string): PollDto => ({
   createdAt: poll.createdAt.toISOString(),
 });
 
+const CLOSED_POLL_HISTORY = 20;
+
 export const findPollRow = (pollId: string) =>
   prisma.poll.findUnique({ where: { id: pollId }, include: pollInclude });
 
-export const latestPollRow = (roomId: string) =>
-  prisma.poll.findFirst({
-    where: { roomId },
-    orderBy: { createdAt: 'desc' },
-    include: pollInclude,
-  });
+export const listPollRows = async (roomId: string) => {
+  const [open, closed] = await Promise.all([
+    prisma.poll.findMany({
+      where: { roomId, status: 'OPEN' },
+      orderBy: { createdAt: 'asc' },
+      include: pollInclude,
+    }),
+    prisma.poll.findMany({
+      where: { roomId, status: 'CLOSED' },
+      orderBy: { createdAt: 'desc' },
+      take: CLOSED_POLL_HISTORY,
+      include: pollInclude,
+    }),
+  ]);
 
-export const latestPoll = async (roomId: string, userId: string) => {
-  const poll = await latestPollRow(roomId);
-  return poll ? toPollDto(poll, userId) : null;
+  return [...open, ...closed].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+};
+
+export const listPolls = async (roomId: string, userId: string) => {
+  const polls = await listPollRows(roomId);
+  return polls.map((poll) => toPollDto(poll, userId));
 };
 
 export const createPoll = async (roomId: string, userId: string, input: CreatePollInput) => {
-  const open = await prisma.poll.findFirst({
-    where: { roomId, status: 'OPEN' },
-    select: { id: true },
-  });
-  if (open) {
-    throw new AppError(
-      ERROR_CODES.VALIDATION_FAILED,
-      'Close the open poll before starting another',
-      400,
-    );
-  }
-
   const poll = await prisma.poll.create({
     data: {
       roomId,

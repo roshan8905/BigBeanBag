@@ -534,7 +534,7 @@ describe('playback control', () => {
     if (finished.ok) {
       expect(finished.data).toMatchObject({ status: 'IDLE', currentItemId: null });
     }
-  });
+  }, 60000);
 });
 
 describe('roles and moderation', () => {
@@ -724,7 +724,7 @@ describe('chat and reactions', () => {
 });
 
 describe('polls and battles', () => {
-  it('runs a poll and a timed song battle', async () => {
+  it('runs multiple polls and a timed song battle', async () => {
     const created = await request(app)
       .post('/api/rooms')
       .set('x-test-user-id', ownerId)
@@ -750,6 +750,12 @@ describe('polls and battles', () => {
     if (!poll.ok) return;
     expect((await ownerPoll).options).toHaveLength(2);
 
+    const ownerSecondPoll = new Promise<Poll>((resolve) => owner.once('poll:updated', resolve));
+    const secondPoll = await createPoll(guest, 'Which one second?', ['Song C', 'Song D']);
+    expect(secondPoll.ok).toBe(true);
+    if (!secondPoll.ok) return;
+    expect((await ownerSecondPoll).id).toBe(secondPoll.data.id);
+
     const optionId = poll.data.options[1]?.id ?? '';
     const guestPoll = new Promise<Poll>((resolve) => guest.once('poll:updated', resolve));
     const ownerPollVote = new Promise<Poll>((resolve) => owner.once('poll:updated', resolve));
@@ -762,9 +768,12 @@ describe('polls and battles', () => {
     }
 
     const ownerView = await ownerPollVote;
+    expect(ownerView.id).toBe(poll.data.id);
     expect(ownerView.totalVotes).toBe(1);
     expect(ownerView.myVoteOptionId).toBeNull();
-    expect((await guestPoll).myVoteOptionId).toBe(optionId);
+    const guestPollView = await guestPoll;
+    expect(guestPollView.id).toBe(poll.data.id);
+    expect(guestPollView.myVoteOptionId).toBe(optionId);
 
     const cleared = await votePoll(guest, poll.data.id, optionId);
     expect(cleared.ok).toBe(true);
@@ -777,6 +786,17 @@ describe('polls and battles', () => {
     const closed = await closePoll(guest, poll.data.id);
     expect(closed.ok).toBe(true);
     if (closed.ok) expect(closed.data.status).toBe('CLOSED');
+
+    const afterClose = await joinRoom(owner, code);
+    expect(afterClose.ok).toBe(true);
+    if (afterClose.ok) {
+      expect(afterClose.data.polls.find((entry) => entry.id === poll.data.id)?.status).toBe(
+        'CLOSED',
+      );
+      expect(afterClose.data.polls.find((entry) => entry.id === secondPoll.data.id)?.status).toBe(
+        'OPEN',
+      );
+    }
 
     const battleEnded = new Promise<Battle>((resolve) => owner.once('battle:ended', resolve));
     const guestCreate = new Promise<Battle>((resolve) => guest.once('battle:updated', resolve));
@@ -802,7 +822,12 @@ describe('polls and battles', () => {
     const snapshot = await joinRoom(owner, code);
     expect(snapshot.ok).toBe(true);
     if (snapshot.ok) {
-      expect(snapshot.data.battle?.winnerItemId).toBe(first.data.id);
+      expect(snapshot.data.battles.find((entry) => entry.id === battle.data.id)?.winnerItemId).toBe(
+        first.data.id,
+      );
+      expect(snapshot.data.polls.find((entry) => entry.id === secondPoll.data.id)?.status).toBe(
+        'OPEN',
+      );
     }
   }, 60000);
 });

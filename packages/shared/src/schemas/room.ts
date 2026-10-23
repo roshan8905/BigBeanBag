@@ -91,8 +91,8 @@ export const RoomSnapshotSchema = z.object({
   playback: PlaybackStateSchema,
   chat: z.array(ChatMessageSchema),
   reactions: z.array(ReactionSummarySchema),
-  poll: PollSchema.nullable(),
-  battle: BattleSchema.nullable(),
+  polls: z.array(PollSchema),
+  battles: z.array(BattleSchema),
   serverNow: z.number(),
 });
 export type RoomSnapshot = z.infer<typeof RoomSnapshotSchema>;

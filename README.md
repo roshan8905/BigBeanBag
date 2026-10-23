@@ -15,7 +15,7 @@ Built as a pnpm monorepo with a React client, an Express + Socket.IO API, Postgr
 - Owner or host drives playback; everyone else follows with drift correction
 - Chat with muted and host-only modes, plus emoji reactions
 - Timed song battles with live results
-- Room polls with live results and one vote per person
+- Room polls with live results, multiple open polls, and one vote per person
 - Member moderation: promote, demote, mute, unmute, kick, and ban
 - YouTube and Spotify link support, with search and metadata resolution
 - Responsive dark UI with room presence, connection status, and queue stats
@@ -137,7 +137,7 @@ Autoplay is also controlled by the owner or a host. When it is on and playback r
 
 Playback is server-authoritative. The owner or host issues play, pause, seek, and skip commands; the server stores an updated position and timestamp and broadcasts a `PlaybackState`. Followers run a YouTube IFrame player, compare their position, and correct drift. The host client reports track end, and the server advances to the next song in the active queue order.
 
-Joining a room returns a full snapshot: room, members, queue, playback, recent chat, reaction summary, current poll, and current battle.
+Joining a room returns a full snapshot: room, members, queue, playback, recent chat, reaction summary, all open polls plus recent closed polls, recent battles, and server time.
 
 ### Media pipeline
 
@@ -148,13 +148,15 @@ Joining a room returns a full snapshot: room, members, queue, playback, recent c
 - Resolved metadata is cached in PostgreSQL.
 - The add-song dialog and autoplay suggest tracks from artists already in the room queue; without artist history they offer mood shortcuts.
 
-### Chat, reactions, polls, and battles
+### Room chat and activity
 
 Chat is stored per room, with the latest 50 messages in the join snapshot and a 200-message live window on the client. Muted members cannot chat or react. When chat is host-only, members can read but not send. Reactions are an allow-listed emoji set with one reaction per user per emoji.
 
-Polls allow all members to vote and one open poll per room. Tap an option to vote, tap another to switch, or tap your current pick again to clear it. The creator or a host can close the poll.
+Chat messages, poll cards, and battle cards share one chronological activity feed in the room chat. The snapshot includes all open polls and recent closed polls, plus recent battles, so the feed stays complete after a reload.
 
-Battles are started by the owner or host between two queued songs with a 15-300 second timer. Members vote once each and can switch their pick. When time expires, the higher-vote song wins (ties go to the earlier queued song). Battle timers are per-process; a sweeper finalizes expired battles and the room snapshot repairs state after a restart.
+Polls allow all members to vote, and a room can keep multiple polls open at once. Each poll gives one vote per person. Tap an option to vote, tap another to switch, or tap your current pick again to clear it. The creator or a host can close any individual poll.
+
+Battles are started by the owner or host between two queued songs with a 15-300 second timer. Only one battle can run at once. Members vote once each and can switch their pick. When time expires, the higher-vote song wins (ties go to the earlier queued song). Battle timers are per-process; a sweeper finalizes expired battles and the room snapshot repairs state after a restart.
 
 ### Realtime protection
 

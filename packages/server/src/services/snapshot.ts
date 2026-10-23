@@ -2,8 +2,8 @@ import type { RoomSnapshot } from '@bigbeanbag/shared';
 import { prisma } from '../lib/prisma';
 import { roomDetailInclude, toMemberDto, toRoomDto, type RoomWithDetail } from '../lib/dto';
 import { listReactionSummary, listRecentMessages } from './chat';
-import { latestBattle, ensureBattleFresh } from './battle';
-import { latestPoll } from './poll';
+import { ensureBattleFresh, listBattles } from './battle';
+import { listPolls } from './poll';
 import { orderQueue, loadQueueRows, toQueueItemDto } from './queue';
 import { ensurePlayback, toPlaybackDto } from './playback';
 
@@ -16,13 +16,13 @@ export const buildRoomSnapshot = async (roomId: string, userId: string): Promise
 
   await ensureBattleFresh(roomId);
 
-  const [rows, playbackRow, chat, reactions, poll, battle] = await Promise.all([
+  const [rows, playbackRow, chat, reactions, polls, battles] = await Promise.all([
     loadQueueRows(roomId),
     ensurePlayback(roomId),
     listRecentMessages(roomId),
     listReactionSummary(roomId),
-    latestPoll(roomId, userId),
-    latestBattle(roomId, userId),
+    listPolls(roomId, userId),
+    listBattles(roomId, userId),
   ]);
 
   const ordered = orderQueue(rows, room.queueManual);
@@ -36,8 +36,8 @@ export const buildRoomSnapshot = async (roomId: string, userId: string): Promise
     playback: toPlaybackDto(playbackRow, current?.durationMs ?? null),
     chat,
     reactions,
-    poll,
-    battle,
+    polls,
+    battles,
     serverNow: Date.now(),
   };
 };

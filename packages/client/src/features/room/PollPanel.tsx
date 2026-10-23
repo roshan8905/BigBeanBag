@@ -61,7 +61,7 @@ export const CreatePollDialog = ({ open, onClose }: { open: boolean; onClose: ()
         onClose();
       }}
       title="Start a poll"
-      description="Everyone in the room gets one vote. Only one poll runs at a time."
+      description="Everyone in the room gets one vote per poll. Start as many as the room needs."
     >
       <form onSubmit={(event) => void submit(event)} className="space-y-3">
         <div>

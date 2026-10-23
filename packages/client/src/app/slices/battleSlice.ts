@@ -2,27 +2,33 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Battle } from '@bigbeanbag/shared';
 
 type BattleState = {
-  battle: Battle | null;
-  ended: Battle | null;
+  battles: Battle[];
 };
 
-const initialState: BattleState = { battle: null, ended: null };
+const initialState: BattleState = { battles: [] };
 
 const battleSlice = createSlice({
   name: 'battle',
   initialState,
   reducers: {
+    battlesLoaded: (state, action: PayloadAction<Battle[]>) => {
+      state.battles = action.payload;
+    },
     battleUpdated: (state, action: PayloadAction<Battle>) => {
-      if (state.ended?.id !== action.payload.id) state.ended = null;
-      state.battle = action.payload;
+      const index = state.battles.findIndex((battle) => battle.id === action.payload.id);
+      if (index >= 0) state.battles[index] = action.payload;
+      else state.battles.push(action.payload);
+      state.battles.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
     },
     battleEnded: (state, action: PayloadAction<Battle>) => {
-      state.battle = action.payload;
-      state.ended = action.payload;
+      const index = state.battles.findIndex((battle) => battle.id === action.payload.id);
+      if (index >= 0) state.battles[index] = action.payload;
+      else state.battles.push(action.payload);
+      state.battles.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
     },
     clearBattle: () => initialState,
   },
 });
 
-export const { battleUpdated, battleEnded, clearBattle } = battleSlice.actions;
+export const { battlesLoaded, battleUpdated, battleEnded, clearBattle } = battleSlice.actions;
 export const battleReducer = battleSlice.reducer;

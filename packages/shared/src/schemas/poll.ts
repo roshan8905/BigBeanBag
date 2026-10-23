@@ -77,6 +77,7 @@ export const BattleSchema = z.object({
   id: IdSchema,
   status: BattleStatusSchema,
   endsAt: z.string(),
+  createdAt: z.string(),
   entries: z.array(BattleEntrySchema).length(2),
   myVoteItemId: z.string().nullable(),
   winnerItemId: z.string().nullable(),

@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import type { Battle, ChatMessage, Poll, QueueItem, RoomSnapshot } from '@bigbeanbag/shared';
-import { battleEnded, battleReducer, battleUpdated, clearBattle } from '@/app/slices/battleSlice';
+import {
+  battleEnded,
+  battleReducer,
+  battlesLoaded,
+  battleUpdated,
+  clearBattle,
+} from '@/app/slices/battleSlice';
 import {
   chatAppended,
   chatLoaded,
@@ -8,7 +14,7 @@ import {
   clearChat,
   reactionsUpdated,
 } from '@/app/slices/chatSlice';
-import { clearPoll, pollReducer, pollUpdated } from '@/app/slices/pollSlice';
+import { clearPoll, pollReducer, pollsLoaded, pollUpdated } from '@/app/slices/pollSlice';
 import { clearQueue, queueReducer, queueUpdated } from '@/app/slices/queueSlice';
 import {
   connectionChanged,
@@ -47,10 +53,15 @@ const makeMessage = (id: string): ChatMessage => ({
   createdAt: '2026-01-01T00:00:00.000Z',
 });
 
-const makeBattle = (id: string, status: Battle['status']): Battle => ({
+const makeBattle = (
+  id: string,
+  status: Battle['status'],
+  createdAt = '2026-01-01T00:00:00.000Z',
+): Battle => ({
   id,
   status,
   endsAt: '2026-01-01T00:01:00.000Z',
+  createdAt,
   entries: [
     {
       itemId: 'item-a',
@@ -71,8 +82,12 @@ const makeBattle = (id: string, status: Battle['status']): Battle => ({
   winnerItemId: status === 'CLOSED' ? 'item-a' : null,
 });
 
-const makePoll = (status: Poll['status']): Poll => ({
-  id: 'poll-1',
+const makePoll = (
+  id: string,
+  status: Poll['status'],
+  createdAt = '2026-01-01T00:00:00.000Z',
+): Poll => ({
+  id,
   question: 'Which song next?',
   status,
   createdBy: 'user-1',
@@ -82,7 +97,7 @@ const makePoll = (status: Poll['status']): Poll => ({
   ],
   totalVotes: 1,
   myVoteOptionId: 'option-1',
-  createdAt: '2026-01-01T00:00:00.000Z',
+  createdAt,
 });
 
 const snapshot: RoomSnapshot = {
@@ -120,8 +135,8 @@ const snapshot: RoomSnapshot = {
   },
   chat: [],
   reactions: [],
-  poll: null,
-  battle: null,
+  polls: [],
+  battles: [],
   serverNow: 1_000_000,
 };
 
@@ -197,30 +212,44 @@ describe('chatSlice', () => {
 });
 
 describe('poll and battle slices', () => {
-  it('stores polls and clears them', () => {
-    let state = pollReducer(undefined, pollUpdated(makePoll('OPEN')));
-    expect(state.poll?.status).toBe('OPEN');
+  it('loads multiple polls, updates them by id, and clears them', () => {
+    let state = pollReducer(
+      undefined,
+      pollsLoaded([makePoll('poll-1', 'OPEN')]),
+    );
+    expect(state.polls.map((poll) => poll.id)).toEqual(['poll-1']);
 
-    state = pollReducer(state, pollUpdated(makePoll('CLOSED')));
-    expect(state.poll?.status).toBe('CLOSED');
+    state = pollReducer(
+      state,
+      pollUpdated(makePoll('poll-2', 'OPEN', '2026-01-01T00:00:01.000Z')),
+    );
+    expect(state.polls.map((poll) => poll.id)).toEqual(['poll-1', 'poll-2']);
+
+    state = pollReducer(state, pollUpdated(makePoll('poll-1', 'CLOSED')));
+    expect(state.polls).toHaveLength(2);
+    expect(state.polls.find((poll) => poll.id === 'poll-1')?.status).toBe('CLOSED');
 
     state = pollReducer(state, clearPoll());
-    expect(state.poll).toBeNull();
+    expect(state.polls).toEqual([]);
   });
 
-  it('tracks active and finished battles', () => {
-    let state = battleReducer(undefined, battleUpdated(makeBattle('battle-1', 'OPEN')));
-    expect(state.battle?.status).toBe('OPEN');
-    expect(state.ended).toBeNull();
+  it('loads multiple battles, tracks endings by id, and clears them', () => {
+    let state = battleReducer(
+      undefined,
+      battlesLoaded([makeBattle('battle-1', 'OPEN')]),
+    );
+    expect(state.battles.map((battle) => battle.id)).toEqual(['battle-1']);
 
     state = battleReducer(state, battleEnded(makeBattle('battle-1', 'CLOSED')));
-    expect(state.ended?.winnerItemId).toBe('item-a');
+    expect(state.battles[0]?.winnerItemId).toBe('item-a');
 
-    state = battleReducer(state, battleUpdated(makeBattle('battle-2', 'OPEN')));
-    expect(state.ended).toBeNull();
-    expect(state.battle?.id).toBe('battle-2');
+    state = battleReducer(
+      state,
+      battleUpdated(makeBattle('battle-2', 'OPEN', '2026-01-01T00:00:01.000Z')),
+    );
+    expect(state.battles.map((battle) => battle.id)).toEqual(['battle-1', 'battle-2']);
 
     state = battleReducer(state, clearBattle());
-    expect(state).toMatchObject({ battle: null, ended: null });
+    expect(state.battles).toEqual([]);
   });
 });

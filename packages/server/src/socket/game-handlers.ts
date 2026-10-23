@@ -9,23 +9,29 @@ import {
   canControlPlayback,
 } from '@bigbeanbag/shared';
 import { prisma } from '../lib/prisma';
-import { finalizeBattle, latestBattleRow, createBattle, toBattleDto, voteBattle } from '../services/battle';
-import { closePoll, createPoll, latestPollRow, toPollDto, votePoll } from '../services/poll';
+import {
+  createBattle,
+  finalizeBattle,
+  findBattleRow,
+  toBattleDto,
+  voteBattle,
+} from '../services/battle';
+import { closePoll, createPoll, findPollRow, toPollDto, votePoll } from '../services/poll';
 import { respond, type AppServer } from './ack';
 import type { AppSocket } from './auth';
 import { broadcastQueue, requireRole, requireRoomContext } from './broadcast';
 import { takeToken } from './rate-limit';
 
-const broadcastPoll = async (io: AppServer, roomId: string) => {
-  const row = await latestPollRow(roomId);
+const broadcastPoll = async (io: AppServer, roomId: string, pollId: string) => {
+  const row = await findPollRow(pollId);
   if (!row) return;
 
   const sockets = await io.in(roomId).fetchSockets();
   for (const target of sockets) target.emit('poll:updated', toPollDto(row, target.data.userId));
 };
 
-const broadcastBattle = async (io: AppServer, roomId: string) => {
-  const row = await latestBattleRow(roomId);
+const broadcastBattle = async (io: AppServer, roomId: string, battleId: string) => {
+  const row = await findBattleRow(battleId);
   if (!row) return;
 
   const sockets = await io.in(roomId).fetchSockets();
@@ -52,8 +58,8 @@ const endBattle = async (io: AppServer, battleId: string, roomId: string) => {
   const finished = await finalizeBattle(battleId);
   if (!finished) return;
 
-  await broadcastBattle(io, roomId);
-  const row = await latestBattleRow(roomId);
+  await broadcastBattle(io, roomId, battleId);
+  const row = await findBattleRow(battleId);
   if (!row) return;
 
   const sockets = await io.in(roomId).fetchSockets();
@@ -94,7 +100,7 @@ export const registerGameHandlers = (io: AppServer, socket: AppSocket) => {
       const { roomId, userId } = requireRoomContext(socket);
       const input = CreatePollSchema.parse(payload);
       const poll = await createPoll(roomId, userId, input);
-      await broadcastPoll(io, roomId);
+      await broadcastPoll(io, roomId, poll.id);
       return poll;
     }),
   );
@@ -108,7 +114,7 @@ export const registerGameHandlers = (io: AppServer, socket: AppSocket) => {
       const { roomId, userId } = requireRoomContext(socket);
       const input = VotePollSchema.parse(payload);
       const poll = await votePoll(roomId, userId, input);
-      await broadcastPoll(io, roomId);
+      await broadcastPoll(io, roomId, poll.id);
       return poll;
     }),
   );
@@ -119,7 +125,7 @@ export const registerGameHandlers = (io: AppServer, socket: AppSocket) => {
       const role = await requireRole(roomId, userId);
       const input = ClosePollSchema.parse(payload);
       const poll = await closePoll(roomId, userId, role, input);
-      await broadcastPoll(io, roomId);
+      await broadcastPoll(io, roomId, poll.id);
       return poll;
     }),
   );
@@ -139,7 +145,7 @@ export const registerGameHandlers = (io: AppServer, socket: AppSocket) => {
       const input = CreateBattleSchema.parse(payload);
       const battle = await createBattle(roomId, userId, input);
       scheduleBattleEnd(io, battle.id, roomId, new Date(battle.endsAt));
-      await broadcastBattle(io, roomId);
+      await broadcastBattle(io, roomId, battle.id);
       return battle;
     }),
   );
@@ -153,7 +159,7 @@ export const registerGameHandlers = (io: AppServer, socket: AppSocket) => {
       const { roomId, userId } = requireRoomContext(socket);
       const input = BattleVoteSchema.parse(payload);
       const battle = await voteBattle(roomId, userId, input);
-      await broadcastBattle(io, roomId);
+      await broadcastBattle(io, roomId, battle.id);
       return battle;
     }),
   );

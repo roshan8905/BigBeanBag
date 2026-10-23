@@ -2,21 +2,27 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Poll } from '@bigbeanbag/shared';
 
 type PollState = {
-  poll: Poll | null;
+  polls: Poll[];
 };
 
-const initialState: PollState = { poll: null };
+const initialState: PollState = { polls: [] };
 
 const pollSlice = createSlice({
   name: 'poll',
   initialState,
   reducers: {
+    pollsLoaded: (state, action: PayloadAction<Poll[]>) => {
+      state.polls = action.payload;
+    },
     pollUpdated: (state, action: PayloadAction<Poll>) => {
-      state.poll = action.payload;
+      const index = state.polls.findIndex((poll) => poll.id === action.payload.id);
+      if (index >= 0) state.polls[index] = action.payload;
+      else state.polls.push(action.payload);
+      state.polls.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
     },
     clearPoll: () => initialState,
   },
 });
 
-export const { pollUpdated, clearPoll } = pollSlice.actions;
+export const { pollsLoaded, pollUpdated, clearPoll } = pollSlice.actions;
 export const pollReducer = pollSlice.reducer;

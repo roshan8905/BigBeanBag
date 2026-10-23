@@ -13,10 +13,15 @@ import type {
   Role,
 } from '@bigbeanbag/shared';
 import { useAppDispatch } from '@/app/hooks';
-import { battleEnded, battleUpdated, clearBattle } from '@/app/slices/battleSlice';
+import {
+  battleEnded,
+  battlesLoaded,
+  battleUpdated,
+  clearBattle,
+} from '@/app/slices/battleSlice';
 import { chatAppended, chatLoaded, clearChat, reactionsUpdated } from '@/app/slices/chatSlice';
 import { clearPlayback, playbackUpdated } from '@/app/slices/playbackSlice';
-import { clearPoll, pollUpdated } from '@/app/slices/pollSlice';
+import { clearPoll, pollsLoaded, pollUpdated } from '@/app/slices/pollSlice';
 import { clearQueue, queueUpdated } from '@/app/slices/queueSlice';
 import {
   connectionChanged,
@@ -45,10 +50,8 @@ export const useRoomSync = (code: string, enabled: boolean) => {
       dispatch(queueUpdated(snapshot.queue));
       dispatch(playbackUpdated(snapshot.playback));
       dispatch(chatLoaded({ messages: snapshot.chat, reactions: snapshot.reactions }));
-      if (snapshot.poll) dispatch(pollUpdated(snapshot.poll));
-      else dispatch(clearPoll());
-      if (snapshot.battle) dispatch(battleUpdated(snapshot.battle));
-      else dispatch(clearBattle());
+      dispatch(pollsLoaded(snapshot.polls));
+      dispatch(battlesLoaded(snapshot.battles));
     };
 
     const onQueue = (payload: QueueUpdated) => dispatch(queueUpdated(payload.items));

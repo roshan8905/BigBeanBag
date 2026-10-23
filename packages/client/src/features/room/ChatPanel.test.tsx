@@ -9,7 +9,27 @@ import { chatReducer } from '@/app/slices/chatSlice';
 import { pollReducer } from '@/app/slices/pollSlice';
 import { queueReducer } from '@/app/slices/queueSlice';
 
-const renderChat = ({ canControl = false, poll = null }: { canControl?: boolean; poll?: Poll | null } = {}) => {
+const makePoll = (id: string, question: string, createdAt: string): Poll => ({
+  id,
+  question,
+  status: 'OPEN',
+  createdBy: 'host',
+  options: [
+    { id: `${id}-a`, label: 'First song', votes: 1 },
+    { id: `${id}-b`, label: 'Second song', votes: 0 },
+  ],
+  totalVotes: 1,
+  myVoteOptionId: null,
+  createdAt,
+});
+
+const renderChat = ({
+  canControl = false,
+  polls = [],
+}: {
+  canControl?: boolean;
+  polls?: Poll[];
+} = {}) => {
   const store = configureStore({
     reducer: {
       chat: chatReducer,
@@ -19,8 +39,8 @@ const renderChat = ({ canControl = false, poll = null }: { canControl?: boolean;
     },
     preloadedState: {
       chat: { messages: [], reactions: [] },
-      poll: { poll },
-      battle: { battle: null, ended: null },
+      poll: { polls },
+      battle: { battles: [] },
       queue: { items: [] },
     },
   });
@@ -40,7 +60,7 @@ describe('ChatPanel', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Start a poll or battle' }));
 
-    expect(screen.getByRole('button', { name: 'Poll' })).toBeTruthy();
+    expect((screen.getByRole('button', { name: 'Poll' }) as HTMLButtonElement).disabled).toBe(false);
     const battle = screen.getByRole('button', { name: 'Battle' }) as HTMLButtonElement;
     expect(battle.disabled).toBe(true);
     expect(screen.getByText('Only the owner or a host can start a battle.')).toBeTruthy();
@@ -49,24 +69,28 @@ describe('ChatPanel', () => {
     expect(screen.getByRole('heading', { name: 'Start a poll' })).toBeTruthy();
   });
 
-  it('shows the active poll inside the chat', () => {
+  it('shows multiple live polls inside the shared room feed', () => {
     renderChat({
-      poll: {
-        id: 'poll-1',
-        question: 'Which song should play next?',
-        status: 'OPEN',
-        createdBy: 'host',
-        options: [
-          { id: 'a', label: 'First song', votes: 1 },
-          { id: 'b', label: 'Second song', votes: 0 },
-        ],
-        totalVotes: 1,
-        myVoteOptionId: null,
-        createdAt: new Date().toISOString(),
-      },
+      polls: [
+        makePoll('poll-1', 'Which song should play next?', '2026-01-01T00:00:00.000Z'),
+        makePoll('poll-2', 'Which artist should we queue?', '2026-01-01T00:00:01.000Z'),
+      ],
     });
 
     expect(screen.getByText('Which song should play next?')).toBeTruthy();
-    expect(screen.getByRole('button', { name: /First song/ })).toBeTruthy();
+    expect(screen.getByText('Which artist should we queue?')).toBeTruthy();
+    expect(screen.getByText('0 messages · 2 polls · 0 battles')).toBeTruthy();
+  });
+
+  it('can start another poll while one is already live', () => {
+    renderChat({
+      polls: [
+        makePoll('poll-1', 'Which song should play next?', '2026-01-01T00:00:00.000Z'),
+      ],
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start a poll or battle' }));
+
+    expect((screen.getByRole('button', { name: 'Poll' }) as HTMLButtonElement).disabled).toBe(false);
   });
 });

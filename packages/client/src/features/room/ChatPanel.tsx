@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { REACTION_EMOJIS } from '@bigbeanbag/shared';
+import type { Battle, ChatMessage, Poll } from '@bigbeanbag/shared';
 import { BarChart3, Loader2, MessageCircle, Plus, Send, Swords, X } from 'lucide-react';
 import { useAppSelector } from '@/app/hooks';
 import { getSocket } from '@/lib/socket';
@@ -8,6 +9,11 @@ import { CreatePollDialog, PollActivity } from '@/features/room/PollPanel';
 
 const clock = (iso: string) =>
   new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+type Activity =
+  | { kind: 'chat'; id: string; at: number; message: ChatMessage }
+  | { kind: 'poll'; id: string; at: number; poll: Poll }
+  | { kind: 'battle'; id: string; at: number; battle: Battle };
 
 export const ChatPanel = ({
   meId,
@@ -22,8 +28,8 @@ export const ChatPanel = ({
 }) => {
   const messages = useAppSelector((state) => state.chat.messages);
   const reactions = useAppSelector((state) => state.chat.reactions);
-  const poll = useAppSelector((state) => state.poll.poll);
-  const battle = useAppSelector((state) => state.battle.battle);
+  const polls = useAppSelector((state) => state.poll.polls);
+  const battles = useAppSelector((state) => state.battle.battles);
   const queueItems = useAppSelector((state) => state.queue.items);
   const [body, setBody] = useState('');
   const [sending, setSending] = useState(false);
@@ -36,8 +42,8 @@ export const ChatPanel = ({
   const composerRef = useRef<HTMLDivElement>(null);
 
   const queued = queueItems.filter((item) => item.status === 'QUEUED');
-  const pollRunning = poll?.status === 'OPEN';
-  const battleRunning = battle?.status === 'OPEN';
+  const activeBattle = battles.find((battle) => battle.status === 'OPEN');
+  const battleRunning = Boolean(activeBattle);
   const battleReason = !canControl
     ? 'Only the owner or a host can start a battle.'
     : battleRunning
@@ -47,10 +53,31 @@ export const ChatPanel = ({
         : '';
   const canStartBattle = battleReason === '';
 
+  const activities: Activity[] = [
+    ...messages.map((message) => ({
+      kind: 'chat' as const,
+      id: `chat-${message.id}`,
+      at: new Date(message.createdAt).getTime(),
+      message,
+    })),
+    ...polls.map((poll) => ({
+      kind: 'poll' as const,
+      id: `poll-${poll.id}`,
+      at: new Date(poll.createdAt).getTime(),
+      poll,
+    })),
+    ...battles.map((battle) => ({
+      kind: 'battle' as const,
+      id: `battle-${battle.id}`,
+      at: new Date(battle.createdAt).getTime(),
+      battle,
+    })),
+  ].sort((a, b) => a.at - b.at || a.id.localeCompare(b.id));
+
   useEffect(() => {
     const list = listRef.current;
     if (list) list.scrollTop = list.scrollHeight;
-  }, [messages.length]);
+  }, [activities.length]);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -103,11 +130,13 @@ export const ChatPanel = ({
 
   return (
     <section className="card flex h-[32rem] flex-col p-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <h2 className="flex items-center gap-2 text-sm font-semibold">
           <MessageCircle size={15} className="text-bean-300" /> Room chat
         </h2>
-        <span className="text-[11px] text-cream-500">{messages.length} messages</span>
+        <span className="text-right text-[11px] text-cream-500">
+          {messages.length} messages · {polls.length} polls · {battles.length} battles
+        </span>
       </div>
 
       <div className="mt-2 flex flex-wrap gap-1">
@@ -135,20 +164,29 @@ export const ChatPanel = ({
         })}
       </div>
 
-      {poll || battle ? (
-        <div className="mt-3 max-h-60 space-y-2 overflow-y-auto pr-1">
-          {poll ? <PollActivity poll={poll} meId={meId} canModerate={canControl} /> : null}
-          {battle ? <BattleActivity battle={battle} /> : null}
-        </div>
-      ) : null}
-
       <div ref={listRef} className="mt-3 flex-1 space-y-2 overflow-y-auto pr-1">
-        {messages.length ? (
-          messages.map((message) => {
+        {activities.length ? (
+          activities.map((activity) => {
+            if (activity.kind === 'poll') {
+              return (
+                <PollActivity
+                  key={activity.id}
+                  poll={activity.poll}
+                  meId={meId}
+                  canModerate={canControl}
+                />
+              );
+            }
+
+            if (activity.kind === 'battle') {
+              return <BattleActivity key={activity.id} battle={activity.battle} />;
+            }
+
+            const { message } = activity;
             const own = message.userId === meId;
 
             return (
-              <div key={message.id} className={`flex gap-2 ${own ? 'flex-row-reverse' : ''}`}>
+              <div key={activity.id} className={`flex gap-2 ${own ? 'flex-row-reverse' : ''}`}>
                 {message.avatarUrl ? (
                   <img
                     src={message.avatarUrl}
@@ -180,8 +218,10 @@ export const ChatPanel = ({
           })
         ) : (
           <div className="flex h-full flex-col items-center justify-center text-center">
-            <p className="text-sm text-cream-400">No messages yet</p>
-            <p className="mt-0.5 text-[11px] text-cream-500">Say hi or drop a reaction.</p>
+            <p className="text-sm text-cream-400">No activity yet</p>
+            <p className="mt-0.5 text-[11px] text-cream-500">
+              Say hi, start a poll, or battle two songs.
+            </p>
           </div>
         )}
       </div>
@@ -210,9 +250,8 @@ export const ChatPanel = ({
                     setPollDialogOpen(true);
                     setMenuOpen(false);
                   }}
-                  disabled={pollRunning}
-                  title={pollRunning ? 'A poll is already running.' : 'Start a poll'}
-                  className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-cream-200 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
+                  title="Start a poll"
+                  className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-cream-200 transition hover:bg-white/10"
                 >
                   <BarChart3 size={13} /> Poll
                 </button>

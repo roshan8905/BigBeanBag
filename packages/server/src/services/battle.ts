@@ -18,6 +18,7 @@ export const toBattleDto = (battle: BattleRow, userId: string): BattleDto => ({
   id: battle.id,
   status: battle.status,
   endsAt: battle.endsAt.toISOString(),
+  createdAt: battle.createdAt.toISOString(),
   entries: [
     {
       itemId: battle.itemAId,
@@ -41,26 +42,41 @@ export const toBattleDto = (battle: BattleRow, userId: string): BattleDto => ({
 export const findBattleRow = (battleId: string) =>
   prisma.battle.findUnique({ where: { id: battleId }, include: battleInclude });
 
-export const latestBattleRow = (roomId: string) =>
-  prisma.battle.findFirst({
-    where: { roomId },
+const BATTLE_HISTORY = 20;
+
+export const listBattleRows = async (roomId: string) => {
+  const [open, closed] = await Promise.all([
+    prisma.battle.findMany({
+      where: { roomId, status: 'OPEN' },
+      orderBy: { createdAt: 'asc' },
+      include: battleInclude,
+    }),
+    prisma.battle.findMany({
+      where: { roomId, status: 'CLOSED' },
+      orderBy: { createdAt: 'desc' },
+      take: BATTLE_HISTORY,
+      include: battleInclude,
+    }),
+  ]);
+
+  return [...open, ...closed].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+};
+
+export const listBattles = async (roomId: string, userId: string) => {
+  const battles = await listBattleRows(roomId);
+  return battles.map((battle) => toBattleDto(battle, userId));
+};
+
+export const ensureBattleFresh = async (roomId: string) => {
+  const open = await prisma.battle.findFirst({
+    where: { roomId, status: 'OPEN' },
     orderBy: { createdAt: 'desc' },
     include: battleInclude,
   });
 
-export const ensureBattleFresh = async (roomId: string) => {
-  const battle = await latestBattleRow(roomId);
-  if (battle?.status === 'OPEN' && battle.endsAt.getTime() <= Date.now()) {
-    await finalizeBattle(battle.id);
-    return latestBattleRow(roomId);
+  if (open && open.endsAt.getTime() <= Date.now()) {
+    await finalizeBattle(open.id);
   }
-
-  return battle;
-};
-
-export const latestBattle = async (roomId: string, userId: string) => {
-  const battle = await ensureBattleFresh(roomId);
-  return battle ? toBattleDto(battle, userId) : null;
 };
 
 export const createBattle = async (roomId: string, userId: string, input: CreateBattleInput) => {
