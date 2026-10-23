@@ -1,21 +1,21 @@
 import { createServer } from 'node:http';
-import type { Express } from 'express';
 import { createApp } from './create-app';
 import { env } from './env';
 import { prisma } from './lib/prisma';
 import { createSocketServer } from './socket';
 
-const app: Express = createApp();
+const app = createApp();
 const server = createServer(app);
 const io = createSocketServer(server);
+const isVercel = Boolean(process.env.VERCEL);
 
-// Vercel intercepts `server.listen` to hand the server to its function runtime.
-// Locally the same call binds the normal HTTP port used by `pnpm dev`.
-server.listen(env.PORT, () => {
-  console.log(`BigBeanBag API listening on ${env.SERVER_URL}`);
-});
+// Vercel's Node runtime owns the HTTP listener and passes WebSocket upgrades
+// through to the exported server. Locally we bind the normal dev port.
+if (!isVercel) {
+  server.listen(env.PORT, () => {
+    console.log(`BigBeanBag API listening on ${env.SERVER_URL}`);
+  });
 
-if (!process.env.VERCEL) {
   const shutdown = async (signal: string) => {
     console.log(`${signal} received, shutting down`);
     io.close();

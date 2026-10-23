@@ -209,6 +209,7 @@ Set these Vercel environment variables:
 - `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`
 - `GOOGLE_CALLBACK_URL`: `https://your-project.vercel.app/auth/google/callback`
 - `YOUTUBE_API_KEY`: required for media search
+- `NODE_PATH`: `/var/task/packages/server/node_modules` (required for pnpm workspace dependency resolution in the server function)
 - Optional: `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET`
 
 Add the same production callback URL to the Google OAuth client. Run migrations against `DIRECT_URL` before deploying:
@@ -217,7 +218,9 @@ Add the same production callback URL to the Google OAuth client. Run migrations 
 pnpm --filter @bigbeanbag/server exec prisma migrate deploy
 ```
 
-Socket.IO is configured for WebSocket transport only because Vercel does not support Socket.IO's HTTP long-polling handshake across function instances. Vercel closes WebSocket connections when the function reaches its maximum duration; the client reconnects and rejoins the room automatically.
+The server entrypoint exports the HTTP server on Vercel without calling `listen`; Vercel's Node runtime owns the listener and forwards WebSocket upgrades. Locally the same entrypoint binds port `4000`. The server is built as CommonJS (`dist/index.cjs`) because Vercel's function root does not inherit the package `"type": "module"`. pnpm keeps server dependencies under `packages/server/node_modules`, so set `NODE_PATH=/var/task/packages/server/node_modules` in Vercel Production and Preview.
+
+Socket.IO uses WebSocket transport only. Vercel Functions support WebSocket upgrades on Fluid compute, but each connection is pinned to one function instance and closes when the function reaches its maximum duration; the client reconnects and rejoins the room.
 
 ### Self-hosted
 
