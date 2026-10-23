@@ -1,8 +1,26 @@
+import { existsSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 import { config } from 'dotenv';
-import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 
-config({ path: fileURLToPath(new URL('../../../.env', import.meta.url)) });
+const loadEnvFile = () => {
+  let directory = process.cwd();
+
+  for (let depth = 0; depth < 6; depth += 1) {
+    const candidate = resolve(directory, '.env');
+
+    if (existsSync(candidate)) {
+      config({ path: candidate });
+      return;
+    }
+
+    const parent = dirname(directory);
+    if (parent === directory) return;
+    directory = parent;
+  }
+};
+
+loadEnvFile();
 
 const blankToUndefined = (value: unknown) =>
   typeof value === 'string' && value.trim() === '' ? undefined : value;
