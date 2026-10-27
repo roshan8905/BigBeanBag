@@ -1,0 +1,131 @@
+{
+  "firstHealth": {
+    "ms": 941.75,
+    "status": 200,
+    "region": "iad1",
+    "cache": "MISS",
+    "uptimeSeconds": 1158,
+    "body": {
+      "status": "ok",
+      "database": "up",
+      "uptimeSeconds": 1158,
+      "timestamp": "2026-10-27T15:57:56.105Z"
+    }
+  },
+  "warmHealth": {
+    "count": 10,
+    "min": 470.72,
+    "p50": 488.59,
+    "p95": 776.28,
+    "p99": 776.28,
+    "max": 776.28,
+    "mean": 540.02
+  },
+  "warmProbes": [
+    {
+      "name": "auth-me",
+      "path": "/api/auth/me",
+      "values": [
+        {
+          "ms": 3403.93,
+          "status": 200
+        },
+        {
+          "ms": 1006.01,
+          "status": 200
+        },
+        {
+          "ms": 1380.08,
+          "status": 200
+        },
+        {
+          "ms": 955.6,
+          "status": 200
+        },
+        {
+          "ms": 942.51,
+          "status": 200
+        }
+      ],
+      "stats": {
+        "count": 5,
+        "min": 942.51,
+        "p50": 1006.01,
+        "p95": 3403.93,
+        "p99": 3403.93,
+        "max": 3403.93,
+        "mean": 1537.63
+      }
+    },
+    {
+      "name": "rooms",
+      "path": "/api/rooms",
+      "values": [
+        {
+          "ms": 2225.78,
+          "status": 200
+        },
+        {
+          "ms": 1592.51,
+          "status": 200
+        },
+        {
+          "ms": 1752.5,
+          "status": 200
+        },
+        {
+          "ms": 1591.04,
+          "status": 200
+        },
+        {
+          "ms": 2524.52,
+          "status": 200
+        }
+      ],
+      "stats": {
+        "count": 5,
+        "min": 1591.04,
+        "p50": 1752.5,
+        "p95": 2524.52,
+        "p99": 2524.52,
+        "max": 2524.52,
+        "mean": 1937.27
+      }
+    },
+    {
+      "name": "room-detail",
+      "path": "/api/rooms/ADGZNY",
+      "values": [
+        {
+          "ms": 2711.08,
+          "status": 200
+        },
+        {
+          "ms": 19244.16,
+          "status": 0
+        },
+        {
+          "ms": 3570.26,
+          "status": 200
+        },
+        {
+          "ms": 1880.19,
+          "status": 200
+        },
+        {
+          "ms": 2625.53,
+          "status": 200
+        }
+      ],
+      "stats": {
+        "count": 5,
+        "min": 1880.19,
+        "p50": 2711.08,
+        "p95": 19244.16,
+        "p99": 19244.16,
+        "max": 19244.16,
+        "mean": 6006.24
+      }
+    }
+  ]
+}

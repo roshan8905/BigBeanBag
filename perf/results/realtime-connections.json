@@ -1,0 +1,463 @@
+{
+  "room": "ADGZNY",
+  "results": [
+    {
+      "level": 50,
+      "connected": 50,
+      "active": 50,
+      "inRoom": 16,
+      "connectMs": {
+        "count": 50,
+        "min": 879.27,
+        "p50": 1452.81,
+        "p95": 2776.04,
+        "p99": 2858.64,
+        "max": 2858.64,
+        "mean": 1714.2
+      },
+      "joinMs": {
+        "count": 27,
+        "min": 5324.57,
+        "p50": 17865.13,
+        "p95": 19715.53,
+        "p99": 19777.81,
+        "max": 19777.81,
+        "mean": 15434.69
+      },
+      "pingMs": {
+        "count": 550,
+        "min": 227.33,
+        "p50": 253.24,
+        "p95": 348.08,
+        "p99": 354.07,
+        "max": 644.68,
+        "mean": 265.44
+      },
+      "disconnects": [
+        {
+          "index": 0,
+          "reason": "io client disconnect",
+          "elapsedMs": 86235
+        },
+        {
+          "index": 1,
+          "reason": "io client disconnect",
+          "elapsedMs": 86236
+        },
+        {
+          "index": 2,
+          "reason": "io client disconnect",
+          "elapsedMs": 86236
+        },
+        {
+          "index": 3,
+          "reason": "io client disconnect",
+          "elapsedMs": 86236
+        },
+        {
+          "index": 4,
+          "reason": "io client disconnect",
+          "elapsedMs": 86236
+        },
+        {
+          "index": 5,
+          "reason": "io client disconnect",
+          "elapsedMs": 86237
+        },
+        {
+          "index": 6,
+          "reason": "io client disconnect",
+          "elapsedMs": 86237
+        },
+        {
+          "index": 7,
+          "reason": "io client disconnect",
+          "elapsedMs": 86237
+        },
+        {
+          "index": 8,
+          "reason": "io client disconnect",
+          "elapsedMs": 86237
+        },
+        {
+          "index": 9,
+          "reason": "io client disconnect",
+          "elapsedMs": 86237
+        },
+        {
+          "index": 10,
+          "reason": "io client disconnect",
+          "elapsedMs": 86238
+        },
+        {
+          "index": 11,
+          "reason": "io client disconnect",
+          "elapsedMs": 86238
+        },
+        {
+          "index": 12,
+          "reason": "io client disconnect",
+          "elapsedMs": 86238
+        },
+        {
+          "index": 13,
+          "reason": "io client disconnect",
+          "elapsedMs": 86238
+        },
+        {
+          "index": 14,
+          "reason": "io client disconnect",
+          "elapsedMs": 86239
+        },
+        {
+          "index": 15,
+          "reason": "io client disconnect",
+          "elapsedMs": 86239
+        },
+        {
+          "index": 16,
+          "reason": "io client disconnect",
+          "elapsedMs": 86239
+        },
+        {
+          "index": 17,
+          "reason": "io client disconnect",
+          "elapsedMs": 86239
+        },
+        {
+          "index": 18,
+          "reason": "io client disconnect",
+          "elapsedMs": 86239
+        },
+        {
+          "index": 19,
+          "reason": "io client disconnect",
+          "elapsedMs": 86239
+        },
+        {
+          "index": 20,
+          "reason": "io client disconnect",
+          "elapsedMs": 86240
+        },
+        {
+          "index": 21,
+          "reason": "io client disconnect",
+          "elapsedMs": 86240
+        },
+        {
+          "index": 22,
+          "reason": "io client disconnect",
+          "elapsedMs": 86240
+        },
+        {
+          "index": 23,
+          "reason": "io client disconnect",
+          "elapsedMs": 86240
+        },
+        {
+          "index": 24,
+          "reason": "io client disconnect",
+          "elapsedMs": 86240
+        },
+        {
+          "index": 25,
+          "reason": "io client disconnect",
+          "elapsedMs": 86241
+        },
+        {
+          "index": 26,
+          "reason": "io client disconnect",
+          "elapsedMs": 86241
+        },
+        {
+          "index": 27,
+          "reason": "io client disconnect",
+          "elapsedMs": 86241
+        },
+        {
+          "index": 28,
+          "reason": "io client disconnect",
+          "elapsedMs": 86241
+        },
+        {
+          "index": 29,
+          "reason": "io client disconnect",
+          "elapsedMs": 86241
+        },
+        {
+          "index": 30,
+          "reason": "io client disconnect",
+          "elapsedMs": 86242
+        },
+        {
+          "index": 31,
+          "reason": "io client disconnect",
+          "elapsedMs": 86242
+        },
+        {
+          "index": 32,
+          "reason": "io client disconnect",
+          "elapsedMs": 86242
+        },
+        {
+          "index": 33,
+          "reason": "io client disconnect",
+          "elapsedMs": 86242
+        },
+        {
+          "index": 34,
+          "reason": "io client disconnect",
+          "elapsedMs": 86242
+        },
+        {
+          "index": 35,
+          "reason": "io client disconnect",
+          "elapsedMs": 86242
+        },
+        {
+          "index": 36,
+          "reason": "io client disconnect",
+          "elapsedMs": 86243
+        },
+        {
+          "index": 37,
+          "reason": "io client disconnect",
+          "elapsedMs": 86243
+        },
+        {
+          "index": 38,
+          "reason": "io client disconnect",
+          "elapsedMs": 86243
+        },
+        {
+          "index": 39,
+          "reason": "io client disconnect",
+          "elapsedMs": 86243
+        },
+        {
+          "index": 40,
+          "reason": "io client disconnect",
+          "elapsedMs": 86243
+        },
+        {
+          "index": 41,
+          "reason": "io client disconnect",
+          "elapsedMs": 86243
+        },
+        {
+          "index": 42,
+          "reason": "io client disconnect",
+          "elapsedMs": 86244
+        },
+        {
+          "index": 43,
+          "reason": "io client disconnect",
+          "elapsedMs": 86244
+        },
+        {
+          "index": 44,
+          "reason": "io client disconnect",
+          "elapsedMs": 86244
+        },
+        {
+          "index": 45,
+          "reason": "io client disconnect",
+          "elapsedMs": 86244
+        },
+        {
+          "index": 46,
+          "reason": "io client disconnect",
+          "elapsedMs": 86244
+        },
+        {
+          "index": 47,
+          "reason": "io client disconnect",
+          "elapsedMs": 86245
+        },
+        {
+          "index": 48,
+          "reason": "io client disconnect",
+          "elapsedMs": 86245
+        },
+        {
+          "index": 49,
+          "reason": "io client disconnect",
+          "elapsedMs": 86245
+        }
+      ],
+      "errors": [
+        {
+          "index": 9,
+          "event": "join_error",
+          "message": "\nInvalid `prisma.playbackState.upsert()` invocation:\n\n\nTimed out fetching a new connection from the connection pool. More info: http://pris.ly/d/connection-pool (Current connection pool timeout: 10, connection limit: 5)"
+        },
+        {
+          "index": 23,
+          "event": "join_error",
+          "message": "\nInvalid `prisma.battle.findFirst()` invocation:\n\n\nTimed out fetching a new connection from the connection pool. More info: http://pris.ly/d/connection-pool (Current connection pool timeout: 10, connection limit: 5)"
+        },
+        {
+          "index": 12,
+          "event": "join_error",
+          "message": "\nInvalid `prisma.queueItem.findMany()` invocation:\n\n\nTimed out fetching a new connection from the connection pool. More info: http://pris.ly/d/connection-pool (Current connection pool timeout: 10, connection limit: 5)"
+        },
+        {
+          "index": 17,
+          "event": "join_error",
+          "message": "\nInvalid `prisma.chatMessage.findMany()` invocation:\n\n\nTimed out fetching a new connection from the connection pool. More info: http://pris.ly/d/connection-pool (Current connection pool timeout: 10, connection limit: 5)"
+        },
+        {
+          "index": 11,
+          "event": "join_error",
+          "message": "\nInvalid `prisma.queueItem.findMany()` invocation:\n\n\nTimed out fetching a new connection from the connection pool. More info: http://pris.ly/d/connection-pool (Current connection pool timeout: 10, connection limit: 5)"
+        },
+        {
+          "index": 10,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 39,
+          "event": "join_error",
+          "message": "\nInvalid `prisma.room.findUnique()` invocation:\n\n\nTimed out fetching a new connection from the connection pool. More info: http://pris.ly/d/connection-pool (Current connection pool timeout: 10, connection limit: 5)"
+        },
+        {
+          "index": 14,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 13,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 22,
+          "event": "join_error",
+          "message": "\nInvalid `prisma.battle.findFirst()` invocation:\n\n\nTimed out fetching a new connection from the connection pool. More info: http://pris.ly/d/connection-pool (Current connection pool timeout: 10, connection limit: 5)"
+        },
+        {
+          "index": 38,
+          "event": "join_error",
+          "message": "\nInvalid `prisma.room.findUnique()` invocation:\n\n\nTimed out fetching a new connection from the connection pool. More info: http://pris.ly/d/connection-pool (Current connection pool timeout: 10, connection limit: 5)"
+        },
+        {
+          "index": 16,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 15,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 19,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 21,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 18,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 41,
+          "event": "join_error",
+          "message": "\nInvalid `prisma.room.findUnique()` invocation:\n\n\nTimed out fetching a new connection from the connection pool. More info: http://pris.ly/d/connection-pool (Current connection pool timeout: 10, connection limit: 5)"
+        },
+        {
+          "index": 20,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 25,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 28,
+          "event": "join_error",
+          "message": "\nInvalid `prisma.battle.findFirst()` invocation:\n\n\nTimed out fetching a new connection from the connection pool. More info: http://pris.ly/d/connection-pool (Current connection pool timeout: 10, connection limit: 5)"
+        },
+        {
+          "index": 26,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 27,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 47,
+          "event": "join_error",
+          "message": "\nInvalid `prisma.room.findUnique()` invocation:\n\n\nTimed out fetching a new connection from the connection pool. More info: http://pris.ly/d/connection-pool (Current connection pool timeout: 10, connection limit: 5)"
+        },
+        {
+          "index": 29,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 30,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 32,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 34,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 33,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 35,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 40,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 43,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 42,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 45,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 49,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        }
+      ]
+    }
+  ],
+  "note": "The final 50 disconnect entries are cleanup (io client disconnect); no unexpected disconnects occurred during the measured run."
+}

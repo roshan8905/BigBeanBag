@@ -1,0 +1,28 @@
+{
+  "attempts": [
+    {
+      "url": "https://www.youtube.com/watch?v=A_MjCqQoLLA",
+      "status": 200,
+      "ms": 3882.12
+    }
+  ],
+  "item": {
+    "youtubeId": "A_MjCqQoLLA",
+    "title": "The Beatles - The Beatles - Hey Jude (Official Music Video) [Remastered 2015]",
+    "durationMs": 490000
+  },
+  "queueAdd": {
+    "ok": true,
+    "ms": 4197.54,
+    "itemId": "cmvqpa13f000pl307gf65tpvx"
+  },
+  "skip": {
+    "ok": true,
+    "ms": 7111.18,
+    "status": "PLAYING",
+    "currentItemId": "cmvqpa13f000pl307gf65tpvx",
+    "positionMs": 0,
+    "durationMs": 490000,
+    "message": null
+  }
+}

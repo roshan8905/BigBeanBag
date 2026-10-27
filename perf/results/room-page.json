@@ -1,0 +1,443 @@
+{
+  "url": "https://bigbeanbag.vercel.app/rooms/ADGZNY",
+  "withYoutube": {
+    "blockYoutube": false,
+    "navigationMs": 1064.76,
+    "perf": {
+      "lcp": 5868,
+      "cls": 0,
+      "fcp": 512,
+      "longTasks": [
+        64
+      ],
+      "finalUrl": "https://bigbeanbag.vercel.app/rooms/ADGZNY",
+      "iframes": [
+        "https://www.youtube.com/embed/5NV6Rdv1a3I?autoplay=0&controls=0&disablekb=1&modestbranding=1&rel=0&playsinline=1&origin=https%3A%2F%2Fbigbeanbag.vercel.app&enablejsapi=1&widgetid=1&forigin=https%3A%2F%2Fbigbeanbag.vercel.app%2Frooms%2FADGZNY&aoriginsup=1&vf=6"
+      ],
+      "resources": [
+        {
+          "name": "https://bigbeanbag.vercel.app/assets/index-Dn1CHHq8.js",
+          "initiatorType": "script",
+          "transferSize": 171800,
+          "encodedBodySize": 171500,
+          "duration": 209.8
+        },
+        {
+          "name": "https://bigbeanbag.vercel.app/assets/index-Bs5CnTAN.css",
+          "initiatorType": "link",
+          "transferSize": 5816,
+          "encodedBodySize": 5516,
+          "duration": 222
+        },
+        {
+          "name": "https://bigbeanbag.vercel.app/_vercel/speed-insights/script.js",
+          "initiatorType": "script",
+          "transferSize": 5046,
+          "encodedBodySize": 4746,
+          "duration": 47.8
+        },
+        {
+          "name": "https://bigbeanbag.vercel.app/api/auth/me",
+          "initiatorType": "fetch",
+          "transferSize": 506,
+          "encodedBodySize": 206,
+          "duration": 2549
+        },
+        {
+          "name": "https://bigbeanbag.vercel.app/favicon.ico",
+          "initiatorType": "other",
+          "transferSize": 855,
+          "encodedBodySize": 555,
+          "duration": 68.6
+        },
+        {
+          "name": "https://bigbeanbag.vercel.app/api/rooms/ADGZNY",
+          "initiatorType": "fetch",
+          "transferSize": 886,
+          "encodedBodySize": 586,
+          "duration": 2707
+        },
+        {
+          "name": "https://lh3.googleusercontent.com/a/ACg8ocJoYPlyZXE88g4DHxJn4uCgWX1gv2dmvJUxlcnQBZdPxcJ84w=s96-c",
+          "initiatorType": "img",
+          "transferSize": 1329,
+          "encodedBodySize": 1029,
+          "duration": 565.1
+        },
+        {
+          "name": "https://www.youtube.com/iframe_api",
+          "initiatorType": "script",
+          "transferSize": 0,
+          "encodedBodySize": 0,
+          "duration": 290.6
+        },
+        {
+          "name": "https://i.ytimg.com/vi/5NV6Rdv1a3I/hqdefault.jpg",
+          "initiatorType": "img",
+          "transferSize": 21738,
+          "encodedBodySize": 21438,
+          "duration": 554.7
+        },
+        {
+          "name": "https://www.youtube.com/s/player/dce23b30/www-widgetapi.vflset/www-widgetapi.js",
+          "initiatorType": "script",
+          "transferSize": 0,
+          "encodedBodySize": 0,
+          "duration": 80.9
+        },
+        {
+          "name": "https://www.youtube.com/embed/5NV6Rdv1a3I?autoplay=0&controls=0&disablekb=1&modestbranding=1&rel=0&playsinline=1&origin=https%3A%2F%2Fbigbeanbag.vercel.app&enablejsapi=1&widgetid=1&forigin=https%3A%2F%2Fbigbeanbag.vercel.app%2Frooms%2FADGZNY&aoriginsup=1&vf=6",
+          "initiatorType": "iframe",
+          "transferSize": 0,
+          "encodedBodySize": 0,
+          "duration": 2533.6
+        }
+      ],
+      "navigation": {
+        "domContentLoaded": 477.2,
+        "load": 479,
+        "responseStart": 208.5
+      }
+    },
+    "totalBytes": 227788,
+    "totalRequests": 11,
+    "youtubeBytes": 40532,
+    "youtubeRequestCount": 3,
+    "topRequests": [
+      {
+        "url": "https://bigbeanbag.vercel.app/assets/index-Dn1CHHq8.js",
+        "type": "Script",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 171830,
+        "durationMs": 210,
+        "error": null
+      },
+      {
+        "url": "https://i.ytimg.com/vi/5NV6Rdv1a3I/hqdefault.jpg",
+        "type": "Image",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 21872,
+        "durationMs": 554.8,
+        "error": null
+      },
+      {
+        "url": "https://www.youtube.com/iframe_api",
+        "type": "Script",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 9458,
+        "durationMs": 290.7,
+        "error": null
+      },
+      {
+        "url": "https://www.youtube.com/s/player/dce23b30/www-widgetapi.vflset/www-widgetapi.js",
+        "type": "Script",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 9202,
+        "durationMs": 81.1,
+        "error": null
+      },
+      {
+        "url": "https://bigbeanbag.vercel.app/assets/index-Bs5CnTAN.css",
+        "type": "Stylesheet",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 5689,
+        "durationMs": 222,
+        "error": null
+      },
+      {
+        "url": "https://bigbeanbag.vercel.app/_vercel/speed-insights/script.js",
+        "type": "Script",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 4970,
+        "durationMs": 49.3,
+        "error": null
+      },
+      {
+        "url": "https://lh3.googleusercontent.com/a/ACg8ocJoYPlyZXE88g4DHxJn4uCgWX1gv2dmvJUxlcnQBZdPxcJ84w=s96-c",
+        "type": "Image",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 1331,
+        "durationMs": 565.1,
+        "error": null
+      },
+      {
+        "url": "https://bigbeanbag.vercel.app/api/auth/me",
+        "type": "Fetch",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 1004,
+        "durationMs": 2549.1,
+        "error": null
+      },
+      {
+        "url": "https://bigbeanbag.vercel.app/api/rooms/ADGZNY",
+        "type": "Fetch",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 893,
+        "durationMs": 2706.9,
+        "error": null
+      },
+      {
+        "url": "https://bigbeanbag.vercel.app/rooms/ADGZNY",
+        "type": "Document",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 890,
+        "durationMs": 217.2,
+        "error": null
+      },
+      {
+        "url": "https://bigbeanbag.vercel.app/favicon.ico",
+        "type": "Other",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 649,
+        "durationMs": 68.7,
+        "error": null
+      }
+    ],
+    "youtubeRequests": [
+      {
+        "url": "https://i.ytimg.com/vi/5NV6Rdv1a3I/hqdefault.jpg",
+        "type": "Image",
+        "status": 200,
+        "bytes": 21872,
+        "durationMs": 554.8
+      },
+      {
+        "url": "https://www.youtube.com/iframe_api",
+        "type": "Script",
+        "status": 200,
+        "bytes": 9458,
+        "durationMs": 290.7
+      },
+      {
+        "url": "https://www.youtube.com/s/player/dce23b30/www-widgetapi.vflset/www-widgetapi.js",
+        "type": "Script",
+        "status": 200,
+        "bytes": 9202,
+        "durationMs": 81.1
+      }
+    ]
+  },
+  "withoutYoutube": {
+    "blockYoutube": true,
+    "navigationMs": 1338.39,
+    "perf": {
+      "lcp": 6148,
+      "cls": 0,
+      "fcp": 732,
+      "longTasks": [
+        55
+      ],
+      "finalUrl": "https://bigbeanbag.vercel.app/rooms/ADGZNY",
+      "iframes": [],
+      "resources": [
+        {
+          "name": "https://bigbeanbag.vercel.app/assets/index-Dn1CHHq8.js",
+          "initiatorType": "script",
+          "transferSize": 171800,
+          "encodedBodySize": 171500,
+          "duration": 361.9
+        },
+        {
+          "name": "https://bigbeanbag.vercel.app/assets/index-Bs5CnTAN.css",
+          "initiatorType": "link",
+          "transferSize": 5816,
+          "encodedBodySize": 5516,
+          "duration": 136.7
+        },
+        {
+          "name": "https://bigbeanbag.vercel.app/_vercel/speed-insights/script.js",
+          "initiatorType": "script",
+          "transferSize": 5046,
+          "encodedBodySize": 4746,
+          "duration": 110.3
+        },
+        {
+          "name": "https://bigbeanbag.vercel.app/api/auth/me",
+          "initiatorType": "fetch",
+          "transferSize": 506,
+          "encodedBodySize": 206,
+          "duration": 2543.1
+        },
+        {
+          "name": "https://bigbeanbag.vercel.app/favicon.ico",
+          "initiatorType": "other",
+          "transferSize": 855,
+          "encodedBodySize": 555,
+          "duration": 102.9
+        },
+        {
+          "name": "https://bigbeanbag.vercel.app/api/rooms/ADGZNY",
+          "initiatorType": "fetch",
+          "transferSize": 886,
+          "encodedBodySize": 586,
+          "duration": 2766.8
+        },
+        {
+          "name": "https://lh3.googleusercontent.com/a/ACg8ocJoYPlyZXE88g4DHxJn4uCgWX1gv2dmvJUxlcnQBZdPxcJ84w=s96-c",
+          "initiatorType": "img",
+          "transferSize": 1329,
+          "encodedBodySize": 1029,
+          "duration": 200.7
+        },
+        {
+          "name": "https://bigbeanbag.vercel.app/api/rooms/ADGZNY/invite",
+          "initiatorType": "fetch",
+          "transferSize": 420,
+          "encodedBodySize": 120,
+          "duration": 1867.6
+        },
+        {
+          "name": "https://www.youtube.com/iframe_api",
+          "initiatorType": "script",
+          "transferSize": 0,
+          "encodedBodySize": 0,
+          "duration": 2.3
+        },
+        {
+          "name": "https://i.ytimg.com/vi/5NV6Rdv1a3I/hqdefault.jpg",
+          "initiatorType": "img",
+          "transferSize": 0,
+          "encodedBodySize": 0,
+          "duration": 1.8
+        }
+      ],
+      "navigation": {
+        "domContentLoaded": 704.4,
+        "load": 704.5,
+        "responseStart": 291.2
+      }
+    },
+    "totalBytes": 187672,
+    "totalRequests": 11,
+    "youtubeBytes": 0,
+    "youtubeRequestCount": 2,
+    "topRequests": [
+      {
+        "url": "https://bigbeanbag.vercel.app/assets/index-Dn1CHHq8.js",
+        "type": "Script",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 171826,
+        "durationMs": 361.9,
+        "error": null
+      },
+      {
+        "url": "https://bigbeanbag.vercel.app/assets/index-Bs5CnTAN.css",
+        "type": "Stylesheet",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 5691,
+        "durationMs": 136.8,
+        "error": null
+      },
+      {
+        "url": "https://bigbeanbag.vercel.app/_vercel/speed-insights/script.js",
+        "type": "Script",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 4970,
+        "durationMs": 111,
+        "error": null
+      },
+      {
+        "url": "https://lh3.googleusercontent.com/a/ACg8ocJoYPlyZXE88g4DHxJn4uCgWX1gv2dmvJUxlcnQBZdPxcJ84w=s96-c",
+        "type": "Image",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 1326,
+        "durationMs": 200.8,
+        "error": null
+      },
+      {
+        "url": "https://bigbeanbag.vercel.app/api/auth/me",
+        "type": "Fetch",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 1005,
+        "durationMs": 2543.2,
+        "error": null
+      },
+      {
+        "url": "https://bigbeanbag.vercel.app/api/rooms/ADGZNY",
+        "type": "Fetch",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 893,
+        "durationMs": 2766.8,
+        "error": null
+      },
+      {
+        "url": "https://bigbeanbag.vercel.app/rooms/ADGZNY",
+        "type": "Document",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 890,
+        "durationMs": 303.7,
+        "error": null
+      },
+      {
+        "url": "https://bigbeanbag.vercel.app/favicon.ico",
+        "type": "Other",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 626,
+        "durationMs": 102.9,
+        "error": null
+      },
+      {
+        "url": "https://bigbeanbag.vercel.app/api/rooms/ADGZNY/invite",
+        "type": "Fetch",
+        "status": 200,
+        "protocol": "h2",
+        "bytes": 445,
+        "durationMs": 1867.6,
+        "error": null
+      },
+      {
+        "url": "https://www.youtube.com/iframe_api",
+        "type": "Script",
+        "status": null,
+        "protocol": null,
+        "bytes": 0,
+        "durationMs": null,
+        "error": "net::ERR_BLOCKED_BY_CLIENT.Inspector"
+      },
+      {
+        "url": "https://i.ytimg.com/vi/5NV6Rdv1a3I/hqdefault.jpg",
+        "type": "Image",
+        "status": null,
+        "protocol": null,
+        "bytes": 0,
+        "durationMs": null,
+        "error": "net::ERR_BLOCKED_BY_CLIENT.Inspector"
+      }
+    ],
+    "youtubeRequests": [
+      {
+        "url": "https://www.youtube.com/iframe_api",
+        "type": "Script",
+        "status": null,
+        "bytes": 0,
+        "durationMs": null
+      },
+      {
+        "url": "https://i.ytimg.com/vi/5NV6Rdv1a3I/hqdefault.jpg",
+        "type": "Image",
+        "status": null,
+        "bytes": 0,
+        "durationMs": null
+      }
+    ]
+  }
+}

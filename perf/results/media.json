@@ -1,0 +1,31 @@
+{
+  "search": {
+    "status": 200,
+    "ms": 4473.79,
+    "bytes": 1319,
+    "items": 5
+  },
+  "resolve": {
+    "status": 200,
+    "ms": 1469.25,
+    "bytes": 370,
+    "attempts": [
+      {
+        "url": "https://www.youtube.com/watch?v=5NV6Rdv1a3I",
+        "status": 200,
+        "ms": 1469.25
+      }
+    ],
+    "item": {
+      "youtubeId": "5NV6Rdv1a3I",
+      "title": "Daft Punk - Get Lucky (Official Audio) ft. Pharrell Williams, Nile Rodgers",
+      "durationMs": 249000
+    }
+  },
+  "queueAdd": {
+    "ok": true,
+    "ms": 4497.38,
+    "itemId": "cmvqp1v6a0003jm08xgqvmlt3",
+    "message": null
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "note": "Transcribed from the realtime-connections.mjs stdout of the 5/20 stability pass; the JSON file was later overwritten by the 50-client pass.",
+  "results": [
+    {
+      "level": 5,
+      "connected": 5,
+      "active": 5,
+      "inRoomAtEnd": 0,
+      "connectMs": { "count": 5, "p50": 2599.24, "p95": 2991.77 },
+      "joinMs": { "count": 5, "p50": 3572.23, "p95": 4757.13 },
+      "pingMs": { "count": 12, "p50": 299.21, "p95": 507.97 },
+      "disconnects": { "count": 5, "reason": "transport close", "firstMs": 42042, "lastMs": 47057 },
+      "errors": 0
+    },
+    {
+      "level": 20,
+      "connected": 20,
+      "active": 20,
+      "inRoomAtEnd": 0,
+      "connectMs": { "count": 20, "p50": 2332.06, "p95": 2856.19 },
+      "joinMs": { "count": 8, "p50": 9026.81, "p95": 12123.09 },
+      "pingMs": { "count": 0 },
+      "disconnects": { "count": 20, "reason": "ping timeout", "firstMs": 46129, "lastMs": 48020 },
+      "errors": { "joinTimeouts": 12 }
+    }
+  ]
+}

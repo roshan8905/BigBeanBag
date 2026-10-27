@@ -1,0 +1,12 @@
+{
+  "connectMs": 1052.04,
+  "join": {
+    "ok": true,
+    "ms": 4477.58
+  },
+  "reconnectMs": 2239.9,
+  "rejoin": {
+    "ok": true,
+    "ms": 4320.07
+  }
+}

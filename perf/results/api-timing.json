@@ -1,0 +1,2423 @@
+{
+  "baseUrl": "https://bigbeanbag.vercel.app",
+  "samples": 30,
+  "intervalMs": 500,
+  "results": [
+    {
+      "name": "health",
+      "method": "GET",
+      "path": "/api/health",
+      "authenticated": false,
+      "stats": {
+        "count": 29,
+        "min": 456.62,
+        "p50": 506.16,
+        "p95": 1282.63,
+        "p99": 1659.98,
+        "max": 1659.98,
+        "mean": 625.54
+      },
+      "errorRate": 3.33,
+      "statuses": [
+        200,
+        0
+      ],
+      "bytes": 90,
+      "regions": [
+        "iad1"
+      ],
+      "cache": [
+        "MISS"
+      ],
+      "rows": [
+        {
+          "ms": 494.24,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 502.24,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 492.32,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 930.84,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 480.06,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 485.57,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 467.43,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 466.05,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 462.3,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 456.62,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 480.63,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 491.86,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 497.87,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 506.16,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 21686.94,
+          "status": 0,
+          "bytes": 0,
+          "cache": null,
+          "region": null,
+          "error": "fetch failed"
+        },
+        {
+          "ms": 734.02,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 506,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 636.54,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 521.74,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 504.48,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 521.4,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 782.9,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 646.22,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1659.98,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 943.19,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1282.63,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 540.48,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 523.75,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 570.15,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 552.93,
+          "status": 200,
+          "bytes": 90,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "auth-config",
+      "method": "GET",
+      "path": "/api/auth/config",
+      "authenticated": false,
+      "stats": {
+        "count": 30,
+        "min": 286.52,
+        "p50": 308.12,
+        "p95": 1035.61,
+        "p99": 1468.93,
+        "max": 1468.93,
+        "mean": 403
+      },
+      "errorRate": 0,
+      "statuses": [
+        200
+      ],
+      "bytes": 22,
+      "regions": [
+        "iad1"
+      ],
+      "cache": [
+        "MISS"
+      ],
+      "rows": [
+        {
+          "ms": 306.18,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1005.19,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1035.61,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 309.39,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 305.79,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 308.76,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 298.37,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 348.91,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 305.84,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 324.77,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1468.93,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 327.84,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 334.07,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 288.1,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 287.22,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 307.39,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 343.69,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 414.56,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 355.78,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 286.98,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 306.55,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 308.12,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 291.72,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 302.8,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 381.77,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 298.34,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 310.64,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 291.16,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 349.01,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 286.52,
+          "status": 200,
+          "bytes": 22,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "auth-me-anon",
+      "method": "GET",
+      "path": "/api/auth/me",
+      "authenticated": false,
+      "stats": {
+        "count": 30,
+        "min": 275.57,
+        "p50": 308.6,
+        "p95": 490.41,
+        "p99": 873.32,
+        "max": 873.32,
+        "mean": 349.37
+      },
+      "errorRate": 0,
+      "statuses": [
+        200
+      ],
+      "bytes": 13,
+      "regions": [
+        "iad1"
+      ],
+      "cache": [
+        "MISS"
+      ],
+      "rows": [
+        {
+          "ms": 490.41,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 314.55,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 291.11,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 310.13,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 293.9,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 299.57,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 296.31,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 314.56,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 284.99,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 393.68,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 275.57,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 873.32,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 408.47,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 317.98,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 352.38,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 318.22,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 283.18,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 275.63,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 358.91,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 288.6,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 469.73,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 291.76,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 294.97,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 319.12,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 307.18,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 290.54,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 436.4,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 307.35,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 308.6,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 414.04,
+          "status": 200,
+          "bytes": 13,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "auth-me",
+      "method": "GET",
+      "path": "/api/auth/me",
+      "authenticated": true,
+      "stats": {
+        "count": 29,
+        "min": 920.87,
+        "p50": 993.43,
+        "p95": 2339.3,
+        "p99": 2860.77,
+        "max": 2860.77,
+        "mean": 1279.66
+      },
+      "errorRate": 3.33,
+      "statuses": [
+        200,
+        0
+      ],
+      "bytes": 206,
+      "regions": [
+        "iad1"
+      ],
+      "cache": [
+        "MISS"
+      ],
+      "rows": [
+        {
+          "ms": 980.89,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1985.15,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 993.43,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 988.36,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1201.18,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1596.07,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 979.58,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1490.56,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 984.61,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1353.28,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1007.04,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 977.25,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 986.94,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 967.55,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1210.85,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 992.46,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 990.32,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 989.57,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 992.18,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1000.49,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 974.99,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 19268.73,
+          "status": 0,
+          "bytes": 0,
+          "cache": null,
+          "region": null,
+          "error": "fetch failed"
+        },
+        {
+          "ms": 2339.3,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1643.75,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 920.87,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1469.87,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1659.59,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 929.73,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2860.77,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1643.61,
+          "status": 200,
+          "bytes": 206,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "rooms-list",
+      "method": "GET",
+      "path": "/api/rooms",
+      "authenticated": true,
+      "stats": {
+        "count": 27,
+        "min": 1565,
+        "p50": 1838.34,
+        "p95": 3837.29,
+        "p99": 5157.38,
+        "max": 5157.38,
+        "mean": 2274.68
+      },
+      "errorRate": 10,
+      "statuses": [
+        200,
+        0
+      ],
+      "bytes": 656,
+      "regions": [
+        "iad1"
+      ],
+      "cache": [
+        "MISS"
+      ],
+      "rows": [
+        {
+          "ms": 2087.43,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2455.21,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1595.04,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2066.28,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1600.34,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1838.34,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 5157.38,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1773.19,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1565,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2157.63,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 21656.07,
+          "status": 0,
+          "bytes": 0,
+          "cache": null,
+          "region": null,
+          "error": "fetch failed"
+        },
+        {
+          "ms": 3405.71,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2351.54,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 30015.01,
+          "status": 0,
+          "bytes": 0,
+          "cache": null,
+          "region": null,
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "ms": 3837.29,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1603.51,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1619.33,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1845.9,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 19235.26,
+          "status": 0,
+          "bytes": 0,
+          "cache": null,
+          "region": null,
+          "error": "fetch failed"
+        },
+        {
+          "ms": 3436.34,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1647.23,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 3505,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1732.26,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1579.16,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1724.64,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1613.81,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2620.22,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1815.72,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1626.92,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 3156.01,
+          "status": 200,
+          "bytes": 656,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "room-detail",
+      "method": "GET",
+      "path": "/api/rooms/ADGZNY",
+      "authenticated": true,
+      "stats": {
+        "count": 30,
+        "min": 1748.96,
+        "p50": 1948.26,
+        "p95": 3716.7,
+        "p99": 3914.97,
+        "max": 3914.97,
+        "mean": 2231.24
+      },
+      "errorRate": 0,
+      "statuses": [
+        200
+      ],
+      "bytes": 586,
+      "regions": [
+        "iad1"
+      ],
+      "cache": [
+        "MISS"
+      ],
+      "rows": [
+        {
+          "ms": 3251.32,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 3716.7,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1832.47,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1939.2,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 3914.97,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2605.49,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1789.24,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1806.14,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1785.22,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2615.89,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1775.53,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1968.62,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1892.11,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1780.69,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1777.52,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2386.96,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1780.64,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2998.98,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1748.96,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2411.28,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2414.95,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2059.51,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1889.02,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1975.83,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2310.31,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2980.97,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1770.17,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1948.26,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1797.79,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2012.46,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "room-members",
+      "method": "GET",
+      "path": "/api/rooms/ADGZNY/members",
+      "authenticated": true,
+      "stats": {
+        "count": 29,
+        "min": 1759.5,
+        "p50": 1838.08,
+        "p95": 3014.38,
+        "p99": 5633.35,
+        "max": 5633.35,
+        "mean": 2078.34
+      },
+      "errorRate": 3.33,
+      "statuses": [
+        200,
+        0
+      ],
+      "bytes": 252,
+      "regions": [
+        "iad1"
+      ],
+      "cache": [
+        "MISS"
+      ],
+      "rows": [
+        {
+          "ms": 1760.93,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1769.1,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1767.38,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1761.16,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1951.5,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2597.65,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1759.5,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1770.91,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1764.33,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2471,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1803.86,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2018.35,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 3014.38,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1920.87,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2194.84,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1938.12,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1799.66,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1944.25,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1818.29,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1831.69,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1851.65,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2050.5,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1799.76,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1832.16,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1893.85,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1891.51,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1823.16,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 19257.78,
+          "status": 0,
+          "bytes": 0,
+          "cache": null,
+          "region": null,
+          "error": "fetch failed"
+        },
+        {
+          "ms": 5633.35,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1838.08,
+          "status": 200,
+          "bytes": 252,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "room-invite",
+      "method": "GET",
+      "path": "/api/rooms/ADGZNY/invite",
+      "authenticated": true,
+      "stats": {
+        "count": 30,
+        "min": 1760.18,
+        "p50": 2131.39,
+        "p95": 3356.81,
+        "p99": 3403.06,
+        "max": 3403.06,
+        "mean": 2372.57
+      },
+      "errorRate": 0,
+      "statuses": [
+        200
+      ],
+      "bytes": 120,
+      "regions": [
+        "iad1"
+      ],
+      "cache": [
+        "MISS"
+      ],
+      "rows": [
+        {
+          "ms": 1925.96,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2193.95,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2993.24,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 3037.57,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2996.88,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1821.46,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1779.13,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2544.35,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 3222.43,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 3173.97,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 3356.81,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 3403.06,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2164.51,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2063.03,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1860.21,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1796.09,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1772.7,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2131.39,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 3148.22,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1989.28,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1772.45,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2740.94,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1760.18,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2618.2,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2288.59,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2017.45,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1772.13,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1799.84,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1763.86,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 3269.37,
+          "status": 200,
+          "bytes": 120,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "room-join",
+      "method": "POST",
+      "path": "/api/rooms/join",
+      "authenticated": true,
+      "stats": {
+        "count": 30,
+        "min": 1770.58,
+        "p50": 1850.23,
+        "p95": 2751.7,
+        "p99": 3076.74,
+        "max": 3076.74,
+        "mean": 1994.86
+      },
+      "errorRate": 0,
+      "statuses": [
+        200
+      ],
+      "bytes": 586,
+      "regions": [
+        "iad1"
+      ],
+      "cache": [
+        "MISS"
+      ],
+      "rows": [
+        {
+          "ms": 2602.33,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1907.44,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1782.14,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1884.8,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1822.17,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2269.19,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1843.98,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1826.85,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1966.49,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1924.73,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2049.02,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1850.23,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1804.69,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1836.47,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1805.65,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1795.55,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1979.88,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1936.02,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1789.67,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1770.58,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1773.99,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1770.78,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 3076.74,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2751.7,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 2731.77,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1904.28,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1954.31,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1776.79,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1851.2,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        },
+        {
+          "ms": 1806.26,
+          "status": 200,
+          "bytes": 586,
+          "cache": "MISS",
+          "region": "iad1",
+          "error": null
+        }
+      ]
+    }
+  ]
+}

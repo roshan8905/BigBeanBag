@@ -1,0 +1,450 @@
+{
+  "room": "ADGZNY",
+  "results": [
+    {
+      "level": 5,
+      "connected": 5,
+      "joined": 5,
+      "listeners": 4,
+      "connectMs": {
+        "count": 5,
+        "min": 2818.98,
+        "p50": 2899.25,
+        "p95": 3093.18,
+        "p99": 3093.18,
+        "max": 3093.18,
+        "mean": 2938.97
+      },
+      "joinMs": {
+        "count": 5,
+        "min": 3082.96,
+        "p50": 3934.04,
+        "p95": 5691.09,
+        "p99": 5691.09,
+        "max": 5691.09,
+        "mean": 4399.25
+      },
+      "fanoutMs": {
+        "count": 20,
+        "min": 1514.31,
+        "p50": 2312.45,
+        "p95": 2799.55,
+        "p99": 2813.79,
+        "max": 2813.79,
+        "mean": 2152.23
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "sentAt": 9242,
+          "ackOk": true,
+          "ackMs": 2339.19,
+          "received": 4,
+          "missing": 0,
+          "p50": 2339.7,
+          "p95": 2351.23,
+          "max": 2351.23
+        },
+        {
+          "round": 1,
+          "sentAt": 12607,
+          "ackOk": true,
+          "ackMs": 2798.1,
+          "received": 4,
+          "missing": 0,
+          "p50": 2798.31,
+          "p95": 2813.79,
+          "max": 2813.79
+        },
+        {
+          "round": 2,
+          "sentAt": 16436,
+          "ackOk": true,
+          "ackMs": 1514.11,
+          "received": 4,
+          "missing": 0,
+          "p50": 1514.48,
+          "p95": 1514.73,
+          "max": 1514.73
+        },
+        {
+          "round": 3,
+          "sentAt": 18954,
+          "ackOk": true,
+          "ackMs": 2311.42,
+          "received": 4,
+          "missing": 0,
+          "p50": 2312.45,
+          "p95": 2348.37,
+          "max": 2348.37
+        },
+        {
+          "round": 4,
+          "sentAt": 22317,
+          "ackOk": true,
+          "ackMs": 1779.97,
+          "received": 4,
+          "missing": 0,
+          "p50": 1780.24,
+          "p95": 1780.48,
+          "max": 1780.48
+        }
+      ],
+      "errors": []
+    },
+    {
+      "level": 20,
+      "connected": 20,
+      "joined": 20,
+      "listeners": 19,
+      "connectMs": {
+        "count": 20,
+        "min": 1596.38,
+        "p50": 2336.65,
+        "p95": 3775.51,
+        "p99": 4102.99,
+        "max": 4102.99,
+        "mean": 2535.33
+      },
+      "joinMs": {
+        "count": 20,
+        "min": 5844.79,
+        "p50": 10290.69,
+        "p95": 15218.22,
+        "p99": 15929.72,
+        "max": 15929.72,
+        "mean": 10830.28
+      },
+      "fanoutMs": {
+        "count": 80,
+        "min": 1405.5,
+        "p50": 2275.7,
+        "p95": 3617.29,
+        "p99": 3618.58,
+        "max": 3618.58,
+        "mean": 2314.45
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "sentAt": 19897,
+          "ackOk": true,
+          "ackMs": 3617.06,
+          "received": 16,
+          "missing": 3,
+          "p50": 3610.13,
+          "p95": 3618.58,
+          "max": 3618.58
+        },
+        {
+          "round": 1,
+          "sentAt": 30905,
+          "ackOk": true,
+          "ackMs": 1692.48,
+          "received": 16,
+          "missing": 3,
+          "p50": 1691.94,
+          "p95": 1693.04,
+          "max": 1693.04
+        },
+        {
+          "round": 2,
+          "sentAt": 41911,
+          "ackOk": true,
+          "ackMs": 2512.19,
+          "received": 16,
+          "missing": 3,
+          "p50": 2512.37,
+          "p95": 2937.8,
+          "max": 2937.8
+        },
+        {
+          "round": 3,
+          "sentAt": 52927,
+          "ackOk": true,
+          "ackMs": 1430.04,
+          "received": 16,
+          "missing": 3,
+          "p50": 1408.53,
+          "p95": 1426.6,
+          "max": 1426.6
+        },
+        {
+          "round": 4,
+          "sentAt": 63941,
+          "ackOk": true,
+          "ackMs": 2290.66,
+          "received": 16,
+          "missing": 3,
+          "p50": 2275.7,
+          "p95": 2290.48,
+          "max": 2290.48
+        }
+      ],
+      "errors": []
+    },
+    {
+      "level": 50,
+      "connected": 50,
+      "joined": 16,
+      "listeners": 15,
+      "connectMs": {
+        "count": 50,
+        "min": 1307.4,
+        "p50": 1601.43,
+        "p95": 2776.69,
+        "p99": 3068.96,
+        "max": 3068.96,
+        "mean": 1849.25
+      },
+      "joinMs": {
+        "count": 16,
+        "min": 4907.03,
+        "p50": 12889.2,
+        "p95": 19094.34,
+        "p99": 19094.34,
+        "max": 19094.34,
+        "mean": 12553.34
+      },
+      "fanoutMs": {
+        "count": 48,
+        "min": 1828.44,
+        "p50": 3000.59,
+        "p95": 4103.13,
+        "p99": 4103.41,
+        "max": 4103.41,
+        "mean": 3182.07
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "sentAt": 105039,
+          "ackOk": true,
+          "ackMs": 18484.22,
+          "received": 0,
+          "missing": 15,
+          "p50": null,
+          "p95": null,
+          "max": null
+        },
+        {
+          "round": 1,
+          "sentAt": 124525,
+          "ackOk": true,
+          "ackMs": 2979.09,
+          "received": 12,
+          "missing": 3,
+          "p50": 2978.98,
+          "p95": 3000.59,
+          "max": 3000.59
+        },
+        {
+          "round": 2,
+          "sentAt": 135532,
+          "ackOk": true,
+          "ackMs": 4102.81,
+          "received": 12,
+          "missing": 3,
+          "p50": 4102.65,
+          "p95": 4103.41,
+          "max": 4103.41
+        },
+        {
+          "round": 3,
+          "sentAt": 146549,
+          "ackOk": true,
+          "ackMs": 3807,
+          "received": 12,
+          "missing": 3,
+          "p50": 3807.13,
+          "p95": 3824.69,
+          "max": 3824.69
+        },
+        {
+          "round": 4,
+          "sentAt": 157569,
+          "ackOk": true,
+          "ackMs": 1835.63,
+          "received": 12,
+          "missing": 3,
+          "p50": 1835.21,
+          "p95": 1846,
+          "max": 1846
+        }
+      ],
+      "errors": [
+        {
+          "index": 14,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 12,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 15,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 16,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 18,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 20,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 17,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 19,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 21,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 22,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 23,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 24,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 25,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 27,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 26,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 29,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 28,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 31,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 32,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 33,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 34,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 36,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 35,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 38,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 37,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 40,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 41,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 44,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 43,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 45,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 47,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 46,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 48,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        },
+        {
+          "index": 49,
+          "event": "join_timeout",
+          "message": "room:join timeout"
+        }
+      ]
+    }
+  ],
+  "note": "The 5-client level was run first and overwritten by the 20/50 pass; its summary is transcribed from stdout."
+}
