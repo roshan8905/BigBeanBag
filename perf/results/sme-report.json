@@ -1,0 +1,1291 @@
+{
+  "totalBytes": 536030,
+  "totalKb": 523.5,
+  "unmappedBytes": 0,
+  "packages": [
+    {
+      "name": "react-dom",
+      "bytes": 131295,
+      "kb": 128.2,
+      "percent": 24.5
+    },
+    {
+      "name": "(app source)",
+      "bytes": 87741,
+      "kb": 85.7,
+      "percent": 16.4
+    },
+    {
+      "name": "@reduxjs/toolkit@2.13.0_react-redux@9.3.0_@types+react",
+      "bytes": 55349,
+      "kb": 54.1,
+      "percent": 10.3
+    },
+    {
+      "name": "zod",
+      "bytes": 54287,
+      "kb": 53,
+      "percent": 10.1
+    },
+    {
+      "name": "react-router",
+      "bytes": 39719,
+      "kb": 38.8,
+      "percent": 7.4
+    },
+    {
+      "name": "@dnd-kit/core",
+      "bytes": 35703,
+      "kb": 34.9,
+      "percent": 6.7
+    },
+    {
+      "name": "lucide-react",
+      "bytes": 20941,
+      "kb": 20.5,
+      "percent": 3.9
+    },
+    {
+      "name": "engine.io-client",
+      "bytes": 19011,
+      "kb": 18.6,
+      "percent": 3.5
+    },
+    {
+      "name": "qrcode.react",
+      "bytes": 16749,
+      "kb": 16.4,
+      "percent": 3.1
+    },
+    {
+      "name": "immer",
+      "bytes": 13433,
+      "kb": 13.1,
+      "percent": 2.5
+    },
+    {
+      "name": "socket.io-client",
+      "bytes": 12470,
+      "kb": 12.2,
+      "percent": 2.3
+    },
+    {
+      "name": "react",
+      "bytes": 7424,
+      "kb": 7.3,
+      "percent": 1.4
+    },
+    {
+      "name": "@dnd-kit/sortable@10.0.0_@dnd-kit+core",
+      "bytes": 6542,
+      "kb": 6.4,
+      "percent": 1.2
+    },
+    {
+      "name": "socket.io-parser",
+      "bytes": 5408,
+      "kb": 5.3,
+      "percent": 1
+    },
+    {
+      "name": "@bigbeanbag/shared",
+      "bytes": 4607,
+      "kb": 4.5,
+      "percent": 0.9
+    },
+    {
+      "name": "scheduler",
+      "bytes": 3886,
+      "kb": 3.8,
+      "percent": 0.7
+    },
+    {
+      "name": "engine.io-parser",
+      "bytes": 3717,
+      "kb": 3.6,
+      "percent": 0.7
+    },
+    {
+      "name": "@dnd-kit/utilities",
+      "bytes": 3189,
+      "kb": 3.1,
+      "percent": 0.6
+    },
+    {
+      "name": "react-redux",
+      "bytes": 3005,
+      "kb": 2.9,
+      "percent": 0.6
+    },
+    {
+      "name": "redux",
+      "bytes": 2913,
+      "kb": 2.8,
+      "percent": 0.5
+    },
+    {
+      "name": "reselect",
+      "bytes": 2883,
+      "kb": 2.8,
+      "percent": 0.5
+    },
+    {
+      "name": "(other)",
+      "bytes": 2809,
+      "kb": 2.7,
+      "percent": 0.5
+    },
+    {
+      "name": "@socket.io/component-emitter",
+      "bytes": 1330,
+      "kb": 1.3,
+      "percent": 0.2
+    },
+    {
+      "name": "use-sync-external-store",
+      "bytes": 843,
+      "kb": 0.8,
+      "percent": 0.2
+    },
+    {
+      "name": "@dnd-kit/accessibility",
+      "bytes": 549,
+      "kb": 0.5,
+      "percent": 0.1
+    },
+    {
+      "name": "@standard-schema/utils",
+      "bytes": 120,
+      "kb": 0.1,
+      "percent": 0
+    },
+    {
+      "name": "redux-thunk",
+      "bytes": 107,
+      "kb": 0.1,
+      "percent": 0
+    }
+  ],
+  "files": [
+    {
+      "file": "node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.production.min.js",
+      "package": "react-dom",
+      "bytes": 130906,
+      "kb": 127.8,
+      "percent": 24.4
+    },
+    {
+      "file": "node_modules/.pnpm/zod@3.25.76/node_modules/zod/v3/types.js",
+      "package": "zod",
+      "bytes": 46224,
+      "kb": 45.1,
+      "percent": 8.6
+    },
+    {
+      "file": "node_modules/.pnpm/react-router@7.18.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-router/dist/development/chunk-OB3PAWPO.mjs",
+      "package": "react-router",
+      "bytes": 39719,
+      "kb": 38.8,
+      "percent": 7.4
+    },
+    {
+      "file": "node_modules/.pnpm/@reduxjs+toolkit@2.13.0_react-redux@9.3.0_@types+react@18.3.31_react@18.3.1_redux@5.0.1__react@18.3.1/node_modules/@reduxjs/toolkit/dist/query/rtk-query.modern.mjs",
+      "package": "@reduxjs/toolkit@2.13.0_react-redux@9.3.0_@types+react",
+      "bytes": 36356,
+      "kb": 35.5,
+      "percent": 6.8
+    },
+    {
+      "file": "node_modules/.pnpm/@dnd-kit+core@6.3.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@dnd-kit/core/dist/core.esm.js",
+      "package": "@dnd-kit/core",
+      "bytes": 35703,
+      "kb": 34.9,
+      "percent": 6.7
+    },
+    {
+      "file": "node_modules/.pnpm/qrcode.react@4.2.0_react@18.3.1/node_modules/qrcode.react/lib/esm/index.js",
+      "package": "qrcode.react",
+      "bytes": 16749,
+      "kb": 16.4,
+      "percent": 3.1
+    },
+    {
+      "file": "node_modules/.pnpm/immer@11.2.3/node_modules/immer/dist/immer.mjs",
+      "package": "immer",
+      "bytes": 13433,
+      "kb": 13.1,
+      "percent": 2.5
+    },
+    {
+      "file": "node_modules/.pnpm/@reduxjs+toolkit@2.13.0_react-redux@9.3.0_@types+react@18.3.31_react@18.3.1_redux@5.0.1__react@18.3.1/node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs",
+      "package": "@reduxjs/toolkit@2.13.0_react-redux@9.3.0_@types+react",
+      "bytes": 10569,
+      "kb": 10.3,
+      "percent": 2
+    },
+    {
+      "file": "packages/client/src/features/room/AddSongDialog.tsx",
+      "package": "(app source)",
+      "bytes": 9287,
+      "kb": 9.1,
+      "percent": 1.7
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-client@6.6.7/node_modules/engine.io-client/build/esm/socket.js",
+      "package": "engine.io-client",
+      "bytes": 8437,
+      "kb": 8.2,
+      "percent": 1.6
+    },
+    {
+      "file": "node_modules/.pnpm/@reduxjs+toolkit@2.13.0_react-redux@9.3.0_@types+react@18.3.31_react@18.3.1_redux@5.0.1__react@18.3.1/node_modules/@reduxjs/toolkit/dist/query/react/rtk-query-react.modern.mjs",
+      "package": "@reduxjs/toolkit@2.13.0_react-redux@9.3.0_@types+react",
+      "bytes": 8424,
+      "kb": 8.2,
+      "percent": 1.6
+    },
+    {
+      "file": "packages/client/src/features/room/RoomWorkspace.tsx",
+      "package": "(app source)",
+      "bytes": 7591,
+      "kb": 7.4,
+      "percent": 1.4
+    },
+    {
+      "file": "node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.production.min.js",
+      "package": "react",
+      "bytes": 6659,
+      "kb": 6.5,
+      "percent": 1.2
+    },
+    {
+      "file": "node_modules/.pnpm/socket.io-client@4.8.4/node_modules/socket.io-client/build/esm/socket.js",
+      "package": "socket.io-client",
+      "bytes": 6645,
+      "kb": 6.5,
+      "percent": 1.2
+    },
+    {
+      "file": "node_modules/.pnpm/@dnd-kit+sortable@10.0.0_@dnd-kit+core@6.3.1_react-dom@18.3.1_react@18.3.1__react@18.3.1__react@18.3.1/node_modules/@dnd-kit/sortable/dist/sortable.esm.js",
+      "package": "@dnd-kit/sortable@10.0.0_@dnd-kit+core",
+      "bytes": 6542,
+      "kb": 6.4,
+      "percent": 1.2
+    },
+    {
+      "file": "packages/client/src/features/room/ChatPanel.tsx",
+      "package": "(app source)",
+      "bytes": 6444,
+      "kb": 6.3,
+      "percent": 1.2
+    },
+    {
+      "file": "packages/client/src/features/room/QueuePanel.tsx",
+      "package": "(app source)",
+      "bytes": 6135,
+      "kb": 6,
+      "percent": 1.1
+    },
+    {
+      "file": "packages/client/src/features/room/YouTubeStage.tsx",
+      "package": "(app source)",
+      "bytes": 6014,
+      "kb": 5.9,
+      "percent": 1.1
+    },
+    {
+      "file": "packages/client/src/features/room/BattlePanel.tsx",
+      "package": "(app source)",
+      "bytes": 5197,
+      "kb": 5.1,
+      "percent": 1
+    },
+    {
+      "file": "packages/client/src/features/room/PollPanel.tsx",
+      "package": "(app source)",
+      "bytes": 4624,
+      "kb": 4.5,
+      "percent": 0.9
+    },
+    {
+      "file": "packages/shared/dist/index.js",
+      "package": "@bigbeanbag/shared",
+      "bytes": 4607,
+      "kb": 4.5,
+      "percent": 0.9
+    },
+    {
+      "file": "node_modules/.pnpm/socket.io-client@4.8.4/node_modules/socket.io-client/build/esm/manager.js",
+      "package": "socket.io-client",
+      "bytes": 4255,
+      "kb": 4.2,
+      "percent": 0.8
+    },
+    {
+      "file": "packages/client/src/pages/HomePage.tsx",
+      "package": "(app source)",
+      "bytes": 4231,
+      "kb": 4.1,
+      "percent": 0.8
+    },
+    {
+      "file": "node_modules/.pnpm/scheduler@0.23.2/node_modules/scheduler/cjs/scheduler.production.min.js",
+      "package": "scheduler",
+      "bytes": 3855,
+      "kb": 3.8,
+      "percent": 0.7
+    },
+    {
+      "file": "node_modules/.pnpm/socket.io-parser@4.2.7/node_modules/socket.io-parser/build/esm/index.js",
+      "package": "socket.io-parser",
+      "bytes": 3672,
+      "kb": 3.6,
+      "percent": 0.7
+    },
+    {
+      "file": "packages/client/src/pages/RoomsPage.tsx",
+      "package": "(app source)",
+      "bytes": 3573,
+      "kb": 3.5,
+      "percent": 0.7
+    },
+    {
+      "file": "packages/client/src/features/room/MembersPanel.tsx",
+      "package": "(app source)",
+      "bytes": 3424,
+      "kb": 3.3,
+      "percent": 0.6
+    },
+    {
+      "file": "packages/client/src/features/room/RoomSettingsDialog.tsx",
+      "package": "(app source)",
+      "bytes": 3251,
+      "kb": 3.2,
+      "percent": 0.6
+    },
+    {
+      "file": "node_modules/.pnpm/@dnd-kit+utilities@3.2.2_react@18.3.1/node_modules/@dnd-kit/utilities/dist/utilities.esm.js",
+      "package": "@dnd-kit/utilities",
+      "bytes": 3189,
+      "kb": 3.1,
+      "percent": 0.6
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-client@6.6.7/node_modules/engine.io-client/build/esm/transports/polling-xhr.js",
+      "package": "engine.io-client",
+      "bytes": 3162,
+      "kb": 3.1,
+      "percent": 0.6
+    },
+    {
+      "file": "node_modules/.pnpm/zod@3.25.76/node_modules/zod/v3/locales/en.js",
+      "package": "zod",
+      "bytes": 3042,
+      "kb": 3,
+      "percent": 0.6
+    },
+    {
+      "file": "node_modules/.pnpm/react-redux@9.3.0_@types+react@18.3.31_react@18.3.1_redux@5.0.1/node_modules/react-redux/dist/react-redux.mjs",
+      "package": "react-redux",
+      "bytes": 3005,
+      "kb": 2.9,
+      "percent": 0.6
+    },
+    {
+      "file": "node_modules/.pnpm/redux@5.0.1/node_modules/redux/dist/redux.mjs",
+      "package": "redux",
+      "bytes": 2913,
+      "kb": 2.8,
+      "percent": 0.5
+    },
+    {
+      "file": "node_modules/.pnpm/reselect@5.3.0/node_modules/reselect/dist/reselect.mjs",
+      "package": "reselect",
+      "bytes": 2883,
+      "kb": 2.8,
+      "percent": 0.5
+    },
+    {
+      "file": "packages/client/src/features/room/RoomPreview.tsx",
+      "package": "(app source)",
+      "bytes": 2829,
+      "kb": 2.8,
+      "percent": 0.5
+    },
+    {
+      "file": "[unmapped]",
+      "package": "(other)",
+      "bytes": 2425,
+      "kb": 2.4,
+      "percent": 0.5
+    },
+    {
+      "file": "packages/client/src/features/rooms/InvitePanel.tsx",
+      "package": "(app source)",
+      "bytes": 2340,
+      "kb": 2.3,
+      "percent": 0.4
+    },
+    {
+      "file": "packages/client/src/lib/api.ts",
+      "package": "(app source)",
+      "bytes": 2257,
+      "kb": 2.2,
+      "percent": 0.4
+    },
+    {
+      "file": "packages/client/src/features/rooms/CreateRoomDialog.tsx",
+      "package": "(app source)",
+      "bytes": 2086,
+      "kb": 2,
+      "percent": 0.4
+    },
+    {
+      "file": "packages/client/src/features/auth/LoginPage.tsx",
+      "package": "(app source)",
+      "bytes": 1836,
+      "kb": 1.8,
+      "percent": 0.3
+    },
+    {
+      "file": "node_modules/.pnpm/zod@3.25.76/node_modules/zod/v3/helpers/util.js",
+      "package": "zod",
+      "bytes": 1734,
+      "kb": 1.7,
+      "percent": 0.3
+    },
+    {
+      "file": "packages/client/src/features/room/useRoomSync.ts",
+      "package": "(app source)",
+      "bytes": 1712,
+      "kb": 1.7,
+      "percent": 0.3
+    },
+    {
+      "file": "packages/client/src/features/rooms/RoomCard.tsx",
+      "package": "(app source)",
+      "bytes": 1712,
+      "kb": 1.7,
+      "percent": 0.3
+    },
+    {
+      "file": "packages/client/src/features/auth/ProfileMenu.tsx",
+      "package": "(app source)",
+      "bytes": 1663,
+      "kb": 1.6,
+      "percent": 0.3
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-parser@5.2.3/node_modules/engine.io-parser/build/esm/index.js",
+      "package": "engine.io-parser",
+      "bytes": 1619,
+      "kb": 1.6,
+      "percent": 0.3
+    },
+    {
+      "file": "node_modules/.pnpm/zod@3.25.76/node_modules/zod/v3/ZodError.js",
+      "package": "zod",
+      "bytes": 1614,
+      "kb": 1.6,
+      "percent": 0.3
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-client@6.6.7/node_modules/engine.io-client/build/esm/transports/websocket.js",
+      "package": "engine.io-client",
+      "bytes": 1550,
+      "kb": 1.5,
+      "percent": 0.3
+    },
+    {
+      "file": "node_modules/.pnpm/zod@3.25.76/node_modules/zod/v3/helpers/parseUtil.js",
+      "package": "zod",
+      "bytes": 1493,
+      "kb": 1.5,
+      "percent": 0.3
+    },
+    {
+      "file": "packages/client/src/features/room/PlaybackPanel.tsx",
+      "package": "(app source)",
+      "bytes": 1352,
+      "kb": 1.3,
+      "percent": 0.3
+    },
+    {
+      "file": "node_modules/.pnpm/@socket.io+component-emitter@3.1.2/node_modules/@socket.io/component-emitter/lib/esm/index.js",
+      "package": "@socket.io/component-emitter",
+      "bytes": 1330,
+      "kb": 1.3,
+      "percent": 0.2
+    },
+    {
+      "file": "packages/client/src/components/Modal.tsx",
+      "package": "(app source)",
+      "bytes": 1316,
+      "kb": 1.3,
+      "percent": 0.2
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-client@6.6.7/node_modules/engine.io-client/build/esm/transports/polling.js",
+      "package": "engine.io-client",
+      "bytes": 1199,
+      "kb": 1.2,
+      "percent": 0.2
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-client@6.6.7/node_modules/engine.io-client/build/esm/transport.js",
+      "package": "engine.io-client",
+      "bytes": 1185,
+      "kb": 1.2,
+      "percent": 0.2
+    },
+    {
+      "file": "packages/client/src/features/rooms/JoinRoomDialog.tsx",
+      "package": "(app source)",
+      "bytes": 1172,
+      "kb": 1.1,
+      "percent": 0.2
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-client@6.6.7/node_modules/engine.io-client/build/esm/contrib/parseuri.js",
+      "package": "engine.io-client",
+      "bytes": 1134,
+      "kb": 1.1,
+      "percent": 0.2
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-client@6.6.7/node_modules/engine.io-client/build/esm/transports/webtransport.js",
+      "package": "engine.io-client",
+      "bytes": 1044,
+      "kb": 1,
+      "percent": 0.2
+    },
+    {
+      "file": "node_modules/.pnpm/socket.io-parser@4.2.7/node_modules/socket.io-parser/build/esm/binary.js",
+      "package": "socket.io-parser",
+      "bytes": 957,
+      "kb": 0.9,
+      "percent": 0.2
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-parser@5.2.3/node_modules/engine.io-parser/build/esm/encodePacket.browser.js",
+      "package": "engine.io-parser",
+      "bytes": 887,
+      "kb": 0.9,
+      "percent": 0.2
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/settings.js",
+      "package": "lucide-react",
+      "bytes": 835,
+      "kb": 0.8,
+      "percent": 0.2
+    },
+    {
+      "file": "packages/client/src/app/slices/roomSlice.ts",
+      "package": "(app source)",
+      "bytes": 819,
+      "kb": 0.8,
+      "percent": 0.2
+    },
+    {
+      "file": "packages/client/src/components/AppHeader.tsx",
+      "package": "(app source)",
+      "bytes": 818,
+      "kb": 0.8,
+      "percent": 0.2
+    },
+    {
+      "file": "node_modules/.pnpm/use-sync-external-store@1.7.0_react@18.3.1/node_modules/use-sync-external-store/cjs/use-sync-external-store-with-selector.production.js",
+      "package": "use-sync-external-store",
+      "bytes": 803,
+      "kb": 0.8,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/socket.io-parser@4.2.7/node_modules/socket.io-parser/build/esm/is-binary.js",
+      "package": "socket.io-parser",
+      "bytes": 779,
+      "kb": 0.8,
+      "percent": 0.1
+    },
+    {
+      "file": "packages/client/src/lib/youtube.ts",
+      "package": "(app source)",
+      "bytes": 720,
+      "kb": 0.7,
+      "percent": 0.1
+    },
+    {
+      "file": "packages/client/src/pages/JoinPage.tsx",
+      "package": "(app source)",
+      "bytes": 690,
+      "kb": 0.7,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/swords.js",
+      "package": "lucide-react",
+      "bytes": 660,
+      "kb": 0.6,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-client@6.6.7/node_modules/engine.io-client/build/esm/util.js",
+      "package": "engine.io-client",
+      "bytes": 641,
+      "kb": 0.6,
+      "percent": 0.1
+    },
+    {
+      "file": "packages/client/src/features/auth/authSlice.ts",
+      "package": "(app source)",
+      "bytes": 626,
+      "kb": 0.6,
+      "percent": 0.1
+    },
+    {
+      "file": "packages/client/src/pages/RoomPage.tsx",
+      "package": "(app source)",
+      "bytes": 623,
+      "kb": 0.6,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/sparkles.js",
+      "package": "lucide-react",
+      "bytes": 618,
+      "kb": 0.6,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react-jsx-runtime.production.min.js",
+      "package": "react",
+      "bytes": 616,
+      "kb": 0.6,
+      "percent": 0.1
+    },
+    {
+      "file": "packages/client/src/app/slices/battleSlice.ts",
+      "package": "(app source)",
+      "bytes": 599,
+      "kb": 0.6,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/wifi-off.js",
+      "package": "lucide-react",
+      "bytes": 569,
+      "kb": 0.6,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/socket.io-client@4.8.4/node_modules/socket.io-client/build/esm/url.js",
+      "package": "socket.io-client",
+      "bytes": 559,
+      "kb": 0.5,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/socket.io-client@4.8.4/node_modules/socket.io-client/build/esm/contrib/backo2.js",
+      "package": "socket.io-client",
+      "bytes": 549,
+      "kb": 0.5,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/@dnd-kit+accessibility@3.1.1_react@18.3.1/node_modules/@dnd-kit/accessibility/dist/accessibility.esm.js",
+      "package": "@dnd-kit/accessibility",
+      "bytes": 549,
+      "kb": 0.5,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/mic-off.js",
+      "package": "lucide-react",
+      "bytes": 532,
+      "kb": 0.5,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-parser@5.2.3/node_modules/engine.io-parser/build/esm/contrib/base64-arraybuffer.js",
+      "package": "engine.io-parser",
+      "bytes": 512,
+      "kb": 0.5,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/Icon.js",
+      "package": "lucide-react",
+      "bytes": 510,
+      "kb": 0.5,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/earth.js",
+      "package": "lucide-react",
+      "bytes": 503,
+      "kb": 0.5,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/volume-2.js",
+      "package": "lucide-react",
+      "bytes": 499,
+      "kb": 0.5,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/shuffle.js",
+      "package": "lucide-react",
+      "bytes": 493,
+      "kb": 0.5,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/radio.js",
+      "package": "lucide-react",
+      "bytes": 479,
+      "kb": 0.5,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/door-open.js",
+      "package": "lucide-react",
+      "bytes": 478,
+      "kb": 0.5,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/crown.js",
+      "package": "lucide-react",
+      "bytes": 472,
+      "kb": 0.5,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-parser@5.2.3/node_modules/engine.io-parser/build/esm/decodePacket.browser.js",
+      "package": "engine.io-parser",
+      "bytes": 470,
+      "kb": 0.5,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/mic-vocal.js",
+      "package": "lucide-react",
+      "bytes": 469,
+      "kb": 0.5,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/trash-2.js",
+      "package": "lucide-react",
+      "bytes": 467,
+      "kb": 0.5,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/youtube.js",
+      "package": "lucide-react",
+      "bytes": 438,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/refresh-cw.js",
+      "package": "lucide-react",
+      "bytes": 430,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/shield-check.js",
+      "package": "lucide-react",
+      "bytes": 429,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/list-music.js",
+      "package": "lucide-react",
+      "bytes": 415,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/users.js",
+      "package": "lucide-react",
+      "bytes": 414,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "packages/client/src/app/slices/chatSlice.ts",
+      "package": "(app source)",
+      "bytes": 406,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/socket.io-client@4.8.4/node_modules/socket.io-client/build/esm/index.js",
+      "package": "socket.io-client",
+      "bytes": 403,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/send.js",
+      "package": "lucide-react",
+      "bytes": 400,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/disc-3.js",
+      "package": "lucide-react",
+      "bytes": 397,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/wifi.js",
+      "package": "lucide-react",
+      "bytes": 390,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/shield.js",
+      "package": "lucide-react",
+      "bytes": 382,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "packages/client/src/app/slices/pollSlice.ts",
+      "package": "(app source)",
+      "bytes": 369,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/log-out.js",
+      "package": "lucide-react",
+      "bytes": 368,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "packages/client/src/App.tsx",
+      "package": "(app source)",
+      "bytes": 367,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/user-minus.js",
+      "package": "lucide-react",
+      "bytes": 365,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/lock-keyhole.js",
+      "package": "lucide-react",
+      "bytes": 364,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/compass.js",
+      "package": "lucide-react",
+      "bytes": 361,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/chart-column.js",
+      "package": "lucide-react",
+      "bytes": 360,
+      "kb": 0.4,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/video.js",
+      "package": "lucide-react",
+      "bytes": 358,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/menu.js",
+      "package": "lucide-react",
+      "bytes": 352,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/link-2.js",
+      "package": "lucide-react",
+      "bytes": 351,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/timer.js",
+      "package": "lucide-react",
+      "bytes": 348,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/headphones.js",
+      "package": "lucide-react",
+      "bytes": 347,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/copy.js",
+      "package": "lucide-react",
+      "bytes": 346,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/defaultAttributes.js",
+      "package": "lucide-react",
+      "bytes": 343,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "[EOLs]",
+      "package": "(other)",
+      "bytes": 342,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/createLucideIcon.js",
+      "package": "lucide-react",
+      "bytes": 339,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/ellipsis.js",
+      "package": "lucide-react",
+      "bytes": 336,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "packages/client/src/components/Loader.tsx",
+      "package": "(app source)",
+      "bytes": 334,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/pause.js",
+      "package": "lucide-react",
+      "bytes": 321,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/lock-open.js",
+      "package": "lucide-react",
+      "bytes": 319,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/shared/src/utils.js",
+      "package": "lucide-react",
+      "bytes": 317,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/lock.js",
+      "package": "lucide-react",
+      "bytes": 316,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/skip-forward.js",
+      "package": "lucide-react",
+      "bytes": 306,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-client@6.6.7/node_modules/engine.io-client/build/esm/contrib/parseqs.js",
+      "package": "engine.io-client",
+      "bytes": 299,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/ban.js",
+      "package": "lucide-react",
+      "bytes": 284,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/search.js",
+      "package": "lucide-react",
+      "bytes": 282,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/music-2.js",
+      "package": "lucide-react",
+      "bytes": 279,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/index.js",
+      "package": "react-dom",
+      "bytes": 275,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/arrow-left.js",
+      "package": "lucide-react",
+      "bytes": 274,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/arrow-right.js",
+      "package": "lucide-react",
+      "bytes": 274,
+      "kb": 0.3,
+      "percent": 0.1
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/x.js",
+      "package": "lucide-react",
+      "bytes": 264,
+      "kb": 0.3,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/plus.js",
+      "package": "lucide-react",
+      "bytes": 263,
+      "kb": 0.3,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/message-circle.js",
+      "package": "lucide-react",
+      "bytes": 257,
+      "kb": 0.3,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/loader-circle.js",
+      "package": "lucide-react",
+      "bytes": 253,
+      "kb": 0.2,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/play.js",
+      "package": "lucide-react",
+      "bytes": 244,
+      "kb": 0.2,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/chevron-down.js",
+      "package": "lucide-react",
+      "bytes": 237,
+      "kb": 0.2,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/lucide-react@0.469.0_react@18.3.1/node_modules/lucide-react/dist/esm/icons/check.js",
+      "package": "lucide-react",
+      "bytes": 234,
+      "kb": 0.2,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-parser@5.2.3/node_modules/engine.io-parser/build/esm/commons.js",
+      "package": "engine.io-parser",
+      "bytes": 229,
+      "kb": 0.2,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-client@6.6.7/node_modules/engine.io-client/build/esm/globals.js",
+      "package": "engine.io-client",
+      "bytes": 207,
+      "kb": 0.2,
+      "percent": 0
+    },
+    {
+      "file": "packages/client/src/features/auth/RequireAuth.tsx",
+      "package": "(app source)",
+      "bytes": 197,
+      "kb": 0.2,
+      "percent": 0
+    },
+    {
+      "file": "packages/client/src/app/slices/playbackSlice.ts",
+      "package": "(app source)",
+      "bytes": 195,
+      "kb": 0.2,
+      "percent": 0
+    },
+    {
+      "file": "packages/client/src/app/slices/queueSlice.ts",
+      "package": "(app source)",
+      "bytes": 184,
+      "kb": 0.2,
+      "percent": 0
+    },
+    {
+      "file": "packages/client/src/lib/socket.ts",
+      "package": "(app source)",
+      "bytes": 160,
+      "kb": 0.2,
+      "percent": 0
+    },
+    {
+      "file": "packages/client/src/app/store.ts",
+      "package": "(app source)",
+      "bytes": 150,
+      "kb": 0.1,
+      "percent": 0
+    },
+    {
+      "file": "packages/client/src/main.tsx",
+      "package": "(app source)",
+      "bytes": 150,
+      "kb": 0.1,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/zod@3.25.76/node_modules/zod/v3/helpers/errorUtil.js",
+      "package": "zod",
+      "bytes": 146,
+      "kb": 0.1,
+      "percent": 0
+    },
+    {
+      "file": "packages/client/src/lib/errors.ts",
+      "package": "(app source)",
+      "bytes": 138,
+      "kb": 0.1,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/@standard-schema+utils@0.3.0/node_modules/@standard-schema/utils/dist/index.js",
+      "package": "@standard-schema/utils",
+      "bytes": 120,
+      "kb": 0.1,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/react@18.3.1/node_modules/react/jsx-runtime.js",
+      "package": "react",
+      "bytes": 118,
+      "kb": 0.1,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/client.js",
+      "package": "react-dom",
+      "bytes": 114,
+      "kb": 0.1,
+      "percent": 0
+    },
+    {
+      "file": "packages/client/src/lib/format.ts",
+      "package": "(app source)",
+      "bytes": 114,
+      "kb": 0.1,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/redux-thunk@3.1.0_redux@5.0.1/node_modules/redux-thunk/dist/redux-thunk.mjs",
+      "package": "redux-thunk",
+      "bytes": 107,
+      "kb": 0.1,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-client@6.6.7/node_modules/engine.io-client/build/esm/contrib/has-cors.js",
+      "package": "engine.io-client",
+      "bytes": 102,
+      "kb": 0.1,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/socket.io-client@4.8.4/node_modules/socket.io-client/build/esm/on.js",
+      "package": "socket.io-client",
+      "bytes": 59,
+      "kb": 0.1,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/engine.io-client@6.6.7/node_modules/engine.io-client/build/esm/transports/index.js",
+      "package": "engine.io-client",
+      "bytes": 51,
+      "kb": 0,
+      "percent": 0
+    },
+    {
+      "file": "[sourceMappingURL]",
+      "package": "(other)",
+      "bytes": 42,
+      "kb": 0,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/use-sync-external-store@1.7.0_react@18.3.1/node_modules/use-sync-external-store/with-selector.js",
+      "package": "use-sync-external-store",
+      "bytes": 40,
+      "kb": 0,
+      "percent": 0
+    },
+    {
+      "file": "packages/client/src/app/hooks.ts",
+      "package": "(app source)",
+      "bytes": 36,
+      "kb": 0,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/zod@3.25.76/node_modules/zod/v3/errors.js",
+      "package": "zod",
+      "bytes": 34,
+      "kb": 0,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/react@18.3.1/node_modules/react/index.js",
+      "package": "react",
+      "bytes": 31,
+      "kb": 0,
+      "percent": 0
+    },
+    {
+      "file": "node_modules/.pnpm/scheduler@0.23.2/node_modules/scheduler/index.js",
+      "package": "scheduler",
+      "bytes": 31,
+      "kb": 0,
+      "percent": 0
+    }
+  ]
+}

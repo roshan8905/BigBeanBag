@@ -1,0 +1,15 @@
+node_modules
+.env.local
+results/lighthouse/
+results/bundle-dist/
+results/bundle-dist-map/
+results/bundle-stats.json
+results/bundle-treemap.html
+results/sme.json
+results/deployed.js
+results/robots.txt
+results/favicon.out
+results/room-detail-probe.json
+results/api-timing-partial.json
+results/test-room.json
+results/test-queue.json

@@ -1,0 +1,404 @@
+{
+  "totalKb": 1024.5,
+  "totalGzipKb": 265.9,
+  "chunks": [
+    {
+      "name": "assets/index-KG6jeyQG.js",
+      "kb": 1024.5,
+      "gzipKb": 265.9,
+      "modules": 175
+    }
+  ],
+  "packages": [
+    {
+      "name": "(app source)",
+      "kb": 164.5,
+      "gzipKb": 44.9,
+      "modules": 42
+    },
+    {
+      "name": "react-dom",
+      "kb": 131.6,
+      "gzipKb": 42.3,
+      "modules": 8
+    },
+    {
+      "name": "zod",
+      "kb": 130.1,
+      "gzipKb": 19.6,
+      "modules": 7
+    },
+    {
+      "name": "@reduxjs/toolkit@2.13.0_react-redux@9.3.0_@types+react",
+      "kb": 125.1,
+      "gzipKb": 26.8,
+      "modules": 3
+    },
+    {
+      "name": "@dnd-kit/core",
+      "kb": 91,
+      "gzipKb": 19,
+      "modules": 1
+    },
+    {
+      "name": "react-router",
+      "kb": 86.5,
+      "gzipKb": 21.1,
+      "modules": 1
+    },
+    {
+      "name": "engine.io-client",
+      "kb": 49.7,
+      "gzipKb": 15.1,
+      "modules": 12
+    },
+    {
+      "name": "qrcode.react",
+      "kb": 43.6,
+      "gzipKb": 11.5,
+      "modules": 1
+    },
+    {
+      "name": "socket.io-client",
+      "kb": 39,
+      "gzipKb": 9.6,
+      "modules": 6
+    },
+    {
+      "name": "immer",
+      "kb": 32.8,
+      "gzipKb": 8.2,
+      "modules": 1
+    },
+    {
+      "name": "lucide-react",
+      "kb": 24.7,
+      "gzipKb": 15.7,
+      "modules": 54
+    },
+    {
+      "name": "@dnd-kit/sortable@10.0.0_@dnd-kit+core",
+      "kb": 16.5,
+      "gzipKb": 4.1,
+      "modules": 1
+    },
+    {
+      "name": "socket.io-parser",
+      "kb": 14.3,
+      "gzipKb": 4.1,
+      "modules": 3
+    },
+    {
+      "name": "engine.io-parser",
+      "kb": 11.6,
+      "gzipKb": 3.6,
+      "modules": 5
+    },
+    {
+      "name": "react",
+      "kb": 9.4,
+      "gzipKb": 3.9,
+      "modules": 10
+    },
+    {
+      "name": "@bigbeanbag/shared",
+      "kb": 8.9,
+      "gzipKb": 2.4,
+      "modules": 1
+    },
+    {
+      "name": "react-redux",
+      "kb": 8.1,
+      "gzipKb": 2.1,
+      "modules": 1
+    },
+    {
+      "name": "redux",
+      "kb": 7.7,
+      "gzipKb": 2,
+      "modules": 1
+    },
+    {
+      "name": "reselect",
+      "kb": 7.5,
+      "gzipKb": 2,
+      "modules": 1
+    },
+    {
+      "name": "@dnd-kit/utilities",
+      "kb": 7.5,
+      "gzipKb": 2.2,
+      "modules": 1
+    },
+    {
+      "name": "scheduler",
+      "kb": 4.8,
+      "gzipKb": 2.1,
+      "modules": 4
+    },
+    {
+      "name": "use-sync-external-store",
+      "kb": 3.4,
+      "gzipKb": 1.2,
+      "modules": 5
+    },
+    {
+      "name": "@socket.io/component-emitter",
+      "kb": 3.2,
+      "gzipKb": 1,
+      "modules": 1
+    },
+    {
+      "name": "(vite runtime)",
+      "kb": 1.3,
+      "gzipKb": 0.5,
+      "modules": 1
+    },
+    {
+      "name": "@dnd-kit/accessibility",
+      "kb": 1.1,
+      "gzipKb": 0.5,
+      "modules": 1
+    },
+    {
+      "name": "redux-thunk",
+      "kb": 0.4,
+      "gzipKb": 0.2,
+      "modules": 1
+    },
+    {
+      "name": "@standard-schema/utils",
+      "kb": 0.4,
+      "gzipKb": 0.2,
+      "modules": 1
+    },
+    {
+      "name": "(other)",
+      "kb": 0.1,
+      "gzipKb": 0.1,
+      "modules": 1
+    }
+  ],
+  "modules": [
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.production.min.js",
+      "package": "react-dom",
+      "bytes": 133838,
+      "gzip": 42655,
+      "kb": 130.7,
+      "gzipKb": 41.7
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/zod@3.25.76/node_modules/zod/v3/types.js",
+      "package": "zod",
+      "bytes": 115775,
+      "gzip": 15590,
+      "kb": 113.1,
+      "gzipKb": 15.2
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/@dnd-kit+core@6.3.1_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@dnd-kit/core/dist/core.esm.js",
+      "package": "@dnd-kit/core",
+      "bytes": 93162,
+      "gzip": 19415,
+      "kb": 91,
+      "gzipKb": 19
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/react-router@7.18.4_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/react-router/dist/development/chunk-OB3PAWPO.mjs",
+      "package": "react-router",
+      "bytes": 88534,
+      "gzip": 21563,
+      "kb": 86.5,
+      "gzipKb": 21.1
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/@reduxjs+toolkit@2.13.0_react-redux@9.3.0_@types+react@18.3.31_react@18.3.1_redux@5.0.1__react@18.3.1/node_modules/@reduxjs/toolkit/dist/query/rtk-query.modern.mjs",
+      "package": "@reduxjs/toolkit@2.13.0_react-redux@9.3.0_@types+react",
+      "bytes": 81680,
+      "gzip": 17147,
+      "kb": 79.8,
+      "gzipKb": 16.7
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/qrcode.react@4.2.0_react@18.3.1/node_modules/qrcode.react/lib/esm/index.js",
+      "package": "qrcode.react",
+      "bytes": 44636,
+      "gzip": 11741,
+      "kb": 43.6,
+      "gzipKb": 11.5
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/immer@11.2.3/node_modules/immer/dist/immer.mjs",
+      "package": "immer",
+      "bytes": 33584,
+      "gzip": 8428,
+      "kb": 32.8,
+      "gzipKb": 8.2
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/socket.io-client@4.8.4/node_modules/socket.io-client/build/esm/socket.js",
+      "package": "socket.io-client",
+      "bytes": 25385,
+      "gzip": 5697,
+      "kb": 24.8,
+      "gzipKb": 5.6
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/@reduxjs+toolkit@2.13.0_react-redux@9.3.0_@types+react@18.3.31_react@18.3.1_redux@5.0.1__react@18.3.1/node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs",
+      "package": "@reduxjs/toolkit@2.13.0_react-redux@9.3.0_@types+react",
+      "bytes": 25098,
+      "gzip": 6148,
+      "kb": 24.5,
+      "gzipKb": 6
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/engine.io-client@6.6.7/node_modules/engine.io-client/build/esm/socket.js",
+      "package": "engine.io-client",
+      "bytes": 22873,
+      "gzip": 5448,
+      "kb": 22.3,
+      "gzipKb": 5.3
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/@reduxjs+toolkit@2.13.0_react-redux@9.3.0_@types+react@18.3.31_react@18.3.1_redux@5.0.1__react@18.3.1/node_modules/@reduxjs/toolkit/dist/query/react/rtk-query-react.modern.mjs",
+      "package": "@reduxjs/toolkit@2.13.0_react-redux@9.3.0_@types+react",
+      "bytes": 21355,
+      "gzip": 4144,
+      "kb": 20.9,
+      "gzipKb": 4
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/packages/client/src/features/room/AddSongDialog.tsx",
+      "package": "(app source)",
+      "bytes": 18787,
+      "gzip": 4058,
+      "kb": 18.3,
+      "gzipKb": 4
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/@dnd-kit+sortable@10.0.0_@dnd-kit+core@6.3.1_react-dom@18.3.1_react@18.3.1__react@18.3.1__react@18.3.1/node_modules/@dnd-kit/sortable/dist/sortable.esm.js",
+      "package": "@dnd-kit/sortable@10.0.0_@dnd-kit+core",
+      "bytes": 16881,
+      "gzip": 4241,
+      "kb": 16.5,
+      "gzipKb": 4.1
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/packages/client/src/features/room/RoomWorkspace.tsx",
+      "package": "(app source)",
+      "bytes": 15672,
+      "gzip": 3404,
+      "kb": 15.3,
+      "gzipKb": 3.3
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/packages/client/src/features/room/ChatPanel.tsx",
+      "package": "(app source)",
+      "bytes": 12699,
+      "gzip": 3169,
+      "kb": 12.4,
+      "gzipKb": 3.1
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/packages/client/src/features/room/QueuePanel.tsx",
+      "package": "(app source)",
+      "bytes": 11959,
+      "gzip": 3019,
+      "kb": 11.7,
+      "gzipKb": 2.9
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/packages/client/src/features/room/YouTubeStage.tsx",
+      "package": "(app source)",
+      "bytes": 11704,
+      "gzip": 2827,
+      "kb": 11.4,
+      "gzipKb": 2.8
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/socket.io-parser@4.2.7/node_modules/socket.io-parser/build/esm/index.js",
+      "package": "socket.io-parser",
+      "bytes": 10211,
+      "gzip": 2767,
+      "kb": 10,
+      "gzipKb": 2.7
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/socket.io-client@4.8.4/node_modules/socket.io-client/build/esm/manager.js",
+      "package": "socket.io-client",
+      "bytes": 10243,
+      "gzip": 2387,
+      "kb": 10,
+      "gzipKb": 2.3
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/packages/client/src/features/room/BattlePanel.tsx",
+      "package": "(app source)",
+      "bytes": 10046,
+      "gzip": 2614,
+      "kb": 9.8,
+      "gzipKb": 2.6
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/packages/client/src/features/room/PollPanel.tsx",
+      "package": "(app source)",
+      "bytes": 9597,
+      "gzip": 2427,
+      "kb": 9.4,
+      "gzipKb": 2.4
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/packages/shared/dist/index.js",
+      "package": "@bigbeanbag/shared",
+      "bytes": 9157,
+      "gzip": 2408,
+      "kb": 8.9,
+      "gzipKb": 2.4
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/react-redux@9.3.0_@types+react@18.3.31_react@18.3.1_redux@5.0.1/node_modules/react-redux/dist/react-redux.mjs",
+      "package": "react-redux",
+      "bytes": 8251,
+      "gzip": 2182,
+      "kb": 8.1,
+      "gzipKb": 2.1
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/engine.io-client@6.6.7/node_modules/engine.io-client/build/esm/transports/polling-xhr.js",
+      "package": "engine.io-client",
+      "bytes": 7989,
+      "gzip": 2392,
+      "kb": 7.8,
+      "gzipKb": 2.3
+    },
+    {
+      "id": "E:/PROJECTS/BigBeanBag/node_modules/.pnpm/redux@5.0.1/node_modules/redux/dist/redux.mjs",
+      "package": "redux",
+      "bytes": 7922,
+      "gzip": 2084,
+      "kb": 7.7,
+      "gzipKb": 2
+    }
+  ],
+  "manifest": {
+    "index.html": {
+      "file": "assets/index-B5r_RICF.js",
+      "name": "index",
+      "src": "index.html",
+      "isEntry": true,
+      "css": [
+        "assets/index-Bs5CnTAN.css"
+      ]
+    }
+  },
+  "dynamicImports": [],
+  "entryChunks": [
+    {
+      "file": "assets/index-B5r_RICF.js",
+      "isEntry": true,
+      "imports": [],
+      "dynamicImports": []
+    }
+  ]
+}
