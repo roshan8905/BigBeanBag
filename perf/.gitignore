@@ -13,3 +13,5 @@ results/room-detail-probe.json
 results/api-timing-partial.json
 results/test-room.json
 results/test-queue.json
+results/realtime-partial.json
+results/join-*

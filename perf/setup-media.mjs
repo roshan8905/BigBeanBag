@@ -9,14 +9,28 @@ const search = await request(
   '/api/media/search?query=daft%20punk&filter=MUSIC&limit=5',
   { cookie: env.SESSION_COOKIE, timeout: 30000 },
 );
-const resolve = await request(env.BASE_URL, '/api/media/resolve', {
-  method: 'POST',
-  cookie: env.SESSION_COOKIE,
-  body: { url: 'https://www.youtube.com/watch?v=5NV6Rdv1a3I' },
-  timeout: 30000,
-});
+const candidates = [
+  'https://www.youtube.com/watch?v=5NV6Rdv1a3I',
+  'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+  'https://www.youtube.com/watch?v=jNQXAC9IVRw',
+];
+const attempts = [];
+let resolveResponse = null;
 let item = null;
-if (resolve.status === 200) item = JSON.parse(resolve.body).item;
+for (const url of candidates) {
+  const response = await request(env.BASE_URL, '/api/media/resolve', {
+    method: 'POST',
+    cookie: env.SESSION_COOKIE,
+    body: { url },
+    timeout: 30000,
+  });
+  attempts.push({ url, status: response.status, ms: Math.round(response.ms * 100) / 100 });
+  if (response.status === 200) {
+    resolveResponse = response;
+    item = JSON.parse(response.body).item;
+    break;
+  }
+}
 let added = null;
 if (item) {
   const socket = io(env.BASE_URL, {
@@ -70,9 +84,10 @@ const summary = {
     items: search.status === 200 ? JSON.parse(search.body).items.length : null,
   },
   resolve: {
-    status: resolve.status,
-    ms: Math.round(resolve.ms * 100) / 100,
-    bytes: resolve.bytes,
+    status: resolveResponse?.status ?? 0,
+    ms: resolveResponse ? Math.round(resolveResponse.ms * 100) / 100 : null,
+    bytes: resolveResponse?.bytes ?? 0,
+    attempts,
     item: item ? { youtubeId: item.youtubeId, title: item.title, durationMs: item.durationMs } : null,
   },
   queueAdd: added,
